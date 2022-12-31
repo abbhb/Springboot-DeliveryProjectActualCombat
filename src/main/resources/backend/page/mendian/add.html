@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
+    <link rel="stylesheet" href="../../styles/common.css" />
+    <link rel="stylesheet" href="../../styles/page.css" />
+</head>
+<body>
+<div class="addBrand-container" id="mendian-add-app">
+    <div class="container">
+        <el-form
+                ref="ruleForm"
+                :model="ruleForm"
+                :inline="false"
+                label-width="180px"
+                class="demo-ruleForm"
+        >
+            <el-form-item label="门店ID" prop="id">
+                <el-input v-model="ruleForm.id" placeholder="随机生成,不用你输入" disabled="true"/>
+            </el-form-item>
+            <el-form-item
+                    label="门店名称:"
+                    prop="name"
+            >
+                <el-input
+                        v-model="ruleForm.name"
+                        placeholder="请输入门店名称"
+                        maxlength="20"
+                />
+            </el-form-item>
+
+            <el-form-item
+                    label="门店简介:"
+                    prop="introduction"
+            >
+                <el-input
+                        v-model="ruleForm.introduction"
+                        placeholder="请输入门店简介"
+                />
+
+            </el-form-item>
+            <el-form-item
+                    label="门店是否营业:"
+                    prop="status"
+            >
+                <el-input
+                        v-model="ruleForm.status"
+                        placeholder="门店是否营业,1为正在营业，0为休息"
+                        maxlength="1"
+                />
+            </el-form-item>
+            <div class="subBox address">
+                <el-form-item>
+                    <el-button  @click="goBack()">
+                        取消
+                    </el-button>
+                    <el-button
+                            type="primary"
+                            @click="submitForm('ruleForm', false)"
+                    >
+                        保存
+                    </el-button>
+                    <el-button
+                            v-if="actionType == 'add'"
+                            type="primary"
+                            class="continue"
+                            @click="submitForm('ruleForm', true)"
+                    >
+                        保存并继续添加
+                    </el-button>
+                </el-form-item>
+            </div>
+        </el-form>
+    </div>
+</div>
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="../../plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../plugins/element-ui/index.js"></script>
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../api/mendian.js"></script>
+<script src="../../js/index.js"></script>
+<script>
+    new Vue({
+        el: '#mendian-add-app',
+        data() {
+            return {
+                id: '',
+                actionType : '',
+                ruleForm : {
+                    introduction: '',
+                    status: 0,//默认休息中
+                    name: '',
+                    id: '',
+                }
+            }
+        },
+        computed: {
+
+        },
+        created() {
+            this.id = requestUrlParam('id')
+            this.actionType = this.id ? 'edit' : 'add'
+            if (this.id) {
+                this.init()
+            }
+        },
+        mounted() {
+        },
+        methods: {
+            async init () {
+                querymendianById(this.id).then(res => {
+                    console.log(res)
+                    if (String(res.code) === '1') {
+                        console.log(res.data)
+                        this.ruleForm = res.data
+                        // this.ruleForm.password = ''
+                    } else {
+                        this.$message.error(res.msg || '操作失败')
+                    }
+                })
+            },
+            submitForm (formName, st) {
+                if (this.actionType === 'add') {
+                    addmendian(this.ruleForm).then(res => {
+                        if (res.code === 1) {
+                            this.$message.success('门店添加成功！')
+                            if (!st) {
+                                this.goBack()
+                            } else {
+                                this.ruleForm = {
+                                    introduction: '',
+                                    status: 0,//默认休息中
+                                    name: '',
+                                    id: '',
+                                }
+                            }
+                        } else {
+                            this.$message.error(res.msg || '操作失败')
+                        }
+                    }).catch(err => {
+                        this.$message.error('请求出错了：' + err)
+                    })
+                } else {
+
+                    editmendian(this.ruleForm).then(res => {
+                        if (res.code === 1) {
+                            this.$message.success('门店信息修改成功！')
+                            this.goBack()
+                        } else {
+                            this.$message.error(res.msg || '操作失败')
+                        }
+                    }).catch(err => {
+                        this.$message.error('请求出错了：' + err)
+                    })
+                }
+            },
+            goBack(){
+                window.parent.menuHandle({
+                    id: '567433342',
+                    url: '/backend/page/mendian/list.html',
+                    name: '门店管理',
+                    meta:[1]
+                },false)
+            }
+        }
+    })
+</script>
+</body>
+</html>

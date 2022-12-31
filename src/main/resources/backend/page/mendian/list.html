@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!--
+    1.返回数据
+    tableData{id,name,introduction,status}
+  -->
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
+  <link rel="stylesheet" href="../../styles/common.css" />
+  <link rel="stylesheet" href="../../styles/page.css" />
+  <style>
+    #mendian-app  .notAdmin::after{
+      border: 0 !important;
+
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard-container" id="mendian-app">
+  <div class="container">
+    <div class="tableBar">
+      <el-input
+              v-model="input"
+              placeholder="请输入门店名"
+              style="width: 250px"
+              clearable
+              @keyup.enter.native="handleQuery"
+      >
+        <i
+                slot="prefix"
+                class="el-input__icon el-icon-search"
+                style="cursor: pointer"
+                @click="handleQuery"
+        ></i>
+      </el-input>
+      <el-button
+              type="primary"
+              @click="addMemberHandle('add')"
+      >
+        + 添加门店
+      </el-button>
+    </div>
+    <el-table
+            :data="tableData"
+            stripe
+            class="tableBox"
+    >
+      <el-table-column
+              prop="name"
+              label="门店名"
+      ></el-table-column>
+      <el-table-column
+              prop="introduction"
+              label="门店简介"
+      ></el-table-column>
+
+      <el-table-column label="门店状态">
+        <template slot-scope="scope">
+          {{ String(scope.row.status) === '0' ? '休息中' : '正在营业' }}
+        </template>
+      </el-table-column>
+      <el-table-column
+              label="操作"
+              width="160"
+              align="center"
+      >
+        <template slot-scope="scope">
+          <el-button
+                  type="text"
+                  size="small"
+                  class="blueBug"
+                  @click="addMemberHandle(scope.row.id)"
+                  :class="{notAdmin:user !== 'admin'}"
+          >
+            编辑
+          </el-button>
+          <el-button
+                  type="text"
+                  size="small"
+                  class="delBut non"
+                  @click="statusHandle(scope.row)"
+                  v-if="user === 'admin'"
+          >
+            {{ scope.row.status == '1' ? '休息' : '营业' }}
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+            class="pageList"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="counts"
+            :current-page.sync="page"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+    ></el-pagination>
+  </div>
+</div>
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="../../plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../plugins/element-ui/index.js"></script>
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script>
+  new Vue({
+    el: '#mendian-app',
+    data() {
+      return {
+        input: '',
+        counts: 0,
+        page: 1,
+        pageSize: 10,
+        tableData : [],
+        id : '',
+        status : '',
+        token:'',
+        userInfo:{},
+      }
+    },
+    computed: {},
+    created() {
+      //存入对象
+      this.userInfo = JSON.parse(localStorage.getItem('userInfo'))
+      this.token = localStorage.getItem('token')
+      const userInfo = window.localStorage.getItem('userInfo')
+      if (userInfo){
+        if (this.userInfo.permissions===1){
+          //获取门店列表数据
+          this.init()
+        }else {
+          this.$message.error("非超级管理员,禁止访问")
+          window.location.href= '../../index.html'
+        }
+      }else {
+        this.$message.error("身份异常")
+        window.location.href= '../../index.html'
+      }
+
+    },
+    mounted() {
+    },
+    methods: {
+      async init () {
+        const params = {
+          page: this.page,
+          pageSize: this.pageSize,
+          name: this.input ? this.input : undefined
+        }
+        await getMemberList(params).then(res => {
+          if (String(res.code) === '1') {
+            this.tableData = res.data.records || []
+            this.counts = res.data.total
+          }
+        }).catch(err => {
+          this.$message.error('请求出错了：' + err)
+        })
+      },
+      handleQuery() {//搜索
+        this.page = 1;
+        this.init();
+      },
+      // 添加
+      addMemberHandle (st) {
+        if (st === 'add'){
+          window.parent.menuHandle({
+            id: '244411245',
+            url: '/backend/page/mendian/add.html',
+            name: '添加门店',
+            meta:[1]
+          },true)
+        } else {
+          window.parent.menuHandle({//借鉴添加员工,用的父节点里的menuHandle,在index里赋值的
+            id: '4152325233',
+            url: '/backend/page/mendian/add.html?id='+st,
+            name: '修改门店',
+            meta:[1]
+          },true)
+        }
+      },
+      //状态修改
+      statusHandle (row) {
+        this.id = row.id
+        this.status = row.status
+        this.$confirm('确认调整该门店的状态?', '提示', {
+          'confirmButtonText': '确定',
+          'cancelButtonText': '取消',
+          'type': 'warning'
+        }).then(() => {
+          enableOrDisableEmployee({ 'id': this.id, 'status': !this.status ? 1 : 0 }).then(res => {
+            console.log('enableOrDisableEmployee',res)
+            if (String(res.code) === '1') {
+              this.$message.success('门店状态更改成功！')
+              this.handleQuery()
+            }
+          }).catch(err => {
+            this.$message.error('请求出错了：' + err)
+          })
+        })
+      },
+      handleSizeChange (val) {
+        this.pageSize = val
+        this.init()
+      },
+      handleCurrentChange (val) {
+        this.page = val
+        this.init()
+      }
+    }
+  })
+</script>
+</body>
+</html>
