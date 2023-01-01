@@ -28,6 +28,7 @@ public class Store implements Serializable {
 
     private LocalDateTime storeCreateTime;
 
+
     private LocalDateTime storeUpdataTime;
 
     @TableField(fill = FieldFill.INSERT)

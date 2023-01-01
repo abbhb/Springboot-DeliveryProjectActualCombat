@@ -2,6 +2,7 @@ package com.qc.ssm.ssmstudy.reggie.test;
 
 import com.qc.ssm.ssmstudy.reggie.entity.Employee;
 import com.qc.ssm.ssmstudy.reggie.mapper.EmployeeMapper;
+import com.qc.ssm.ssmstudy.reggie.service.IStringRedisService;
 import com.qc.ssm.ssmstudy.reggie.utils.PWDMD5;
 import com.qc.ssm.ssmstudy.reggie.utils.RedisOperator;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ public class EmployeeMybatisPlusTest {
     private EmployeeMapper employeeMapper;
 
     @Autowired
-    private RedisOperator redisOperator;
+    private IStringRedisService iStringRedisService;
 
     @Test
     public void testFind(){
@@ -37,23 +38,30 @@ public class EmployeeMybatisPlusTest {
     public void testUpdata(){
 //        int i = employeeMapper.upDataTest();
 //        System.out.println(i);
-        Employee employee = new Employee();
-        employee.setId(1L);
-        employee.setName("admin");
-        employee.setSex("男");
-        employee.setUpdateUser(1L);
-        employee.setVersion(1);
-        employeeMapper.updateById(employee);
+//        Employee employee = new Employee();
+//        employee.setId(1L);
+//        employee.setName("admin");
+//        employee.setSex("男");
+//        employee.setUpdateUser(1L);
+//        employee.setVersion(1);
+//        employeeMapper.updateById(employee);
     }
     @Test
     public void testRedis(){
 //        int i = employeeMapper.upDataTest();
 //        System.out.println(i);
-        String notcunzai = redisOperator.get("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjF9.Yqe1AZGZNLwXVlSTFOuvB27kF51bezdcjck106zbf9M");
-        if (notcunzai!=null){
-
+//        String notcunzai = redisOperator.get("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjF9.Yqe1AZGZNLwXVlSTFOuvB27kF51bezdcjck106zbf9M");
+//        if (notcunzai!=null){
+//
+//        }else {
+//            不存在key
+//        }
+        Long tokenTTL = iStringRedisService.getTokenTTL("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjF9.Yqe1AZGZNLwXVlSTFOuvB27kF51bezdcjck106zbf9M");
+        if (tokenTTL==null){
+            System.out.println("null");
         }else {
-            //不存在key
+            System.out.println("tokenTTL = " + tokenTTL);
         }
+
     }
 }

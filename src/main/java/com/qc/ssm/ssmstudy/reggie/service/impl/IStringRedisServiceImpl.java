@@ -30,4 +30,10 @@ public class IStringRedisServiceImpl implements IStringRedisService {
     public void del(String token) {
         redisTemplate.delete(token);
     }
+
+    @Override
+    public Long getTokenTTL(String tolen) {
+        Long expire = redisTemplate.getExpire(tolen);
+        return expire;
+    }
 }

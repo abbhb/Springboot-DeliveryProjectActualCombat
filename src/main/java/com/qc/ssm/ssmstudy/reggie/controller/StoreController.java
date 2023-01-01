@@ -1,15 +1,15 @@
 package com.qc.ssm.ssmstudy.reggie.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.dto.EmployeeResult;
 import com.qc.ssm.ssmstudy.reggie.dto.StoreResult;
+import com.qc.ssm.ssmstudy.reggie.entity.PageData;
 import com.qc.ssm.ssmstudy.reggie.service.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -21,16 +21,46 @@ public class StoreController {
     @Autowired
     private StoreService storeService;
 
-    @PostMapping("/addmendian")
-    public R<StoreResult> addStore(@RequestBody Map<String, Object> store){
-        String id = (String) store.get("id");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
-        Long idl = null;
-        if (id!=null){
-            idl = Long.valueOf(id);
-        }
-        String name = (String) store.get("name");
-        String introduction = (String) store.get("introduction");
-        Integer status = (Integer) store.get("status");
-        return storeService.addStore(idl,name,introduction,status);
+    @NeedToken
+    @PostMapping("/add")
+    public R<StoreResult> addStore(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
+        String userId = (String) store.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
+        String storeName = (String) store.get("storeName");
+        String storeIntroduction = (String) store.get("storeIntroduction");
+        String storeStatus = (String) store.get("storeStatus");
+        return storeService.addStore(userId,storeName,storeIntroduction,storeStatus,token);
     }
+    @NeedToken
+    @GetMapping("/get")
+    public R<PageData> getStoreList(Integer pageNum, Integer pageSize, String name){
+        log.info("pageNum = {},pageSize = {},name = {}",pageNum,pageSize,name);
+
+        return storeService.getStoreList(pageNum,pageSize,name);
+    }
+    @NeedToken
+    @PostMapping("/updatastorestatus")
+    public R<StoreResult> updataStoreStatus(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
+        String userId = (String) store.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
+        String storeId = (String) store.get("storeId");
+        String storeStatus = (String) store.get("storeStatus");
+        return storeService.updataStoreStatus(userId,storeId,storeStatus,token);
+    }
+    @NeedToken
+    @PostMapping("/updata")
+    public R<StoreResult> updataStore(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
+        String userId = (String) store.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
+        String storeId = (String) store.get("storeId");
+        String storeName = (String) store.get("storeName");
+        String storeIntroduction = (String) store.get("storeIntroduction");
+        String storeStatus = (String) store.get("storeStatus");
+        return storeService.updataStore(userId,storeId,storeName,storeIntroduction,storeStatus,token);
+    }
+    @NeedToken
+    @PostMapping("/deletestore")
+    public R<StoreResult> deleteStore(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
+        String userId = (String) store.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
+        String storeId = (String) store.get("storeId");
+        return storeService.deleteStore(userId,storeId,token);
+    }
+
 }

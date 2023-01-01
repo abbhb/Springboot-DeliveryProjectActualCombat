@@ -11,4 +11,9 @@ public interface EmployeeService extends IService<Employee> {
     R<EmployeeResult> logout(String token);
 
     R<EmployeeResult> loginByToken(String token);
+
+
+    R<EmployeeResult> updataForUser(Long id, String username, String name, String sex, String idNumber, String phone,String token);
+
+    R<EmployeeResult> changePassword(String id, String username, String password, String newpassword, String checknewpassword, String token);
 }

@@ -45,6 +45,25 @@ public class JwtTokenInterceptor extends HandlerInterceptorAdapter {
             }
             System.out.println("authorization = " + authorization);
             String idString = iStringRedisService.getTokenId(authorization);
+            Long tokenTTL = iStringRedisService.getTokenTTL(authorization);
+            if (idString==null){
+                log.info("idString==null");
+                response.setStatus(Code.DEL_TOKEN);
+                return false;
+            }
+            if (tokenTTL==null){
+                log.info("tokenTTL==null");
+                response.setStatus(Code.DEL_TOKEN);
+                return false;
+            }else {
+                if (tokenTTL.intValue()!=-2){
+                    if (tokenTTL.intValue()<=1500){
+                        //一小时内如果访问过需要token的接口且token剩余时间小于1500s的话重置token过期时间为3600s
+                        iStringRedisService.setTokenWithTime(authorization,idString,3600L);
+                    }
+                }
+            }
+
             if (idString!=null){
                 //token存在，放行
             }else {

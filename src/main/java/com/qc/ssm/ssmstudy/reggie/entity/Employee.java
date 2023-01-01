@@ -47,8 +47,8 @@ public class Employee implements Serializable {
     @TableLogic//如果加了这个字段就说明这个表里默认都是假删除，mp自带的删除方法都是改状态为1，默认0是不删除。自定义的mybatis不知道是不是这样
     private Integer isDelete;
 
-    @Version//乐观锁
-    private Integer version;//测试完毕，注解只能通过mybatisplus才生效，通过原来的mybatis不生效，得手写
+//    @Version//乐观锁
+//    private Integer version;//测试完毕，注解只能通过mybatisplus才生效，通过原来的mybatis不生效，得手写,用户信息没必要加锁
 
-    private Integer permissions;//权限，1为admin，2为员工
+    private Integer permissions;//权限，1为admin，2为门店管理员，3为门店员工，2,3必须有对应的门店id
 }

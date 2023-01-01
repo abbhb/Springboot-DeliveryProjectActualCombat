@@ -55,4 +55,50 @@ public class EmployeeController {
         return employeeService.loginByToken(token);
     }
 
+    @NeedToken
+    @PostMapping("/updataforuser")
+    public R<EmployeeResult> updataForUser(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> user){
+        System.out.println("user = " + user);
+        String id = (String) user.get("id");
+        String username = (String) user.get("username");
+        String name = (String) user.get("name");
+        String sex = (String) user.get("sex");
+        String idNumber = (String) user.get("idNumber");
+        String phone = (String) user.get("phone");
+        if (id==null){
+            return R.error("更新失败");
+        }
+        if (username==null){
+            return R.error("更新失败");
+        }
+        if (name==null){
+            return R.error("更新失败");
+        }
+        if (sex==null){
+            return R.error("更新失败");
+        }if (idNumber==null){
+            return R.error("更新失败");
+        }
+        if (phone==null){
+            return R.error("更新失败");
+        }
+        try {
+            return employeeService.updataForUser(Long.valueOf(id),username,name,sex,idNumber,phone,token);
+        }catch (Exception e){
+            return R.error("更新失败");
+        }
+    }
+
+    @PostMapping("/changepassword")
+    public R<EmployeeResult> changePassword(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> user){
+        System.out.println("user = " + user);
+        String id = (String) user.get("id");
+        String username = (String) user.get("username");
+        String password = (String) user.get("password");
+        String newpassword = (String) user.get("newpassword");
+        String checknewpassword = (String) user.get("checknewpassword");
+//        return R.error("Cuowu");
+        return employeeService.changePassword(id,username,password,newpassword,checknewpassword,token);
+    }
+
 }

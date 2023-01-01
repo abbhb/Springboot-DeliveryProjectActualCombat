@@ -31,8 +31,9 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         InterceptorRegistration ir = registry.addInterceptor(jwtTokenInterceptor);
         // 拦截路径，员工请求的路径都拦截
         ir.addPathPatterns("/employee/**");
+        ir.addPathPatterns("/store/**");
         // 不拦截路径，如：注册、登录、忘记密码等
-        ir.excludePathPatterns("/employee/login");//可以直接逗号往后加
+        ir.excludePathPatterns("/employee/login","/employee/logout");//可以直接逗号往后加
     }
 
 }

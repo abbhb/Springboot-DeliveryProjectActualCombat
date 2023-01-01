@@ -6,4 +6,6 @@ public interface IStringRedisService {
     void setTokenWithTime(String token,String value,Long time);
 
     void del(String token);
+
+    Long getTokenTTL(String tolen);
 }
