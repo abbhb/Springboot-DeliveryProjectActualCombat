@@ -3,7 +3,9 @@ package com.qc.ssm.ssmstudy.reggie.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.dto.EmployeeResult;
+import com.qc.ssm.ssmstudy.reggie.dto.StoreResult;
 import com.qc.ssm.ssmstudy.reggie.entity.Employee;
+import com.qc.ssm.ssmstudy.reggie.entity.PageData;
 
 public interface EmployeeService extends IService<Employee> {
     R<EmployeeResult> login(String username, String password);
@@ -16,4 +18,10 @@ public interface EmployeeService extends IService<Employee> {
     R<EmployeeResult> updataForUser(Long id, String username, String name, String sex, String idNumber, String phone,String token);
 
     R<EmployeeResult> changePassword(String id, String username, String password, String newpassword, String checknewpassword, String token);
+
+    R<PageData> getEmployeeList(Integer pageNum, Integer pageSize, String name);
+
+    R<EmployeeResult> updataEmployeeStatus(String userId, String caozuoId, String userStatus, String token);
+
+    R<EmployeeResult> deleteEmployee(String userId, String caozuoId, String token);
 }

@@ -3,7 +3,9 @@ package com.qc.ssm.ssmstudy.reggie.controller;
 import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.dto.EmployeeResult;
+import com.qc.ssm.ssmstudy.reggie.dto.StoreResult;
 import com.qc.ssm.ssmstudy.reggie.entity.Employee;
+import com.qc.ssm.ssmstudy.reggie.entity.PageData;
 import com.qc.ssm.ssmstudy.reggie.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +58,15 @@ public class EmployeeController {
     }
 
     @NeedToken
+    @PostMapping("/updataemployeestatus")
+    public R<EmployeeResult> updataEmployeeStatus(@RequestHeader(value="Authorization", defaultValue = "") String token, @RequestBody Map<String, Object> employee){
+        String userId = (String) employee.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
+        String caozuoId = (String) employee.get("caozuoId");//操作人
+        String userStatus = (String) employee.get("userStatus");
+        return employeeService.updataEmployeeStatus(userId,caozuoId,userStatus,token);
+    }
+
+    @NeedToken
     @PostMapping("/updataforuser")
     public R<EmployeeResult> updataForUser(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> user){
         System.out.println("user = " + user);
@@ -89,6 +100,7 @@ public class EmployeeController {
         }
     }
 
+
     @PostMapping("/changepassword")
     public R<EmployeeResult> changePassword(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> user){
         System.out.println("user = " + user);
@@ -97,8 +109,21 @@ public class EmployeeController {
         String password = (String) user.get("password");
         String newpassword = (String) user.get("newpassword");
         String checknewpassword = (String) user.get("checknewpassword");
-//        return R.error("Cuowu");
         return employeeService.changePassword(id,username,password,newpassword,checknewpassword,token);
     }
 
+    @NeedToken
+    @GetMapping("/get")
+    public R<PageData> getEmployeeList(Integer pageNum, Integer pageSize, String name){
+        log.info("pageNum = {},pageSize = {},name = {}",pageNum,pageSize,name);
+        return employeeService.getEmployeeList(pageNum,pageSize,name);
+    }
+
+    @NeedToken
+    @PostMapping("/deleteemployee")
+    public R<EmployeeResult> deleteEmployee(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> employee){
+        String userId = (String) employee.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
+        String caozuoId = (String) employee.get("caozuoId");//操作人
+        return employeeService.deleteEmployee(userId,caozuoId,token);
+    }
 }

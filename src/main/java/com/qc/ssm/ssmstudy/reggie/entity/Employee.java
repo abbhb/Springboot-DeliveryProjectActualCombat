@@ -51,4 +51,6 @@ public class Employee implements Serializable {
 //    private Integer version;//测试完毕，注解只能通过mybatisplus才生效，通过原来的mybatis不生效，得手写,用户信息没必要加锁
 
     private Integer permissions;//权限，1为admin，2为门店管理员，3为门店员工，2,3必须有对应的门店id
+
+    private Integer storeId;//绑定门店Id，非必要
 }

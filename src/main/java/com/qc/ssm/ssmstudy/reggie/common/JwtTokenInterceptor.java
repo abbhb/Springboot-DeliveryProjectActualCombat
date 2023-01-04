@@ -37,20 +37,23 @@ public class JwtTokenInterceptor extends HandlerInterceptorAdapter {
             //token校验
 
             String authorization =  request.getHeader("Authorization");
+
+            String id =  request.getHeader("userid");//此处id为字符串
+
 //            System.out.println("authorization = " + authorization);
 //            if(redisOperator)
             if (authorization==null){
                 response.setStatus(Code.DEL_TOKEN);
                 return false;
             }
-            System.out.println("authorization = " + authorization);
-            String idString = iStringRedisService.getTokenId(authorization);
-            Long tokenTTL = iStringRedisService.getTokenTTL(authorization);
-            if (idString==null){
-                log.info("idString==null");
+            if (id == null){
                 response.setStatus(Code.DEL_TOKEN);
                 return false;
             }
+            System.out.println("authorization = " + authorization);//将id直接传回
+
+            Long tokenTTL = iStringRedisService.getTokenTTL(authorization);
+
             if (tokenTTL==null){
                 log.info("tokenTTL==null");
                 response.setStatus(Code.DEL_TOKEN);
@@ -59,17 +62,20 @@ public class JwtTokenInterceptor extends HandlerInterceptorAdapter {
                 if (tokenTTL.intValue()!=-2){
                     if (tokenTTL.intValue()<=1500){
                         //一小时内如果访问过需要token的接口且token剩余时间小于1500s的话重置token过期时间为3600s
-                        iStringRedisService.setTokenWithTime(authorization,idString,3600L);
+                        iStringRedisService.setTokenWithTime(authorization,id,3600L);
                     }
+                }else {
+                    log.info("tokenTTL==-2");
+                    response.setStatus(Code.DEL_TOKEN);
+                    return false;
                 }
-            }
-
-            if (idString!=null){
-                //token存在，放行
-            }else {
-                log.info("token拦截器:1");
-                response.setStatus(Code.DEL_TOKEN);
-                return false;
+                if (id!=null||authorization!=null){
+                    //token存在，放行
+                }else {
+                    log.info("token拦截器:1");
+                    response.setStatus(Code.DEL_TOKEN);
+                    return false;
+                }
             }
             return true;
         }

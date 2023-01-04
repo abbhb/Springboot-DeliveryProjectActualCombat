@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.dto.EmployeeResult;
+import com.qc.ssm.ssmstudy.reggie.dto.StoreIdName;
 import com.qc.ssm.ssmstudy.reggie.dto.StoreResult;
 import com.qc.ssm.ssmstudy.reggie.entity.PageData;
 import com.qc.ssm.ssmstudy.reggie.service.StoreService;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -36,6 +38,12 @@ public class StoreController {
         log.info("pageNum = {},pageSize = {},name = {}",pageNum,pageSize,name);
 
         return storeService.getStoreList(pageNum,pageSize,name);
+    }
+
+    @NeedToken
+    @GetMapping("/getstorelistonlyidwithname")
+    public R<List<StoreIdName>> getStoreListOnlyIdWithName(){
+        return storeService.getStoreListOnlyIdWithName();
     }
     @NeedToken
     @PostMapping("/updatastorestatus")
