@@ -23,18 +23,19 @@ public class Store implements Serializable {
 
     private Integer storeStatus;
 
+    @TableField(fill = FieldFill.INSERT)
     @TableLogic
     private Integer isDelete;
-
-    private LocalDateTime storeCreateTime;
-
-
-    private LocalDateTime storeUpdataTime;
-
     @TableField(fill = FieldFill.INSERT)
-    private Long storeCreateUserId;
+    private LocalDateTime createTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Long storeUpdataUserId;
+    private LocalDateTime updateTime;
+
+    @TableField(fill = FieldFill.INSERT)
+    private Long createUser;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Long updateUser;
 
 }

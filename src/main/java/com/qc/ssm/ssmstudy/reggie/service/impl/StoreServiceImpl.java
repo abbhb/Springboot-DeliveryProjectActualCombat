@@ -67,11 +67,11 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
         store.setStoreStatus(Integer.valueOf(storeStatus));
         store.setStoreName(storeName);
         store.setStoreIntroduction(storeIntroductions);
-        store.setStoreCreateTime(LocalDateTime.now());
-        store.setStoreUpdataTime(LocalDateTime.now());
-        store.setStoreCreateUserId(Long.valueOf(userId));
-        store.setStoreUpdataUserId(Long.valueOf(userId));
-        store.setIsDelete(0);
+//        store.setStoreCreateTime(LocalDateTime.now());
+//        store.setStoreUpdataTime(LocalDateTime.now());
+//        store.setStoreCreateUserId(Long.valueOf(userId));
+//        store.setStoreUpdataUserId(Long.valueOf(userId));
+//        store.setIsDelete(0);
         boolean save = storeService.save(store);
         if (save){
             return R.successOnlyMsg("添加成功",Code.SUCCESS);
@@ -94,7 +94,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
         //添加过滤条件
         lambdaQueryWrapper.like(StringUtils.isNotEmpty(name),Store::getStoreName,name);
         //添加排序条件
-        lambdaQueryWrapper.orderByDesc(Store::getStoreCreateTime);//按照创建时间排序
+        lambdaQueryWrapper.orderByDesc(Store::getCreateTime);//按照创建时间排序
         storeService.page(pageInfo,lambdaQueryWrapper);
         PageData<StoreResult> pageData = new PageData<>();
         List<StoreResult> results = new ArrayList<>();
@@ -133,7 +133,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
         updateWrapper.eq(Store::getStoreId,Long.valueOf(storeId));
         Store store = new Store();
         store.setStoreId(Long.valueOf(storeId));
-        store.setStoreUpdataUserId(Long.valueOf(userId));
+//        store.setStoreUpdataUserId(Long.valueOf(userId));
         //状态就两种，不是1就是0
         Integer integer = null;
         if (Integer.valueOf(storeStatus)==0){
@@ -144,7 +144,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
             return R.error("状态错误");
         }
         store.setStoreStatus(integer);
-        store.setStoreUpdataTime(LocalDateTime.now());
+//        store.setStoreUpdataTime(LocalDateTime.now());
         boolean update = storeService.update(store, updateWrapper);
         if (update){
             return R.success("调整成功");
@@ -171,7 +171,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
         updateWrapper.eq(Store::getStoreId,Long.valueOf(storeId));
         Store store = new Store();
         store.setStoreId(Long.valueOf(storeId));
-        store.setStoreUpdataUserId(Long.valueOf(userId));
+//        store.setStoreUpdataUserId(Long.valueOf(userId));
         store.setStoreName(storeName);
         store.setStoreStatus(Integer.valueOf(storeStatus));
         store.setStoreIntroduction(storeIntroduction);
@@ -217,7 +217,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
         if (list!=null){
             for (Store store :
                     list) {
-                StoreIdName storeIdName = new StoreIdName(String.valueOf(store.getStoreId()),store.getStoreName());
+                StoreIdName storeIdName = new StoreIdName(String.valueOf(store.getStoreId()),String.format("%s(ID:%s)",store.getStoreName(),store.getStoreId()));
                 storeIdNames.add(storeIdName);
             }
             return R.success(storeIdNames);

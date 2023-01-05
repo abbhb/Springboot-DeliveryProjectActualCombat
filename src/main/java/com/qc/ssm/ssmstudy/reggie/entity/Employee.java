@@ -3,6 +3,7 @@ package com.qc.ssm.ssmstudy.reggie.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -32,18 +33,20 @@ public class Employee implements Serializable {
     private String idNumber;
 
     private Integer status;
-
+    @TableField(fill = FieldFill.INSERT)//只在插入时填充
     private LocalDateTime createTime;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)//这些注解都是调用basemapper才有用,自己写的sql不会生效，插入和更新时都填充
     private LocalDateTime updateTime;
 
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT)//只在插入时填充
     private Long createUser;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)//这些注解都是调用basemapper才有用,自己写的sql不会生效
+    @TableField(fill = FieldFill.INSERT_UPDATE)//这些注解都是调用basemapper才有用,自己写的sql不会生效，插入和更新时都填充
     private Long updateUser;
 
 
+    @TableField(fill = FieldFill.INSERT)
     @TableLogic//如果加了这个字段就说明这个表里默认都是假删除，mp自带的删除方法都是改状态为1，默认0是不删除。自定义的mybatis不知道是不是这样
     private Integer isDelete;
 
@@ -52,5 +55,5 @@ public class Employee implements Serializable {
 
     private Integer permissions;//权限，1为admin，2为门店管理员，3为门店员工，2,3必须有对应的门店id
 
-    private Integer storeId;//绑定门店Id，非必要
+    private Long storeId;//绑定门店Id，非必要
 }

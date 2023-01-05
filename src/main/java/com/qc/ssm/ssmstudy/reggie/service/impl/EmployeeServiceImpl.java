@@ -8,36 +8,28 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qc.ssm.ssmstudy.reggie.common.Code;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.dto.EmployeeResult;
-import com.qc.ssm.ssmstudy.reggie.dto.StoreResult;
 import com.qc.ssm.ssmstudy.reggie.entity.Employee;
 import com.qc.ssm.ssmstudy.reggie.entity.PageData;
-import com.qc.ssm.ssmstudy.reggie.entity.Store;
 import com.qc.ssm.ssmstudy.reggie.mapper.EmployeeMapper;
 import com.qc.ssm.ssmstudy.reggie.service.EmployeeService;
 import com.qc.ssm.ssmstudy.reggie.service.IStringRedisService;
 import com.qc.ssm.ssmstudy.reggie.utils.JWTUtil;
 import com.qc.ssm.ssmstudy.reggie.utils.PWDMD5;
-import com.qc.ssm.ssmstudy.reggie.utils.RedisOperator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Service
 public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> implements EmployeeService{
-
-
     @Autowired
     private EmployeeMapper employeeMapper;
     @Autowired
     private EmployeeService employeeService;
-
     @Autowired
     private IStringRedisService iStringRedisService;
     @Override
@@ -65,7 +57,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         //jwt生成token，token里面有userid
         String token = JWTUtil.createToken(one.getId());
         iStringRedisService.setTokenWithTime(token, String.valueOf(one.getId()),3600L);
-        EmployeeResult employeeResult = new EmployeeResult(String.valueOf(one.getId()),one.getUsername(),one.getName(),one.getPhone(),one.getSex(),one.getIdNumber(),one.getPermissions(),one.getStatus(),one.getStoreId(),token);
+        EmployeeResult employeeResult = new EmployeeResult(String.valueOf(one.getId()),one.getUsername(),one.getName(),one.getPhone(),one.getSex(),one.getIdNumber(),one.getPermissions(),one.getStatus(),String.valueOf(one.getStoreId()),token);
 
         return R.success(employeeResult);
     }
@@ -93,7 +85,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         if (employee==null){
             return R.error(Code.DEL_TOKEN,"token校验失败");
         }
-        EmployeeResult employeeResult = new EmployeeResult(String.valueOf(employee.getId()),employee.getUsername(),employee.getName(),employee.getPhone(),employee.getSex(),employee.getIdNumber(),employee.getPermissions(),employee.getStatus(),employee.getStoreId(),token);
+        EmployeeResult employeeResult = new EmployeeResult(String.valueOf(employee.getId()),employee.getUsername(),employee.getName(),employee.getPhone(),employee.getSex(),employee.getIdNumber(),employee.getPermissions(),employee.getStatus(),String.valueOf(employee.getStoreId()),token);
         return R.success(employeeResult);
     }
 
@@ -110,7 +102,8 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
 
         Employee employee = new Employee();
         employee.setId(id);
-        employee.setUpdateUser(id);
+//        employee.setUpdateUser(id);
+
         employee.setSex(sex);
         employee.setName(name);
         employee.setPhone(phone);
@@ -171,7 +164,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         employee.setUsername(username);
         employee.setPassword(newMD5Password);
         employee.setSalt(newSalt);
-        employee.setUpdateUser(Long.valueOf(id));
+//        employee.setUpdateUser(Long.valueOf(id));
         //操作数据库更新密码和盐
         boolean update = employeeService.update(employee, lambdaUpdateWrapper);
         if (update){
@@ -196,13 +189,13 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         //添加过滤条件
         lambdaQueryWrapper.like(StringUtils.isNotEmpty(name),Employee::getName,name);
         //添加排序条件
-        lambdaQueryWrapper.orderByDesc(Employee::getCreateTime);//按照创建时间排序
+        lambdaQueryWrapper.orderByAsc(Employee::getCreateTime);//按照创建时间排序
         employeeService.page(pageInfo,lambdaQueryWrapper);
         PageData<EmployeeResult> pageData = new PageData<>();
         List<EmployeeResult> results = new ArrayList<>();
         for (Object employee : pageInfo.getRecords()) {
             Employee employee1 = (Employee) employee;
-            EmployeeResult employeeResult = new EmployeeResult(String.valueOf(employee1.getId()),employee1.getUsername(),employee1.getName(),employee1.getPhone(),employee1.getSex(),employee1.getIdNumber(),employee1.getPermissions(),employee1.getStatus(),employee1.getStoreId(),null);
+            EmployeeResult employeeResult = new EmployeeResult(String.valueOf(employee1.getId()),employee1.getUsername(),employee1.getName(),employee1.getPhone(),employee1.getSex(),employee1.getIdNumber(),employee1.getPermissions(),employee1.getStatus(),String.valueOf(employee1.getStoreId()),null);
             results.add(employeeResult);
         }
         pageData.setPages(pageInfo.getPages());
@@ -235,14 +228,14 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         }else if (userStatus.equals("0")){
             status = 1;
         }else {
-            log.info(status+"");
+//            log.info(status+"");
         }
         LambdaUpdateWrapper<Employee> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Employee::getId,Long.valueOf(userId));
         Employee employee = new Employee();
         employee.setId(Long.valueOf(userId));
         employee.setStatus(status);
-        employee.setUpdateUser(Long.valueOf(caozuoId));
+//        employee.setUpdateUser(Long.valueOf(caozuoId));
         boolean update = employeeService.update(employee, updateWrapper);
         if (update){
             return R.success("更改成功");
@@ -266,6 +259,145 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         }
 
         return R.error("系统异常,请刷新重试!");
+    }
+
+    @Override
+    public R<EmployeeResult> updataEmployee(String caozuoId, String userid,String name, String username, String phone, String idNumber, String status, String permissions, String storeId, String sex, String token) {
+        if (token==null){
+            return R.error(Code.DEL_TOKEN,"环境异常,强制下线");
+        }
+        if (caozuoId==null){
+            iStringRedisService.del(token);
+            return R.error(Code.DEL_TOKEN,"环境异常,强制下线");
+        }
+        if (userid==null){
+            return R.error("传参异常(id)");
+        }
+        if (name==null){
+            return R.error("名字不能为空");
+        }
+        if (username==null){
+            return R.error("用户名不能为空");
+        }
+        if (phone==null){
+            return R.error("手机号不能为空");
+        }
+        if (idNumber==null){
+            return R.error("身份证号不能为空");
+        }
+        if (status==null){
+            return R.error("状态不能为空");
+        }
+        if (permissions==null){
+            return R.error("权限不能为空");
+        }
+        if (sex==null){
+            return R.error("性别不能为空");
+        }
+        log.info(permissions.getClass().getName()+"+"+permissions);
+        if (Integer.valueOf(permissions)!=1){
+            if (storeId==null){
+                return R.error("当前权限必须绑定门店");
+            }
+            if (storeId.equals("null")){
+                return R.error("当前权限必须绑定门店");
+            }
+        }
+        LambdaUpdateChainWrapper<Employee> employeeLambdaUpdateChainWrapper = new LambdaUpdateChainWrapper<>(employeeMapper);
+        LambdaUpdateWrapper<Employee> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Employee::getId,Long.valueOf(userid));
+        Employee employee = new Employee();
+        employee.setId(Long.valueOf(userid));
+        employee.setName(name);
+        employee.setUsername(username);
+        employee.setPhone(phone);
+        employee.setStatus(Integer.valueOf(status));
+        employee.setSex(sex);
+//        employee.setUpdateUser(Long.valueOf(caozuoId));
+        employee.setIdNumber(idNumber);
+        employee.setPermissions(Integer.valueOf(permissions));
+        if (Integer.valueOf(permissions)==1){
+            updateWrapper.set(Employee::getStoreId,null);
+        }else {
+            employee.setStoreId(Long.valueOf(storeId));
+        }
+        boolean update = employeeService.update(employee, updateWrapper);
+        if (update){
+            return R.success("更新成功");
+        }
+        return R.error("更新失败");
+    }
+
+    @Override
+    public R<EmployeeResult> addEmployee(String caozuoId, String name, String username, String password, String phone, String idNumber, String status, String permissions, String storeId, String sex, String token) {
+        if (token==null){
+            return R.error(Code.DEL_TOKEN,"环境异常,强制下线");
+        }
+        if (caozuoId==null){
+            iStringRedisService.del(token);
+            return R.error(Code.DEL_TOKEN,"环境异常,强制下线");
+        }
+        if (password==null){
+            return R.error("必须赋予初始密码");
+        }
+        if (name==null){
+            return R.error("名字不能为空");
+        }
+        if (username==null){
+            return R.error("用户名不能为空");
+        }
+        if (phone==null){
+            return R.error("手机号不能为空");
+        }
+        if (idNumber==null){
+            return R.error("身份证号不能为空");
+        }
+        if (status==null){
+            return R.error("状态不能为空");
+        }
+        if (permissions==null){
+            return R.error("权限不能为空");
+        }
+        if (sex==null){
+            return R.error("性别不能为空");
+        }
+        log.info(permissions.getClass().getName()+"+"+permissions);
+        if (Integer.valueOf(permissions)!=1){
+            if (storeId==null){
+                return R.error("当前权限必须绑定门店");
+            }
+            if (storeId.equals("null")){
+                return R.error("当前权限必须绑定门店");
+            }
+        }
+        String salt = PWDMD5.getSalt();
+        String md5Encryption = PWDMD5.getMD5Encryption(password, salt);
+        Employee employee = new Employee();
+        employee.setUsername(username);
+        employee.setName(name);
+        employee.setIdNumber(idNumber);
+        employee.setPhone(phone);
+        employee.setSex(sex);
+        employee.setPermissions(Integer.valueOf(permissions));
+        //自动填充
+//        employee.setIsDelete(Integer.valueOf(0));
+//        employee.setCreateUser(Long.valueOf(caozuoId));
+//        employee.setUpdateUser(Long.valueOf(caozuoId));
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
+        employee.setPassword(md5Encryption);
+        employee.setSalt(salt);
+        employee.setStatus(Integer.valueOf(status));
+        if (Integer.valueOf(permissions)==1){
+            //默认就是null
+        }else {
+            employee.setStoreId(Long.valueOf(storeId));
+        }
+        boolean save = employeeService.save(employee);
+        if (save){
+            return R.success("添加成功");
+        }
+        return R.error("创建失败");
     }
 
 

@@ -25,12 +25,12 @@ public class StoreController {
 
     @NeedToken
     @PostMapping("/add")
-    public R<StoreResult> addStore(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
-        String userId = (String) store.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
+    public R<StoreResult> addStore(@RequestHeader(value="userid", defaultValue = "") String caozuoId,@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
+//        String userId = (String) store.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
         String storeName = (String) store.get("storeName");
         String storeIntroduction = (String) store.get("storeIntroduction");
         String storeStatus = (String) store.get("storeStatus");
-        return storeService.addStore(userId,storeName,storeIntroduction,storeStatus,token);
+        return storeService.addStore(caozuoId,storeName,storeIntroduction,storeStatus,token);
     }
     @NeedToken
     @GetMapping("/get")
@@ -47,28 +47,28 @@ public class StoreController {
     }
     @NeedToken
     @PostMapping("/updatastorestatus")
-    public R<StoreResult> updataStoreStatus(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
-        String userId = (String) store.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
+    public R<StoreResult> updataStoreStatus(@RequestHeader(value="userid", defaultValue = "") String caozuoId,@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
+//        String userId = (String) store.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
         String storeId = (String) store.get("storeId");
         String storeStatus = (String) store.get("storeStatus");
-        return storeService.updataStoreStatus(userId,storeId,storeStatus,token);
+        return storeService.updataStoreStatus(caozuoId,storeId,storeStatus,token);
     }
     @NeedToken
     @PostMapping("/updata")
-    public R<StoreResult> updataStore(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
-        String userId = (String) store.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
+    public R<StoreResult> updataStore(@RequestHeader(value="userid", defaultValue = "") String caozuoId,@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
+//        String userId = (String) store.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
         String storeId = (String) store.get("storeId");
         String storeName = (String) store.get("storeName");
         String storeIntroduction = (String) store.get("storeIntroduction");
         String storeStatus = (String) store.get("storeStatus");
-        return storeService.updataStore(userId,storeId,storeName,storeIntroduction,storeStatus,token);
+        return storeService.updataStore(caozuoId,storeId,storeName,storeIntroduction,storeStatus,token);
     }
     @NeedToken
     @PostMapping("/deletestore")
-    public R<StoreResult> deleteStore(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
-        String userId = (String) store.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
+    public R<StoreResult> deleteStore(@RequestHeader(value="userid", defaultValue = "") String caozuoId,@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
+//        String userId = (String) store.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
         String storeId = (String) store.get("storeId");
-        return storeService.deleteStore(userId,storeId,token);
+        return storeService.deleteStore(caozuoId,storeId,token);
     }
 
 }

@@ -113,6 +113,44 @@ public class EmployeeController {
     }
 
     @NeedToken
+    @PostMapping("/updataemployee")
+    public R<EmployeeResult> updataEmployee(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestHeader(value="userid", defaultValue = "") String caozuoId,@RequestBody Map<String, Object> employee){
+//        String userId = (String) employee.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
+       // caozuoId//操作者id
+//        return employeeService.deleteEmployee(userId,caozuoId,token);
+       // return employeeService.updataEmployee(caozuoId,)
+        log.info(employee.toString());
+        String name = (String) employee.get("name");
+
+        String username = (String) employee.get("username");
+        String phone = (String) employee.get("phone");
+        String idNumber = (String) employee.get("idNumber");
+        String status = (String) employee.get("status");
+        String permissions = (String) employee.get("permissions");
+        String storeId = (String) employee.get("storeId");
+        String sex = (String) employee.get("sex");
+        String userid = (String) employee.get("userid");
+        return employeeService.updataEmployee(caozuoId,userid,name,username,phone,idNumber,status,permissions,storeId,sex,token);
+    }
+
+    @NeedToken
+    @PostMapping("/add")
+    public R<EmployeeResult> addEmployee(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestHeader(value="userid", defaultValue = "") String caozuoId,@RequestBody Map<String, Object> employee){
+        log.info(employee.toString());
+        String name = (String) employee.get("name");
+        String username = (String) employee.get("username");
+        String password = (String) employee.get("password");//前端传回的未加密的密码
+        String phone = (String) employee.get("phone");
+        String idNumber = (String) employee.get("idNumber");
+        String status = (String) employee.get("status");
+        String permissions = (String) employee.get("permissions");
+        String storeId = (String) employee.get("storeId");
+        String sex = (String) employee.get("sex");
+        //String userid = (String) employee.get("userid");//员工id由雪花算法生成
+        return employeeService.addEmployee(caozuoId,name,username,password,phone,idNumber,status,permissions,storeId,sex,token);
+    }
+
+    @NeedToken
     @GetMapping("/get")
     public R<PageData> getEmployeeList(Integer pageNum, Integer pageSize, String name){
         log.info("pageNum = {},pageSize = {},name = {}",pageNum,pageSize,name);
@@ -121,9 +159,8 @@ public class EmployeeController {
 
     @NeedToken
     @PostMapping("/deleteemployee")
-    public R<EmployeeResult> deleteEmployee(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> employee){
+    public R<EmployeeResult> deleteEmployee(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestHeader(value="userid", defaultValue = "") String caozuoId,@RequestBody Map<String, Object> employee){
         String userId = (String) employee.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
-        String caozuoId = (String) employee.get("caozuoId");//操作人
         return employeeService.deleteEmployee(userId,caozuoId,token);
     }
 }
