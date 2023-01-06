@@ -25,7 +25,11 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         metaObject.setValue("updateUser",userId);
         metaObject.setValue("createTime", LocalDateTime.now());
         metaObject.setValue("updateTime",LocalDateTime.now());
-        metaObject.setValue("isDelete",Integer.valueOf(0));//刚插入默认都是不删除的
+        metaObject.setValue("isDeleted",Integer.valueOf(0));//刚插入默认都是不删除的
+        if (metaObject.hasSetter("version")){
+            metaObject.setValue("version",Integer.valueOf(0));
+        }
+
     }
 
     @Override

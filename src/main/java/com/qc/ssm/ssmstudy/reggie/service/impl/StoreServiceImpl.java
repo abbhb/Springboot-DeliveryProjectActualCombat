@@ -6,10 +6,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qc.ssm.ssmstudy.reggie.common.Code;
 import com.qc.ssm.ssmstudy.reggie.common.R;
-import com.qc.ssm.ssmstudy.reggie.dto.StoreIdName;
-import com.qc.ssm.ssmstudy.reggie.dto.StoreResult;
-import com.qc.ssm.ssmstudy.reggie.entity.PageData;
-import com.qc.ssm.ssmstudy.reggie.entity.Store;
+import com.qc.ssm.ssmstudy.reggie.pojo.StoreIdName;
+import com.qc.ssm.ssmstudy.reggie.pojo.StoreResult;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.Store;
 import com.qc.ssm.ssmstudy.reggie.mapper.StoreMapper;
 import com.qc.ssm.ssmstudy.reggie.service.IStringRedisService;
 import com.qc.ssm.ssmstudy.reggie.service.StoreService;
@@ -18,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -223,5 +222,24 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
             return R.success(storeIdNames);
         }
         return R.error("获取失败");
+    }
+
+
+
+    @Override
+    public R<StoreResult> getStoreById(String storeid) {
+        LambdaQueryWrapper<Store> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.select(Store::getStoreId,Store::getStoreName,Store::getStoreIntroduction,Store::getStoreStatus);
+        queryWrapper.eq(Store::getStoreId,Long.valueOf(storeid));
+        Store store = storeService.getOne(queryWrapper);
+        if (store==null){
+            return R.error("查询失败");
+        }
+        StoreResult storeResult = new StoreResult();
+        storeResult.setId(String.valueOf(store.getStoreId()));
+        storeResult.setName(store.getStoreName());
+        storeResult.setStatus(store.getStoreStatus());
+        storeResult.setIntroduction(store.getStoreIntroduction());
+        return R.success(storeResult);
     }
 }

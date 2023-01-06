@@ -2,18 +2,14 @@ package com.qc.ssm.ssmstudy.reggie.controller;
 
 import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
-import com.qc.ssm.ssmstudy.reggie.dto.EmployeeResult;
-import com.qc.ssm.ssmstudy.reggie.dto.StoreResult;
-import com.qc.ssm.ssmstudy.reggie.entity.Employee;
-import com.qc.ssm.ssmstudy.reggie.entity.PageData;
+import com.qc.ssm.ssmstudy.reggie.pojo.EmployeeResult;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
 import com.qc.ssm.ssmstudy.reggie.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * RestController:包含了@ResponseBody @Controller 两个注解

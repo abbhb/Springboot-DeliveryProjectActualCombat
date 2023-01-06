@@ -1,12 +1,10 @@
 package com.qc.ssm.ssmstudy.reggie.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
-import com.qc.ssm.ssmstudy.reggie.dto.EmployeeResult;
-import com.qc.ssm.ssmstudy.reggie.dto.StoreIdName;
-import com.qc.ssm.ssmstudy.reggie.dto.StoreResult;
-import com.qc.ssm.ssmstudy.reggie.entity.PageData;
+import com.qc.ssm.ssmstudy.reggie.pojo.StoreIdName;
+import com.qc.ssm.ssmstudy.reggie.pojo.StoreResult;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
 import com.qc.ssm.ssmstudy.reggie.service.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +67,21 @@ public class StoreController {
 //        String userId = (String) store.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
         String storeId = (String) store.get("storeId");
         return storeService.deleteStore(caozuoId,storeId,token);
+    }
+
+//    //后期加权限注解
+//    @NeedToken
+//    @PostMapping("/getliststore")
+//    public R<List<StoreResult>> getListStoreForSelect(@RequestHeader(value="userid", defaultValue = "") String caozuoId,@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
+//        return storeService.getListStoreForSelect();
+//    }
+
+    //后期加权限注解
+    @NeedToken
+    @PostMapping("/getstorebyid")
+    public R<StoreResult> getStoreById(@RequestHeader(value="userid", defaultValue = "") String caozuoId,@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){
+        String storeid = (String) store.get("storeid");
+        return storeService.getStoreById(storeid);
     }
 
 }

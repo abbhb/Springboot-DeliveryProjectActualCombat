@@ -1,10 +1,9 @@
 package com.qc.ssm.ssmstudy.reggie.test;
 
-import com.qc.ssm.ssmstudy.reggie.entity.Employee;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.Employee;
 import com.qc.ssm.ssmstudy.reggie.mapper.EmployeeMapper;
 import com.qc.ssm.ssmstudy.reggie.service.IStringRedisService;
 import com.qc.ssm.ssmstudy.reggie.utils.PWDMD5;
-import com.qc.ssm.ssmstudy.reggie.utils.RedisOperator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

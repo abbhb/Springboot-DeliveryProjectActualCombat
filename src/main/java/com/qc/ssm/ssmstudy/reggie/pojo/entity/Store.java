@@ -1,4 +1,4 @@
-package com.qc.ssm.ssmstudy.reggie.entity;
+package com.qc.ssm.ssmstudy.reggie.pojo.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -25,7 +25,7 @@ public class Store implements Serializable {
 
     @TableField(fill = FieldFill.INSERT)
     @TableLogic
-    private Integer isDelete;
+    private Integer isDeleted;
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 

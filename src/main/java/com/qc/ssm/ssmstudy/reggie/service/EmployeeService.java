@@ -2,10 +2,9 @@ package com.qc.ssm.ssmstudy.reggie.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.qc.ssm.ssmstudy.reggie.common.R;
-import com.qc.ssm.ssmstudy.reggie.dto.EmployeeResult;
-import com.qc.ssm.ssmstudy.reggie.dto.StoreResult;
-import com.qc.ssm.ssmstudy.reggie.entity.Employee;
-import com.qc.ssm.ssmstudy.reggie.entity.PageData;
+import com.qc.ssm.ssmstudy.reggie.pojo.EmployeeResult;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.Employee;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
 
 public interface EmployeeService extends IService<Employee> {
     R<EmployeeResult> login(String username, String password);

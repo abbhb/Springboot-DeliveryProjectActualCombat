@@ -1,12 +1,11 @@
 package com.qc.ssm.ssmstudy.reggie.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.qc.ssm.ssmstudy.reggie.common.R;
-import com.qc.ssm.ssmstudy.reggie.dto.StoreIdName;
-import com.qc.ssm.ssmstudy.reggie.dto.StoreResult;
-import com.qc.ssm.ssmstudy.reggie.entity.PageData;
-import com.qc.ssm.ssmstudy.reggie.entity.Store;
+import com.qc.ssm.ssmstudy.reggie.pojo.StoreIdName;
+import com.qc.ssm.ssmstudy.reggie.pojo.StoreResult;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.Store;
 
 import java.util.List;
 
@@ -23,4 +22,7 @@ public interface StoreService extends IService<Store> {
     R<StoreResult> deleteStore(String userId, String storeId, String token);
 
     R<List<StoreIdName>> getStoreListOnlyIdWithName();
+
+
+    R<StoreResult> getStoreById(String storeid);
 }

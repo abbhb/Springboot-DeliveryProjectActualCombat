@@ -1,4 +1,4 @@
-package com.qc.ssm.ssmstudy.reggie.dto;
+package com.qc.ssm.ssmstudy.reggie.pojo;
 
 import lombok.Data;
 

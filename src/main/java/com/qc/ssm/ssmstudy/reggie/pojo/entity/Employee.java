@@ -1,4 +1,4 @@
-package com.qc.ssm.ssmstudy.reggie.entity;
+package com.qc.ssm.ssmstudy.reggie.pojo.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
@@ -47,8 +47,8 @@ public class Employee implements Serializable {
 
 
     @TableField(fill = FieldFill.INSERT)
-    @TableLogic//如果加了这个字段就说明这个表里默认都是假删除，mp自带的删除方法都是改状态为1，默认0是不删除。自定义的mybatis不知道是不是这样
-    private Integer isDelete;
+    @TableLogic//如果加了这个字段就说明这个表里默认都是假删除，mp自带的删除方法都是改状态为1，默认0是不删除。自定义的mybatis得自己写
+    private Integer isDeleted;
 
 //    @Version//乐观锁
 //    private Integer version;//测试完毕，注解只能通过mybatisplus才生效，通过原来的mybatis不生效，得手写,用户信息没必要加锁
