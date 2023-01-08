@@ -61,5 +61,5 @@ public class DishResult implements Serializable {
     
     private Integer version;
 
-    private List<DishFlavorResult> dishFlavorResultList;
+    private List dishFlavors;//不能指定DishFlavorResult
 }
