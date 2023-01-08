@@ -27,12 +27,20 @@ public class R<T> {
         return r;
     }
 
+    public static <T> R<T> successOnlyObject(T object) {
+        R<T> r = new R<T>();
+        r.data = object;
+        r.code = 1;
+        return r;
+    }
     public static <T> R<T> success(String msg) {
         R<T> r = new R<T>();
         r.msg = msg;
         r.code = 1;
         return r;
     }
+
+
 
     public static <T> R<T> successOnlyMsg(String msg,Integer code) {
         R<T> r = new R<T>();

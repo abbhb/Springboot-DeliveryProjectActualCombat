@@ -2,7 +2,7 @@ package com.qc.ssm.ssmstudy.reggie.controller;
 
 import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
-import com.qc.ssm.ssmstudy.reggie.pojo.StoreIdName;
+import com.qc.ssm.ssmstudy.reggie.pojo.ValueLabelResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.StoreResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
 import com.qc.ssm.ssmstudy.reggie.service.StoreService;
@@ -40,7 +40,7 @@ public class StoreController {
 
     @NeedToken
     @GetMapping("/getstorelistonlyidwithname")
-    public R<List<StoreIdName>> getStoreListOnlyIdWithName(){
+    public R<List<ValueLabelResult>> getStoreListOnlyIdWithName(){
         return storeService.getStoreListOnlyIdWithName();
     }
     @NeedToken

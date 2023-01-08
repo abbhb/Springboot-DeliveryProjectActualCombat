@@ -5,6 +5,8 @@ import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.pojo.EmployeeResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
 import com.qc.ssm.ssmstudy.reggie.service.EmployeeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +30,15 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("/employee")
+@RequestMapping(value = "/employee")
+@Api(value = "employee-controller")
 public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
 
     @PostMapping("/login")
+    @ApiOperation(value = "员工登录接口")
     public R<EmployeeResult> login(@RequestBody Map<String, Object> user){
         System.out.println("user = " + user);
         String username = (String) user.get("username");

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qc.ssm.ssmstudy.reggie.common.Code;
 import com.qc.ssm.ssmstudy.reggie.common.R;
-import com.qc.ssm.ssmstudy.reggie.pojo.StoreIdName;
+import com.qc.ssm.ssmstudy.reggie.pojo.ValueLabelResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.StoreResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.Store;
@@ -208,15 +208,15 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
     }
 
     @Override
-    public R<List<StoreIdName>> getStoreListOnlyIdWithName() {
+    public R<List<ValueLabelResult>> getStoreListOnlyIdWithName() {
         LambdaQueryWrapper<Store> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.select(Store::getStoreId,Store::getStoreName);
         List<Store> list = storeService.list(queryWrapper);
-        List<StoreIdName> storeIdNames = new ArrayList<>();
+        List<ValueLabelResult> storeIdNames = new ArrayList<>();
         if (list!=null){
             for (Store store :
                     list) {
-                StoreIdName storeIdName = new StoreIdName(String.valueOf(store.getStoreId()),String.format("%s(ID:%s)",store.getStoreName(),store.getStoreId()));
+                ValueLabelResult storeIdName = new ValueLabelResult(String.valueOf(store.getStoreId()),String.format("%s(ID:%s)",store.getStoreName(),store.getStoreId()));
                 storeIdNames.add(storeIdName);
             }
             return R.success(storeIdNames);

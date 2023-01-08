@@ -2,6 +2,7 @@ package com.qc.ssm.ssmstudy.reggie.controller;
 
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.pojo.CategoryResult;
+import com.qc.ssm.ssmstudy.reggie.pojo.ValueLabelResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.Category;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
 import com.qc.ssm.ssmstudy.reggie.service.CategoryService;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController//@ResponseBody+@Controller
@@ -76,5 +78,16 @@ public class CategoryController {
     public R<String> deleteCategory(@RequestBody Map<String, Object> category){
         String id = (String) category.get("id");//唯一的，不用再去判断门店了
         return categoryService.deleteCategory(id);
+    }
+
+    /**
+     * 获取分类列表
+     * @return
+     */
+    @PostMapping("/getcategorylablevaluelist")
+    public R<List<ValueLabelResult>> getCategoryLableValueList(@RequestBody Map<String, Object> category){
+        String storeId = (String) category.get("storeId");
+        String type = (String) category.get("type");
+        return categoryService.getCategoryLableValueList(storeId,type);
     }
 }

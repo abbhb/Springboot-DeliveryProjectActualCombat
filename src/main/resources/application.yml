@@ -20,4 +20,13 @@ mybatis-plus:
     db-config:
       id-type: ASSIGN_ID
 
-      
+
+# ====================== ↓↓↓↓↓↓ MinIO文件服务器 ↓↓↓↓↓↓ ======================
+minio:
+  url: http://192.168.220.135:9000
+  accessKey: reggit
+  secretKey: 12345678
+  bucketName: reggit
+# ====================== ↓↓↓↓↓↓ 私有配置 ↓↓↓↓↓↓ ======================
+privateconfig:
+  companyName: "瑞吉外卖"

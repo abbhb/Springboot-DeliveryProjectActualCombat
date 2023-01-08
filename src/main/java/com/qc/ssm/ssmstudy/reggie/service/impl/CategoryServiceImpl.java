@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qc.ssm.ssmstudy.reggie.common.CustomException;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.pojo.CategoryResult;
+import com.qc.ssm.ssmstudy.reggie.pojo.ValueLabelResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.Category;
 import com.qc.ssm.ssmstudy.reggie.mapper.CategoryMapper;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.Dish;
@@ -130,5 +131,30 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
             return R.success("更新成功");
         }
         return R.error("服务异常");
+    }
+
+    @Override
+    public R<List<ValueLabelResult>> getCategoryLableValueList(String storeId,String type) {
+        if (!StringUtils.isNotEmpty(storeId)){
+            return R.error("参数异常");
+        }
+        if (!StringUtils.isNotEmpty(type)){
+            return R.error("参数异常");
+        }
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.select(Category::getId,Category::getName);
+        queryWrapper.eq(Category::getStoreId,Long.valueOf(storeId)).eq(Category::getType,Integer.valueOf(type));
+        List<Category> list = categoryService.list(queryWrapper);
+        if (list==null){
+            return R.error("服务异常");
+        }
+        List<ValueLabelResult> valueLabelResultList = new ArrayList<>();
+        for (Category category :
+                list) {
+            ValueLabelResult valueLabelResult = new ValueLabelResult(String.valueOf(category.getId()),category.getName());
+            valueLabelResultList.add(valueLabelResult);
+        }
+
+        return R.success(valueLabelResultList);
     }
 }
