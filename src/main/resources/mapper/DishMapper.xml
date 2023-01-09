@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qc.ssm.ssmstudy.reggie.mapper.DishMapper">
+<!--这种xml里不要的一定得注释，不写完整也报错-->
+<!--    <resultMap id="DishAndCategoryVOResultMap" type="">-->
+<!--        <id column="id" property="id"></id>-->
+<!--        <result column="name" property="name"></result>-->
+<!--        <result column="category_id" property="categoryId"></result>-->
+<!--        <result column="price" property="price"></result>-->
+<!--        <result column="code" property="code"></result>-->
+<!--        <result column="image" property="image"></result>-->
+<!--        <result column="description" property="description"></result>-->
+<!--        <result column="status" property="status"></result>-->
+<!--        <result column="sort" property="sort"></result>-->
+<!--        <result column="create_time" property="createTime"></result>-->
+<!--        <result column="update_time" property="updateTime"></result>-->
+<!--        <result column="create_user" property="createUser"></result>-->
+<!--        <result column="update_user" property="updateUser"></result>-->
+<!--        <result column="store_id" property="store_id"></result>-->
+<!--        <result column="version" property="version"></result>-->
+<!--        <result column="type" property="type"></result>-->
+<!--        <result column="name" property="name"></result>-->
+<!--        <result column="sort" property="sort"></result>-->
+<!--        <result column="version" property="version"></result>-->
+<!--    </resultMap>-->
+
+    <sql id="alldishandcategory">
+        dish.id,dish.name,dish.category_id,dish.price,dish.code,dish.image,dish.description,dish.status,dish.sort,dish.create_time,dish.update_time,dish.create_user,dish.update_user,dish.store_id,dish.version,category.type as categoryType,category.name as categoryName,category.sort as categorySort,category.version as categoryVersion
+    </sql>
+<!--            IPage<DishAndCategoryVO> getDishAndCategoryVO(Page page, @Param("ew") Wrapper queryWrapper);-->
+    <select id="getDishAndCategoryVO" resultType="com.qc.ssm.ssmstudy.reggie.pojo.vo.DishAndCategoryVO">
+        select <include refid="alldishandcategory"></include> from dish left join category ON dish.category_id = category.id ${ew.customSqlSegment}
+    </select>
+</mapper>

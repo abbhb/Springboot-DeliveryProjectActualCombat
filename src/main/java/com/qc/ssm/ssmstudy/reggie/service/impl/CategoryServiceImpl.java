@@ -80,7 +80,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         categoryResultPageData.setRecords(categoryResults);
         categoryResultPageData.setSize(pageinfo.getSize());
         categoryResultPageData.setCountId(pageinfo.getCountId());
-
+        categoryResultPageData.setMaxLimit(pageinfo.getMaxLimit());
         if (categoryResults!=null){
             return R.success(categoryResultPageData);
         }

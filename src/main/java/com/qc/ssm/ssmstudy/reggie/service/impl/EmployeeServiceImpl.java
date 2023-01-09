@@ -204,6 +204,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         pageData.setCurrent(pageInfo.getCurrent());
         pageData.setSize(pageInfo.getSize());
         pageData.setRecords(results);
+        pageData.setMaxLimit(pageInfo.getMaxLimit());
         return R.success(pageData);
     }
 

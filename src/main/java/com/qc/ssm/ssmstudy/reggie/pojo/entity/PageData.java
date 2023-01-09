@@ -17,5 +17,7 @@ public class PageData<T> implements Serializable {
 
     private Long size;
 
+    private Long MaxLimit;
+
     private Long total;
 }
