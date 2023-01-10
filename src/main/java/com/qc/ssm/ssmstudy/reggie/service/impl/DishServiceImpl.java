@@ -268,6 +268,26 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
         }
 
         //添加口味
+        /**
+         *
+         * 直接改方案，
+         * 直接改方案，
+         * 直接改方案，
+         * 直接改方案，
+         * 直接改方案，
+         * 直接改方案，
+         * 直接改方案，
+         *
+             * 全删口味在新增，不然容易出问题
+             * 全删口味在新增，不然容易出问题
+             * 全删口味在新增，不然容易出问题
+             * 全删口味在新增，不然容易出问题
+             * 全删口味在新增，不然容易出问题
+             * 全删口味在新增，不然容易出问题
+             * 全删口味在新增，不然容易出问题
+         *
+         *
+         */
         for (Object obj:
                 dishResult.getDishFlavors()) {
             Map<String,Object> dishFlavorResult = (Map<String, Object>) obj;
@@ -289,6 +309,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
                 }
             }catch (ClassCastException exception){
                 //异常就说明没有id，就是新增，这里可能不太严谨，后期得细化异常
+                dishFlavor.setDishId(Long.valueOf(dishResult.getId()));
                 boolean save1 = dishFlavorService.save(dishFlavor);
                 if (!save1){
                     throw new CustomException("业务异常");
