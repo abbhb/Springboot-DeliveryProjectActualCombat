@@ -29,6 +29,7 @@
     <sql id="alldishandcategory">
         dish.id,dish.name,dish.category_id,dish.price,dish.code,dish.image,dish.description,dish.status,dish.sort,dish.create_time,dish.update_time,dish.create_user,dish.update_user,dish.store_id,dish.version,category.type as categoryType,category.name as categoryName,category.sort as categorySort,category.version as categoryVersion
     </sql>
+    <!--这里注意，自己写的sql，得注意mp的逻辑删除都不能用,包括增改的自动填充，所以得手写条件-->
 <!--            IPage<DishAndCategoryVO> getDishAndCategoryVO(Page page, @Param("ew") Wrapper queryWrapper);-->
     <select id="getDishAndCategoryVO" resultType="com.qc.ssm.ssmstudy.reggie.pojo.vo.DishAndCategoryVO">
         select <include refid="alldishandcategory"></include> from dish left join category ON dish.category_id = category.id ${ew.customSqlSegment}

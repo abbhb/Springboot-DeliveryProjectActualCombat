@@ -12,4 +12,10 @@ public interface DishService extends IService<Dish> {
     R<String> addDish(DishResult dishResult);
 
     R<PageData<DishAndCategoryResult>> getDish(Integer pageNum,Integer pageSize,Long storeId,String name);
+
+    R<String> updateStatus(String id, String status);
+
+    R<String> deleteDishAndFlavor(String id);
+
+    R<String> editDish(DishResult dishResult);
 }

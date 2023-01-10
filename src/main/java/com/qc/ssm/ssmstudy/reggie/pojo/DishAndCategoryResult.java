@@ -21,7 +21,7 @@ public class DishAndCategoryResult implements Serializable {
     private String categoryId;
 
     //菜品价格
-    private BigDecimal price;
+    private String price;
 
     //商品码
     private String code;

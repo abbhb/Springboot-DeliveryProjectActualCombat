@@ -27,7 +27,7 @@ public class DishResult implements Serializable {
 
 
     //菜品价格
-    private BigDecimal price;
+    private String price;
 
 
     //商品码
@@ -61,5 +61,7 @@ public class DishResult implements Serializable {
     
     private Integer version;
 
+
+    private Integer flavorVersion;
     private List dishFlavors;//不能指定DishFlavorResult
 }
