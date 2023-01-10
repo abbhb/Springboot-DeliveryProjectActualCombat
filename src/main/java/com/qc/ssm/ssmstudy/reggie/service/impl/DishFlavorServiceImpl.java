@@ -54,7 +54,7 @@ public class DishFlavorServiceImpl extends ServiceImpl<DishFlavorMapper, DishFla
             dishFlavorResult.setName(dishFlavor.getName());
             dishFlavorResult.setId(String.valueOf(dishFlavor.getId()));
             dishFlavorResult.setValue(dishFlavor.getValue());
-            dishFlavorResult.setVersion(dishFlavor.getVersion());
+            dishFlavorResult.setVersion(String.valueOf(dishFlavor.getVersion()));
             dishFlavorResultList.add(dishFlavorResult);
         }
         if (dishFlavorResultList.size()==0){

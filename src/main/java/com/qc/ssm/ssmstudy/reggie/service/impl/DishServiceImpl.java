@@ -279,12 +279,13 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
             dishFlavor.setValue(String.valueOf((List) dishFlavorResult.get("value")));
             try {
                 Long flavorId = (Long) dishFlavorResult.get("id");//口味Id，更新的依据
+                Integer flavorVersion = Integer.valueOf(dishResult.getFlavorVersion());
                 LambdaUpdateWrapper<DishFlavor> updateWrapper1 = new LambdaUpdateWrapper<>();
                 updateWrapper1.eq(DishFlavor::getId,flavorId);//口味
+                updateWrapper1.eq(DishFlavor::getVersion,flavorVersion);
                 boolean update1 = dishFlavorService.update(dishFlavor, updateWrapper1);
                 if (!update1){
                     throw new CustomException("业务异常");
-
                 }
             }catch (ClassCastException exception){
                 //异常就说明没有id，就是新增，这里可能不太严谨，后期得细化异常

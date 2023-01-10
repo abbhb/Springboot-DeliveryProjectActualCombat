@@ -59,9 +59,9 @@ public class DishResult implements Serializable {
 
     private String storeId;
     
-    private Integer version;
+    private String version;
 
 
-    private Integer flavorVersion;
+    private String flavorVersion;
     private List dishFlavors;//不能指定DishFlavorResult
 }
