@@ -27,4 +27,5 @@ public class EmployeeResult {
     private String storeId;//绑定店铺Id
     private String token;//token
 
+
 }

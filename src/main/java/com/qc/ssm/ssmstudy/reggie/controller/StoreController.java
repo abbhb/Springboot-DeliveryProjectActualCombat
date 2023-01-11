@@ -40,8 +40,8 @@ public class StoreController {
 
     @NeedToken
     @GetMapping("/getstorelistonlyidwithname")
-    public R<List<ValueLabelResult>> getStoreListOnlyIdWithName(){
-        return storeService.getStoreListOnlyIdWithName();
+    public R<List<ValueLabelResult>> getStoreListOnlyIdWithName(@RequestHeader(value="userid", defaultValue = "") String caozuoId){
+        return storeService.getStoreListOnlyIdWithName(caozuoId);
     }
     @NeedToken
     @PostMapping("/updatastorestatus")

@@ -6,11 +6,15 @@ import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWra
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qc.ssm.ssmstudy.reggie.common.Code;
+import com.qc.ssm.ssmstudy.reggie.common.CustomException;
 import com.qc.ssm.ssmstudy.reggie.common.R;
+import com.qc.ssm.ssmstudy.reggie.pojo.EmpLoyeeResultOnlyList;
 import com.qc.ssm.ssmstudy.reggie.pojo.EmployeeResult;
+import com.qc.ssm.ssmstudy.reggie.pojo.ValueLabelResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.Employee;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
 import com.qc.ssm.ssmstudy.reggie.mapper.EmployeeMapper;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.Store;
 import com.qc.ssm.ssmstudy.reggie.service.EmployeeService;
 import com.qc.ssm.ssmstudy.reggie.service.IStringRedisService;
 import com.qc.ssm.ssmstudy.reggie.utils.JWTUtil;
@@ -175,12 +179,19 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
     }
 
     @Override
-    public R<PageData> getEmployeeList(Integer pageNum, Integer pageSize, String name) {
+    public R<PageData> getEmployeeList(Integer pageNum, Integer pageSize, String name,String caozuoId) {
         if (pageNum==null){
             return R.error("传参错误");
         }
         if (pageSize==null){
             return R.error("传参错误");
+        }
+        if (!StringUtils.isNotEmpty(caozuoId)){
+            return R.error("环境异常");
+        }
+        Employee caozuoEmployee = employeeService.getById(Long.valueOf(caozuoId));
+        if (caozuoEmployee==null){
+            throw new CustomException("业务异常");
         }
         Page pageInfo = new Page(pageNum,pageSize);
         LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -188,14 +199,30 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         lambdaQueryWrapper.select(Employee::getId,Employee::getName,Employee::getPhone,Employee::getSex,Employee::getUsername,Employee::getPhone,Employee::getIdNumber,Employee::getPermissions,Employee::getStatus,Employee::getStoreId);
         //添加过滤条件
         lambdaQueryWrapper.like(StringUtils.isNotEmpty(name),Employee::getName,name);
+        if (caozuoEmployee.getPermissions()==2){
+            //当前是门店管理身份,此时仅仅显示门店内的数据
+            lambdaQueryWrapper.eq(Employee::getStoreId,caozuoEmployee.getStoreId());
+        }else if (caozuoEmployee.getPermissions()==3){
+            //若当前是员工的身份，此时不返回数据了
+            return R.error("员工就看员工该看的，不该看的别看");
+
+        }
         //添加排序条件
         lambdaQueryWrapper.orderByAsc(Employee::getCreateTime);//按照创建时间排序
         employeeService.page(pageInfo,lambdaQueryWrapper);
-        PageData<EmployeeResult> pageData = new PageData<>();
-        List<EmployeeResult> results = new ArrayList<>();
+        PageData<EmpLoyeeResultOnlyList> pageData = new PageData<>();
+        List<EmpLoyeeResultOnlyList> results = new ArrayList<>();
         for (Object employee : pageInfo.getRecords()) {
             Employee employee1 = (Employee) employee;
-            EmployeeResult employeeResult = new EmployeeResult(String.valueOf(employee1.getId()),employee1.getUsername(),employee1.getName(),employee1.getPhone(),employee1.getSex(),employee1.getIdNumber(),employee1.getPermissions(),employee1.getStatus(),String.valueOf(employee1.getStoreId()),null);
+
+            Integer isAllowOperation = 1;//默认是允许(1)
+            if (employee1.getPermissions()<=caozuoEmployee.getPermissions()){//如果权限大于等于操作人的权限,为不可操作，id为1的员工除外，为超级管理员
+                isAllowOperation = 0;//不允许
+            }
+            if (caozuoEmployee.getId()==1L){
+                isAllowOperation = 1;
+            }
+            EmpLoyeeResultOnlyList employeeResult = new EmpLoyeeResultOnlyList(String.valueOf(employee1.getId()),employee1.getUsername(),employee1.getName(),employee1.getPhone(),employee1.getSex(),employee1.getIdNumber(),employee1.getPermissions(),employee1.getStatus(),String.valueOf(employee1.getStoreId()),null,isAllowOperation);
             results.add(employeeResult);
         }
         pageData.setPages(pageInfo.getPages());
@@ -209,7 +236,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
     }
 
     @Override
-    public R<EmployeeResult> updataEmployeeStatus(String userId, String caozuoId, String userStatus, String token) {
+    public R<String> updataEmployeeStatus(String userId, String caozuoId, String userStatus, String token) {
         if (!StringUtils.isNotEmpty(caozuoId)){
             iStringRedisService.del(token);
             return R.error(Code.DEL_TOKEN,"环境异常,强制下线");
@@ -223,6 +250,14 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         if (!StringUtils.isNotEmpty(token)){
             return R.error("状态异常");
         }
+        Employee employees = employeeService.getById(Long.valueOf(caozuoId));//操作人的信息
+        if (employees==null){
+            throw new CustomException("业务异常");
+        }
+
+
+
+
         Integer status = null;
         if (userStatus.equals("1")){
             status = 0;
@@ -233,6 +268,20 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         }
         LambdaUpdateWrapper<Employee> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Employee::getId,Long.valueOf(userId));
+        if(employees.getPermissions()==2){
+            updateWrapper.eq(Employee::getStoreId,employees.getStoreId());//门店管理只允许更改本门店的员工
+        }
+        if (employees.getId()==1L){
+            //admin,超级管理员，百无禁忌,不过不能对自身进行权限和删除禁用操作
+            if (Long.valueOf(userId)==Long.valueOf(caozuoId)||Long.valueOf(userId)==1L){//不能对自身操作，其他的情况都在gt中避免了
+                return R.error("不能禁用admin用户哦");
+            }
+
+        }else {
+            updateWrapper.gt(Employee::getPermissions,employees.getPermissions());
+        }
+
+
         Employee employee = new Employee();
         employee.setId(Long.valueOf(userId));
         employee.setStatus(status);
@@ -246,7 +295,6 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
 
     @Override
     public R<EmployeeResult> deleteEmployee(String userId, String caozuoId, String token) {//删除和禁用后立即删除token
-//        log.info(userId+":userid"+caozuoId+":caozuo"+token);
         if (!StringUtils.isNotEmpty(caozuoId)){
             iStringRedisService.del(token);
             return R.error(Code.DEL_TOKEN,"环境异常,强制下线");
@@ -254,7 +302,28 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         if (!StringUtils.isNotEmpty(userId)){
             return R.error("参数异常");
         }
-        boolean b = employeeService.removeById(Long.valueOf(userId));
+        Employee employees = employeeService.getById(Long.valueOf(caozuoId));//操作人的信息
+        if (employees==null){
+            throw new CustomException("业务异常");
+        }
+
+        LambdaQueryWrapper<Employee> employeeLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        employeeLambdaQueryWrapper.eq(Employee::getId,Long.valueOf(userId));
+
+        if(employees.getPermissions()==2){
+            employeeLambdaQueryWrapper.eq(Employee::getStoreId,employees.getStoreId());//门店管理只允许删除本门店的员工
+        }
+
+        if (employees.getId()==1L){
+            //admin,超级管理员，百无禁忌,不过不能对自身进行权限和删除禁用操作
+            if (Long.valueOf(userId)==Long.valueOf(caozuoId)||Long.valueOf(userId)==1L){//不能对自身操作，其他的情况都在gt中避免了
+                return R.error("不能删除admin用户哦");
+            }
+
+        }else {
+            employeeLambdaQueryWrapper.gt(Employee::getPermissions,employees.getPermissions());
+        }
+        boolean b = employeeService.remove(employeeLambdaQueryWrapper);
         if (b){
             return R.success("删除成功");
         }
@@ -263,7 +332,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
     }
 
     @Override
-    public R<EmployeeResult> updataEmployee(String caozuoId, String userid,String name, String username, String phone, String idNumber, String status, String permissions, String storeId, String sex, String token) {
+    public R<String> updataEmployee(String caozuoId, String userid,String name, String username, String phone, String idNumber, String status, String permissions, String storeId, String sex, String token) {
         if (token==null){
             return R.error(Code.DEL_TOKEN,"环境异常,强制下线");
         }
@@ -304,9 +373,47 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
                 return R.error("当前权限必须绑定门店");
             }
         }
-        LambdaUpdateChainWrapper<Employee> employeeLambdaUpdateChainWrapper = new LambdaUpdateChainWrapper<>(employeeMapper);
+        Employee employees = employeeService.getById(Long.valueOf(caozuoId));
+        if (employees==null){
+            throw new CustomException("业务异常");
+        }
+
         LambdaUpdateWrapper<Employee> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Employee::getId,Long.valueOf(userid));
+
+
+        if (employees.getPermissions()==1&&employees.getId()==1L){
+            //超级管理员,无限制
+        }else if (employees.getPermissions()==1&&employees.getId()!=1L){
+            //不能添加超级管理员的超级管理员
+            if (Integer.valueOf(permissions)==1){
+                return R.error("你没有权限添加超级管理员");
+            }
+        }else if (employees.getPermissions()==2){
+            if (Integer.valueOf(permissions)<2){
+                return R.error("你没有权限添加管理员");
+            }
+            if (Long.valueOf(storeId)!=employees.getStoreId()){
+                return R.error("你只能在本门店内添加用户");
+            }
+        }else {
+            return R.error("你没有权限添加员工");
+        }
+
+
+        if (employees.getId()==1L){
+            //admin,超级管理员，百无禁忌,不过不能对自身进行权限和删除禁用操作
+            if (Long.valueOf(userid)==Long.valueOf(caozuoId)||Long.valueOf(userid)==1L){//不能对自身操作，其他的情况都在gt中避免了
+                if (Integer.valueOf(permissions)!=1){
+                    return R.error("admin用户的权限必须为超级管理员");
+                }
+                if (Integer.valueOf(status)!=1){
+                    return R.error("admin用户的权限必须启用");
+                }
+            }
+        }else {
+            updateWrapper.gt(Employee::getPermissions,employees.getPermissions());
+        }
         Employee employee = new Employee();
         employee.setId(Long.valueOf(userid));
         employee.setName(name);
@@ -371,6 +478,26 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
                 return R.error("当前权限必须绑定门店");
             }
         }
+
+        Employee employeeadd = employeeService.getById(Long.valueOf(caozuoId));//添加人
+        if (employeeadd.getPermissions()==1&&employeeadd.getId()==1L){
+            //超级管理员
+        }else if (employeeadd.getPermissions()==1&&employeeadd.getId()!=1L){
+            //不能添加超级管理员的超级管理员
+            if (Integer.valueOf(permissions)==1){
+                return R.error("你没有权限添加超级管理员");
+            }
+        }else if (employeeadd.getPermissions()==2){
+            if (Integer.valueOf(permissions)<2){
+                return R.error("你没有权限添加管理员");
+            }
+            if (Long.valueOf(storeId)!=employeeadd.getStoreId()){
+                return R.error("你只能在本门店内添加用户");
+            }
+        }else {
+            return R.error("你没有权限添加员工");
+        }
+
         String salt = PWDMD5.getSalt();
         String md5Encryption = PWDMD5.getMD5Encryption(password, salt);
         Employee employee = new Employee();
@@ -380,12 +507,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         employee.setPhone(phone);
         employee.setSex(sex);
         employee.setPermissions(Integer.valueOf(permissions));
-        //自动填充
-//        employee.setIsDelete(Integer.valueOf(0));
-//        employee.setCreateUser(Long.valueOf(caozuoId));
-//        employee.setUpdateUser(Long.valueOf(caozuoId));
-//        employee.setCreateTime(LocalDateTime.now());
-//        employee.setUpdateTime(LocalDateTime.now());
+
         employee.setPassword(md5Encryption);
         employee.setSalt(salt);
         employee.setStatus(Integer.valueOf(status));
@@ -399,6 +521,42 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
             return R.success("添加成功");
         }
         return R.error("创建失败");
+    }
+
+    @Override
+    public R<List<ValueLabelResult>> getEmployeeListOnlyIdWithName(String caozuoId) {
+        if (!StringUtils.isNotEmpty(caozuoId)){
+            return R.error("环境遗产");
+        }
+        Employee byId = employeeService.getById(Long.valueOf(caozuoId));
+        if (byId==null){
+            throw new CustomException("环境异常");
+        }
+
+
+        List<ValueLabelResult> employeeIdNames = new ArrayList<>();
+        if (byId.getPermissions()==1&&byId.getId()!=1L){
+            //不是超级管理员的管理员
+            ValueLabelResult valueLabelResult2 = new ValueLabelResult("2","门店管理");
+            ValueLabelResult valueLabelResult3 = new ValueLabelResult("3","门店用户");
+            employeeIdNames.add(valueLabelResult2);
+            employeeIdNames.add(valueLabelResult3);
+
+        }else if (byId.getId()==1L){
+            ValueLabelResult valueLabelResult1 = new ValueLabelResult("1","超级管理员");
+            ValueLabelResult valueLabelResult2 = new ValueLabelResult("2","门店管理");
+            ValueLabelResult valueLabelResult3 = new ValueLabelResult("3","门店用户");
+            employeeIdNames.add(valueLabelResult1);
+            employeeIdNames.add(valueLabelResult2);
+            employeeIdNames.add(valueLabelResult3);
+        }else if (byId.getPermissions()==2){
+            ValueLabelResult valueLabelResult3 = new ValueLabelResult("3","门店用户");
+            employeeIdNames.add(valueLabelResult3);
+        }else {
+            return R.error("异常");
+        }
+
+        return R.success(employeeIdNames);
     }
 
 

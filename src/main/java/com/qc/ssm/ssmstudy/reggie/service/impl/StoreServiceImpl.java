@@ -5,12 +5,15 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qc.ssm.ssmstudy.reggie.common.Code;
+import com.qc.ssm.ssmstudy.reggie.common.CustomException;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.pojo.ValueLabelResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.StoreResult;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.Employee;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.Store;
 import com.qc.ssm.ssmstudy.reggie.mapper.StoreMapper;
+import com.qc.ssm.ssmstudy.reggie.service.EmployeeService;
 import com.qc.ssm.ssmstudy.reggie.service.IStringRedisService;
 import com.qc.ssm.ssmstudy.reggie.service.StoreService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,9 @@ import java.util.List;
 public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements StoreService {
     @Autowired
     private StoreService storeService;
+
+    @Autowired
+    private EmployeeService employeeService;
 
     @Autowired
     private IStringRedisService iStringRedisService;
@@ -209,9 +215,22 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
     }
 
     @Override
-    public R<List<ValueLabelResult>> getStoreListOnlyIdWithName() {
+    public R<List<ValueLabelResult>> getStoreListOnlyIdWithName(String caozuoId) {
+        if (!StringUtils.isNotEmpty(caozuoId)){
+            return R.error("环境遗产");
+        }
+        Employee byId = employeeService.getById(Long.valueOf(caozuoId));
+        if (byId==null){
+            throw new CustomException("环境异常");
+        }
+
         LambdaQueryWrapper<Store> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.select(Store::getStoreId,Store::getStoreName);
+        if (byId.getPermissions()==2){
+            queryWrapper.eq(Store::getStoreId,byId.getStoreId());//如果权限为门店管理，就只返回指定门店
+        }else if (byId.getPermissions()==3){
+            throw new CustomException("异常");
+        }
         List<Store> list = storeService.list(queryWrapper);
         List<ValueLabelResult> storeIdNames = new ArrayList<>();
         if (list!=null){

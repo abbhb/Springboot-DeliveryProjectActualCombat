@@ -21,7 +21,7 @@ public interface StoreService extends IService<Store> {
 
     R<StoreResult> deleteStore(String userId, String storeId, String token);
 
-    R<List<ValueLabelResult>> getStoreListOnlyIdWithName();
+    R<List<ValueLabelResult>> getStoreListOnlyIdWithName(String caozuoId);
 
 
     R<StoreResult> getStoreById(String storeid);

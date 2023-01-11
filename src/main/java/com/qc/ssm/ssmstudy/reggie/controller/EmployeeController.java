@@ -3,6 +3,7 @@ package com.qc.ssm.ssmstudy.reggie.controller;
 import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.pojo.EmployeeResult;
+import com.qc.ssm.ssmstudy.reggie.pojo.ValueLabelResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
 import com.qc.ssm.ssmstudy.reggie.service.EmployeeService;
 import io.swagger.annotations.Api;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,7 +61,7 @@ public class EmployeeController {
 
     @NeedToken
     @PostMapping("/updataemployeestatus")
-    public R<EmployeeResult> updataEmployeeStatus(@RequestHeader(value="Authorization", defaultValue = "") String token, @RequestBody Map<String, Object> employee){
+    public R<String> updataEmployeeStatus(@RequestHeader(value="Authorization", defaultValue = "") String token, @RequestBody Map<String, Object> employee){
         String userId = (String) employee.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
         String caozuoId = (String) employee.get("caozuoId");//操作人
         String userStatus = (String) employee.get("userStatus");
@@ -114,7 +116,7 @@ public class EmployeeController {
 
     @NeedToken
     @PostMapping("/updataemployee")
-    public R<EmployeeResult> updataEmployee(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestHeader(value="userid", defaultValue = "") String caozuoId,@RequestBody Map<String, Object> employee){
+    public R<String> updataEmployee(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestHeader(value="userid", defaultValue = "") String caozuoId,@RequestBody Map<String, Object> employee){
 //        String userId = (String) employee.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
        // caozuoId//操作者id
 //        return employeeService.deleteEmployee(userId,caozuoId,token);
@@ -152,9 +154,15 @@ public class EmployeeController {
 
     @NeedToken
     @GetMapping("/get")
-    public R<PageData> getEmployeeList(Integer pageNum, Integer pageSize, String name){
-        log.info("pageNum = {},pageSize = {},name = {}",pageNum,pageSize,name);
-        return employeeService.getEmployeeList(pageNum,pageSize,name);
+    public R<PageData> getEmployeeList(Integer pageNum, Integer pageSize, String name,@RequestHeader(value="userid", defaultValue = "") String caozuoId){
+        log.info("pageNum = {},pageSize = {},name = {},caozuoId = {}",pageNum,pageSize,name,caozuoId);
+        return employeeService.getEmployeeList(pageNum,pageSize,name,caozuoId);
+    }
+
+    @NeedToken
+    @GetMapping("/getemployeelistonlyidwithname")
+    public R<List<ValueLabelResult>> getEmployeeListOnlyIdWithName(@RequestHeader(value="userid", defaultValue = "") String caozuoId){
+        return employeeService.getEmployeeListOnlyIdWithName(caozuoId);
     }
 
     @NeedToken

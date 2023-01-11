@@ -85,7 +85,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
         dish.setDescription(dishResult.getDescription()==null?"": dishResult.getDescription());
 
         //添加菜品
-        boolean save = dishService.save(dish);
+        boolean save = dishService.save(dish);//save完成后会自动装入id
         if (!save){
             throw new CustomException("业务异常");
         }
@@ -96,7 +96,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
             Map<String,Object> dishFlavorResult = (Map<String, Object>) obj;
             System.out.println(dishFlavorResult.toString());
             DishFlavor dishFlavor = new DishFlavor();
-            dishFlavor.setDishId(dish.getId());
+            dishFlavor.setDishId(dish.getId());//save完成后会自动装入id
             dishFlavor.setStoreId(Long.valueOf(dishResult.getStoreId()));
             dishFlavor.setName((String) dishFlavorResult.get("name"));
             dishFlavor.setValue(String.valueOf((List) dishFlavorResult.get("value")));
@@ -204,6 +204,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
     }
 
     @Override
+    @Transactional
     public R<String> editDish(DishResult dishResult) {
         if (dishResult.getId()==null){
             return R.error(Code.DEL_TOKEN,"环境异常,强制下线");
@@ -267,57 +268,39 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
             throw new CustomException("业务异常");
         }
 
-        //添加口味
+        //删除原来的口味
         /**
-         *
-         * 直接改方案，
-         * 直接改方案，
-         * 直接改方案，
-         * 直接改方案，
-         * 直接改方案，
-         * 直接改方案，
-         * 直接改方案，
-         *
-             * 全删口味在新增，不然容易出问题
-             * 全删口味在新增，不然容易出问题
-             * 全删口味在新增，不然容易出问题
-             * 全删口味在新增，不然容易出问题
-             * 全删口味在新增，不然容易出问题
-             * 全删口味在新增，不然容易出问题
-             * 全删口味在新增，不然容易出问题
-         *
-         *
+         * 直接改方案，全删口味在新增，不然容易出问题
          */
+        Long dishId = Long.valueOf(dishResult.getId());//当前菜品的Id
+        LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.select(DishFlavor::getId).eq(DishFlavor::getDishId,dishId);
+        List<DishFlavor> list = dishFlavorService.list(queryWrapper);
+        Collection<Long> longCollection = new ArrayList<>();
+        for (DishFlavor d:
+             list) {
+            longCollection.add(d.getId());
+        }
+        if (longCollection.size()!=0){//如果本来就没有口味就不需要删除了
+            boolean b = dishFlavorService.removeByIds(longCollection);
+            if (!b){
+                throw new CustomException("业务异常:removeByIds");
+            }
+        }
+        //添加口味
         for (Object obj:
                 dishResult.getDishFlavors()) {
             Map<String,Object> dishFlavorResult = (Map<String, Object>) obj;
             System.out.println(dishFlavorResult.toString());
             DishFlavor dishFlavor = new DishFlavor();
-            dishFlavor.setDishId(dish.getId());
-            dishFlavor.setStoreId(Long.valueOf(dishResult.getStoreId()));
+            dishFlavor.setDishId(Long.valueOf(dishResult.getId()));//和新增不同，此处是对已有菜品进行更改，所以dishId得直接从上面取
+            dishFlavor.setStoreId(Long.valueOf(dishResult.getStoreId()));//冗余数据
             dishFlavor.setName((String) dishFlavorResult.get("name"));
             dishFlavor.setValue(String.valueOf((List) dishFlavorResult.get("value")));
-            try {
-                Long flavorId = (Long) dishFlavorResult.get("id");//口味Id，更新的依据
-                Integer flavorVersion = Integer.valueOf(dishResult.getFlavorVersion());
-                LambdaUpdateWrapper<DishFlavor> updateWrapper1 = new LambdaUpdateWrapper<>();
-                updateWrapper1.eq(DishFlavor::getId,flavorId);//口味
-                updateWrapper1.eq(DishFlavor::getVersion,flavorVersion);
-                boolean update1 = dishFlavorService.update(dishFlavor, updateWrapper1);
-                if (!update1){
-                    throw new CustomException("业务异常");
-                }
-            }catch (ClassCastException exception){
-                //异常就说明没有id，就是新增，这里可能不太严谨，后期得细化异常
-                dishFlavor.setDishId(Long.valueOf(dishResult.getId()));
-                boolean save1 = dishFlavorService.save(dishFlavor);
-                if (!save1){
-                    throw new CustomException("业务异常");
-                }
+            boolean save1 = dishFlavorService.save(dishFlavor);
+            if (!save1){
+                throw new CustomException("业务异常");
             }
-
-
-
         }
         return R.success("更新成功");
     }
