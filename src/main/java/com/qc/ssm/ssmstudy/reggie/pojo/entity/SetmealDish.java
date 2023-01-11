@@ -1,83 +1,61 @@
 package com.qc.ssm.ssmstudy.reggie.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
-import lombok.AllArgsConstructor;
+
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 套餐
+ * 套餐菜品关系,对应数据库
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Setmeal implements Serializable {
-
+public class SetmealDish implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
 
+    //套餐id
+    private Long setmealId;
 
-    //分类id
-    private Long categoryId;
+    //菜品id
+    private Long dishId;
 
-
-    //套餐名称
+    //菜品名称 （冗余字段）
     private String name;
 
-
-    //套餐价格
+    //菜品原价
     private BigDecimal price;
 
+    //份数
+    private Integer copies;
 
-    //状态 0:停用 1:启用
-    private Integer status;
-
-
-    //编码
-    private String code;
-
-
-    //描述信息
-    private String description;
-
-
-    //图片
-    private String image;
-
+    //排序
+    private Integer sort;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
-
 
     @TableField(fill = FieldFill.INSERT)
     private Long createUser;
 
-
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 
-
     //是否删除
-    @TableLogic
     @TableField(fill = FieldFill.INSERT)
     private Integer isDeleted;
 
-    @Version
     @TableField(fill = FieldFill.INSERT)
+    @Version
     private Integer version;
 
-
     private Long storeId;
-
-    private Integer sort;//排序
-
 }

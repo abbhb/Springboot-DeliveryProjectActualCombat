@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qc.ssm.ssmstudy.reggie.mapper.SetmealMapper">
+
+    <sql id="allsetmealandcategory">
+        setmeal.id,setmeal.name,setmeal.category_id,setmeal.price,setmeal.code,setmeal.image,setmeal.description,setmeal.status,setmeal.sort,setmeal.create_time,setmeal.update_time,setmeal.create_user,setmeal.update_user,setmeal.store_id,setmeal.version,category.type as categoryType,category.name as categoryName,category.sort as categorySort,category.version as categoryVersion
+    </sql>
+    <!--这里注意，自己写的sql，得注意mp的逻辑删除都不能用,包括增改的自动填充，所以得手写条件-->
+    <!--IPage<SetmealAndCategoryVO> getSetmealAndCategoryVO(Page page, @Param("ew") QueryWrapper<SetmealAndCategoryVO> queryWrapper);-->
+    <select id="getSetmealAndCategoryVO" resultType="com.qc.ssm.ssmstudy.reggie.pojo.vo.SetmealAndCategoryVO">
+        select <include refid="allsetmealandcategory"></include> from setmeal left join category ON setmeal.category_id = category.id ${ew.customSqlSegment}
+    </select>
+</mapper>

@@ -1,21 +1,18 @@
-package com.qc.ssm.ssmstudy.reggie.pojo.entity;
+package com.qc.ssm.ssmstudy.reggie.pojo.vo;
 
-import com.baomidou.mybatisplus.annotation.*;
-import lombok.AllArgsConstructor;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.Version;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.Setmeal;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * 套餐
- */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Setmeal implements Serializable {
+public class SetmealAndCategoryVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -49,30 +46,16 @@ public class Setmeal implements Serializable {
     //图片
     private String image;
 
-
-    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-
-    @TableField(fill = FieldFill.INSERT)
     private Long createUser;
 
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 
-
-    //是否删除
-    @TableLogic
-    @TableField(fill = FieldFill.INSERT)
     private Integer isDeleted;
 
-    @Version
-    @TableField(fill = FieldFill.INSERT)
     private Integer version;
 
 
@@ -80,4 +63,12 @@ public class Setmeal implements Serializable {
 
     private Integer sort;//排序
 
+    //类型 1 菜品分类 2 套餐分类
+    private Integer categoryType;
+
+    private Integer categorySort;
+    //分类名称
+    private String categoryName;
+
+    private Integer categoryVersion;
 }

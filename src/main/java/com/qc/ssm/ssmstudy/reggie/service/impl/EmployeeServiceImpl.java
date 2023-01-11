@@ -491,7 +491,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
             if (Integer.valueOf(permissions)<2){
                 return R.error("你没有权限添加管理员");
             }
-            if (Long.valueOf(storeId)!=employeeadd.getStoreId()){
+            if (!Long.valueOf(storeId).equals(employeeadd.getStoreId())){
                 return R.error("你只能在本门店内添加用户");
             }
         }else {
