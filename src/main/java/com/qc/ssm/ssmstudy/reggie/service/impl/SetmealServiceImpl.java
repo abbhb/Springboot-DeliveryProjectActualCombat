@@ -3,18 +3,25 @@ package com.qc.ssm.ssmstudy.reggie.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.qc.ssm.ssmstudy.reggie.common.CustomException;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.mapper.SetmealMapper;
+import com.qc.ssm.ssmstudy.reggie.pojo.DishResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.SetmealResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.Setmeal;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.SetmealDish;
 import com.qc.ssm.ssmstudy.reggie.pojo.vo.DishAndCategoryVO;
 import com.qc.ssm.ssmstudy.reggie.pojo.vo.SetmealAndCategoryVO;
+import com.qc.ssm.ssmstudy.reggie.service.SetmealDishService;
 import com.qc.ssm.ssmstudy.reggie.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +31,11 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
 
     @Autowired
     private SetmealMapper setmealMapper;
+
+    @Autowired
+    private SetmealService setmealService;
+    @Autowired
+    private SetmealDishService setmealDishService;
     @Override
     public R<PageData<SetmealResult>> getSetmeal(Integer pageNum, Integer pageSize, Long storeId, String name) {
         Integer pageNumD = 1;
@@ -85,7 +97,72 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         if (setmealResultList.size()!=0){
             return R.success(resultPageData);
         }
-        return R.error("空");
+        return R.success("没有数据哦");
+    }
+
+    @Override
+    @Transactional
+    public R<String> addSetmeal(SetmealResult setmealResult) {
+        if (!StringUtils.isNotEmpty(setmealResult.getStoreId())){
+            return R.error("业务异常");
+        }
+        if (setmealResult.getDishResults()==null){
+            return R.error("请添加菜品");
+        }
+        if (!StringUtils.isNotEmpty(setmealResult.getName())){
+            return R.error("套餐名不能为空");
+        }
+        if (!StringUtils.isNotEmpty(setmealResult.getCategoryId())){
+            return R.error("分类必须选择");
+        }
+        if (!StringUtils.isNotEmpty(setmealResult.getPrice())){
+            return R.error("价格不能为空");
+        }
+        if (setmealResult.getSort()==null){
+            return R.error("排序不能为空");
+        }
+        if (setmealResult.getStatus()==null){
+            return R.error("状态不能为空");
+        }
+        List<DishResult> dishResults = setmealResult.getDishResults();
+
+        Setmeal setmeal = new Setmeal();
+        setmeal.setCode(setmealResult.getCode());
+        setmeal.setImage(setmealResult.getImage());
+        setmeal.setDescription(setmealResult.getDescription());
+        setmeal.setSort(setmealResult.getSort());
+        BigDecimal bigDecimal = new BigDecimal(setmealResult.getPrice());
+        bigDecimal.setScale(2,BigDecimal.ROUND_HALF_UP);//小数位数2位，四舍五入法
+        setmeal.setPrice(bigDecimal);
+        setmeal.setName(setmealResult.getName());
+        setmeal.setStatus(setmealResult.getStatus());
+        setmeal.setCategoryId(Long.valueOf(setmealResult.getCategoryId()));
+        setmeal.setStoreId(Long.valueOf(setmealResult.getStoreId()));
+        boolean save = setmealService.save(setmeal);
+        if (!save){
+            throw new CustomException("添加失败");
+        }
+        for (DishResult dish:
+             dishResults) {//可以尝试分成几个多线程执行
+            SetmealDish setmealDish = new SetmealDish();
+            setmealDish.setDishId(Long.valueOf(dish.getId()));//每个dish的ID
+            setmealDish.setSetmealId(setmeal.getId());//上方添加完返回
+            setmealDish.setName(dish.getName());
+            setmealDish.setSort(dish.getSort());
+            setmealDish.setCopies(dish.getCopies());
+            BigDecimal bigDecimals = new BigDecimal(dish.getPrice());
+            bigDecimals.setScale(2,BigDecimal.ROUND_HALF_UP);//小数位数2位，四舍五入法
+            setmealDish.setPrice(bigDecimals);
+            setmealDish.setStoreId(Long.valueOf(setmealResult.getStoreId()));
+
+            setmealDishService.save(setmealDish);
+
+        }
+
+        if (setmealResult.getDishResults().size()==0){
+            return R.success("注意，你这套餐的菜品为空哦");
+        }
+        return R.success("新增成功");
     }
 }
 

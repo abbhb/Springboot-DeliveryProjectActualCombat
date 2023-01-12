@@ -8,4 +8,6 @@ import com.qc.ssm.ssmstudy.reggie.pojo.entity.Setmeal;
 
 public interface SetmealService extends IService<Setmeal> {
     R<PageData<SetmealResult>> getSetmeal(Integer pageNum, Integer pageSize, Long storeId, String name);
+
+    R<String> addSetmeal(SetmealResult setmealResult);
 }

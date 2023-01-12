@@ -52,8 +52,5 @@ public class DishFlavor implements Serializable {
     @TableField(fill = FieldFill.INSERT)
     private Integer isDeleted;
 
-    @Version
-    @TableField(fill = FieldFill.INSERT)
-    private Integer version;
 
 }

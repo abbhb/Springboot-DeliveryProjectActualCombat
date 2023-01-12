@@ -241,11 +241,13 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
         if (dishResult.getDishFlavors().size()==0){
             return R.error("至少需要包含一种口味");
         }
+        //口味不再设置版本号，乐观锁作用在食品即可，食品口味版本不对直接回滚
+//        if (dishResult.getFlavorVersion()==null){
+//            return R.error("口味版本异常,请重试!");
+//
+//        }
 
-        if (dishResult.getFlavorVersion()==null){
-            return R.error("口味版本异常,请重试!");
 
-        }
         Dish dish = new Dish();
 
         dish.setName(dishResult.getName());
@@ -257,17 +259,17 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
         dish.setCategoryId(Long.valueOf(dishResult.getCategoryId()));
         dish.setImage(imageUrl);
         dish.setDescription(dishResult.getDescription()==null?"": dishResult.getDescription());
-
+        dish.setVersion(Integer.valueOf(dishResult.getVersion()));//更新成功让口味版本号+1(只用传入原版本号，mp会自动帮我们递增)
         LambdaUpdateWrapper<Dish> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Dish::getId,Long.valueOf(dishResult.getId()));
         //version
-        updateWrapper.eq(Dish::getVersion,dishResult.getVersion());//校验版本号
+        log.info("version = {}",dishResult.getVersion());
+//            updateWrapper.eq(Dish::getVersion,dishResult.getVersion());//校验版本号
         //更新菜品
         boolean update = dishService.update(dish, updateWrapper);
         if (!update){
-            throw new CustomException("业务异常");
+            throw new CustomException("业务异常:dishService:update");
         }
-
         //删除原来的口味
         /**
          * 直接改方案，全删口味在新增，不然容易出问题
@@ -299,9 +301,44 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
             dishFlavor.setValue(String.valueOf((List) dishFlavorResult.get("value")));
             boolean save1 = dishFlavorService.save(dishFlavor);
             if (!save1){
-                throw new CustomException("业务异常");
+                throw new CustomException("业务异常:dishFlavorService:save");
             }
         }
         return R.success("更新成功");
+    }
+
+    @Override
+    public R<List<DishResult>> getDishListByCategoryId(Long categoryId, Long storeId,String name) {
+        if (storeId == null){
+            return R.error("业务异常");
+        }
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        if (categoryId!=null){
+            queryWrapper.eq(Dish::getCategoryId,categoryId);
+        }
+        queryWrapper.eq(Dish::getStoreId,storeId);
+        if (name!=null){
+            if ((!name.equals(""))&&(!name.equals("undefined"))&&(!name.equals("null"))){
+                queryWrapper.like(Dish::getName,name);
+            }
+        }
+        List<Dish> list = dishService.list(queryWrapper);
+        if (list==null){
+            return R.error("业务异常");
+        }
+        List<DishResult> dishResults = new ArrayList<>();
+        for (Dish dish:
+             list) {
+            DishResult dishResult = new DishResult();
+            dishResult.setId(String.valueOf(dish.getId()));
+            dishResult.setName(dish.getName());
+            dishResult.setImage(dish.getImage());
+            dishResult.setPrice(String.valueOf(dish.getPrice()));
+            dishResult.setStatus(dish.getStatus());
+            dishResult.setVersion(String.valueOf(dish.getVersion()));
+            //其实我感觉应该把每个菜的version传入，新增的时候判断下此时的菜品表是没有被更改的,
+            dishResults.add(dishResult);
+        }
+        return R.success(dishResults);
     }
 }

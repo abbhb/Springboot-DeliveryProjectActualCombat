@@ -8,6 +8,8 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Data
 public class SetmealResult {
     private static final Long serialVersionUID = 1L;
@@ -65,4 +67,6 @@ public class SetmealResult {
     private Integer sort;//排序
 
     private String categoryName;
+
+    private List<DishResult> dishResults;//套餐中的菜品
 }

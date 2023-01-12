@@ -43,7 +43,7 @@ public class DishFlavorServiceImpl extends ServiceImpl<DishFlavorMapper, DishFla
     @Override
     public R<List<DishFlavorResult>> getDishFlavorResultByDishId(String id) {
         LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.select(DishFlavor::getDishId,DishFlavor::getId,DishFlavor::getName,DishFlavor::getVersion,DishFlavor::getValue);
+        queryWrapper.select(DishFlavor::getDishId,DishFlavor::getId,DishFlavor::getName,DishFlavor::getValue);
         queryWrapper.eq(DishFlavor::getDishId,id);
         List<DishFlavor> list = dishFlavorService.list(queryWrapper);
         List<DishFlavorResult> dishFlavorResultList = new ArrayList<>();
@@ -54,7 +54,6 @@ public class DishFlavorServiceImpl extends ServiceImpl<DishFlavorMapper, DishFla
             dishFlavorResult.setName(dishFlavor.getName());
             dishFlavorResult.setId(String.valueOf(dishFlavor.getId()));
             dishFlavorResult.setValue(dishFlavor.getValue());
-            dishFlavorResult.setVersion(String.valueOf(dishFlavor.getVersion()));
             dishFlavorResultList.add(dishFlavorResult);
         }
         if (dishFlavorResultList.size()==0){

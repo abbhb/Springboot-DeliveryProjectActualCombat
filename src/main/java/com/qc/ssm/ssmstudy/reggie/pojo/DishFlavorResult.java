@@ -36,8 +36,6 @@ public class DishFlavorResult implements Serializable {
     private String updateUser;
     
     private String storeId;
-    
-    private String version;
 
     private boolean showOption;
 }

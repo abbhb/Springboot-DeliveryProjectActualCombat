@@ -53,9 +53,9 @@ public class SetmealDish implements Serializable {
     @TableField(fill = FieldFill.INSERT)
     private Integer isDeleted;
 
-    @TableField(fill = FieldFill.INSERT)
-    @Version
-    private Integer version;
+//    @TableField(fill = FieldFill.INSERT)
+//    @Version
+//    private Integer version;
 
     private Long storeId;
 }

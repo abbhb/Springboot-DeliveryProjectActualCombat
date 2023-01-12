@@ -73,4 +73,9 @@ public class DishController {
         log.info(id);
         return dishFlavorService.getDishFlavorResultByDishId(id);
     }
+
+    @GetMapping ("/get/listbycategory")
+    public R<List<DishResult>> getDishListByCategoryId(@RequestParam(value = "categoryId",required = false) Long categoryId,@RequestParam(value = "storeId",required = true) Long storeId,@RequestParam(value = "name",required = false) String name){
+        return dishService.getDishListByCategoryId(categoryId,storeId,name);
+    }
 }
