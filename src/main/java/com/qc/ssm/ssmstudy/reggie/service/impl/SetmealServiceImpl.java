@@ -160,7 +160,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         }
 
         if (setmealResult.getDishResults().size()==0){
-            return R.success("注意，你这套餐的菜品为空哦");
+            return R.success("注意，你这套餐的菜品为空哦");//允许新增空菜品的套餐
         }
         return R.success("新增成功");
     }
