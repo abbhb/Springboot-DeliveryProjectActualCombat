@@ -1,5 +1,6 @@
 package com.qc.ssm.ssmstudy.reggie.controller;
 
+import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.pojo.CategoryResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.ValueLabelResult;
@@ -30,6 +31,7 @@ public class CategoryController {
      * @return
      */
     @PostMapping("/save")
+    @NeedToken
     public R<String> saveCategory(@RequestBody Category category){
         //springboot十分强大，居然能把字符串映射到对象并且转换成指定类型，太厉害了
         log.info("category = {}",category);
@@ -45,6 +47,7 @@ public class CategoryController {
      * @param category
      * @return
      */
+    @NeedToken
     @PostMapping("/updata")
     public R<String> updataCategory(@RequestBody Category category){
         //springboot十分强大，居然能把字符串映射到对象并且转换成指定类型，太厉害了
@@ -59,6 +62,7 @@ public class CategoryController {
      * @param category
      * @return
      */
+    @NeedToken
     @PostMapping("/getcategorypage")
     public R<PageData<CategoryResult>> getCategoryPage(@RequestBody Map<String, Object> category){
         //springboot十分强大，居然能把字符串映射到对象并且转换成指定类型，太厉害了
@@ -74,6 +78,7 @@ public class CategoryController {
      * 删除分类
      * @return
      */
+    @NeedToken
     @PostMapping("/deletecategory")
     public R<String> deleteCategory(@RequestBody Map<String, Object> category){
         String id = (String) category.get("id");//唯一的，不用再去判断门店了
@@ -84,6 +89,7 @@ public class CategoryController {
      * 获取分类列表
      * @return
      */
+    @NeedToken
     @PostMapping("/getcategorylablevaluelist")
     public R<List<ValueLabelResult>> getCategoryLableValueList(@RequestBody Map<String, Object> category){
         String storeId = (String) category.get("storeId");

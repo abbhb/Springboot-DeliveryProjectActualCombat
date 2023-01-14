@@ -1,5 +1,7 @@
 package com.qc.ssm.ssmstudy.reggie.service.impl;
 
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,6 +18,7 @@ import com.qc.ssm.ssmstudy.reggie.mapper.StoreMapper;
 import com.qc.ssm.ssmstudy.reggie.service.EmployeeService;
 import com.qc.ssm.ssmstudy.reggie.service.IStringRedisService;
 import com.qc.ssm.ssmstudy.reggie.service.StoreService;
+import com.qc.ssm.ssmstudy.reggie.utils.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,7 +200,10 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
         if (!StringUtils.isNotEmpty(storeId)){
             return R.error("参数异常");
         }
-        String tokenId = iStringRedisService.getTokenId(token);
+        DecodedJWT decodedJWT = JWTUtil.deToken(token);
+        Claim id = decodedJWT.getClaim("id");
+
+        String tokenId = id.asString();
         if (!StringUtils.isNotEmpty(tokenId)){
             iStringRedisService.del(token);
             return R.error(Code.DEL_TOKEN,"环境异常,强制下线");

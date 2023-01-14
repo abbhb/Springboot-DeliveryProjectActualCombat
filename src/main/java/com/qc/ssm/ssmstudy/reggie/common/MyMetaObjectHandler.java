@@ -1,6 +1,9 @@
 package com.qc.ssm.ssmstudy.reggie.common;
 
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.qc.ssm.ssmstudy.reggie.utils.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +21,15 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     private HttpServletRequest httpServletRequest;
     @Override
     public void insertFill(MetaObject metaObject) {
-        Long userId = Long.valueOf(httpServletRequest.getHeader("userid"));
-        log.info("公共字段自动填充");
+//        Long userId = Long.valueOf(httpServletRequest.getHeader("userid"));
+        String authorization =  httpServletRequest.getHeader("Authorization");
+        DecodedJWT decodedJWT = JWTUtil.deToken(authorization);
+        Claim id = decodedJWT.getClaim("id");
+
+        log.info("公共字段自动填充,id = {}",id.asString());
         //此处可能会出现异常,要是userid为null此处异常
-        metaObject.setValue("createUser",userId);
-        metaObject.setValue("updateUser",userId);
+        metaObject.setValue("createUser",Long.valueOf(id.asString()));
+        metaObject.setValue("updateUser",Long.valueOf(id.asString()));
         metaObject.setValue("createTime", LocalDateTime.now());
         metaObject.setValue("updateTime",LocalDateTime.now());
         metaObject.setValue("isDeleted",Integer.valueOf(0));//刚插入默认都是不删除的
@@ -35,9 +42,12 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         log.info("公共字段自动填充");
-        Long userId = Long.valueOf(httpServletRequest.getHeader("userid"));
+//        Long userId = Long.valueOf(httpServletRequest.getHeader("userid"));
+        String authorization =  httpServletRequest.getHeader("Authorization");
+        DecodedJWT decodedJWT = JWTUtil.deToken(authorization);
+        Claim id = decodedJWT.getClaim("id");
         //此处可能会出现异常,要是userid为null此处异常
-        metaObject.setValue("updateUser",userId);
+        metaObject.setValue("updateUser",Long.valueOf(id.asString()));
         metaObject.setValue("updateTime",LocalDateTime.now());
     }
 }

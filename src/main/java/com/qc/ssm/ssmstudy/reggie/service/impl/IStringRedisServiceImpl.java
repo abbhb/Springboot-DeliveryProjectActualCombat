@@ -16,10 +16,10 @@ public class IStringRedisServiceImpl implements IStringRedisService {
     public IStringRedisServiceImpl(StringRedisTemplate redisTemplate){
         this.redisTemplate = redisTemplate;
     }
-    @Override
-    public String getTokenId(String token) {
-        return (String)redisTemplate.opsForValue().get(token);
-    }
+//    @Override
+//    public String getTokenId(String token) {
+//        return (String)redisTemplate.opsForValue().get(token);
+//    }
 
     @Override
     public void setTokenWithTime(String token, String value, Long time) {
@@ -32,8 +32,8 @@ public class IStringRedisServiceImpl implements IStringRedisService {
     }
 
     @Override
-    public Long getTokenTTL(String tolen) {
-        Long expire = redisTemplate.getExpire(tolen);
+    public Long getTokenTTL(String uuid) {
+        Long expire = redisTemplate.getExpire(uuid);
         return expire;
     }
 }

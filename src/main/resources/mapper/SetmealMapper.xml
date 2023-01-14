@@ -10,6 +10,7 @@
     <!--这里注意，自己写的sql，得注意mp的逻辑删除都不能用,包括增改的自动填充，所以得手写条件-->
     <!--IPage<SetmealAndCategoryVO> getSetmealAndCategoryVO(Page page, @Param("ew") QueryWrapper<SetmealAndCategoryVO> queryWrapper);-->
     <select id="getSetmealAndCategoryVO" resultType="com.qc.ssm.ssmstudy.reggie.pojo.vo.SetmealAndCategoryVO">
-        select <include refid="allsetmealandcategory"></include> from setmeal left join category ON setmeal.category_id = category.id ${ew.customSqlSegment}
+        select <include refid="allsetmealandcategory"></include> from setmeal
+            left join category ON setmeal.category_id = category.id ${ew.customSqlSegment}
     </select>
 </mapper>

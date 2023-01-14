@@ -93,6 +93,12 @@
             <artifactId>java-jwt</artifactId>
             <version>3.10.3</version>
         </dependency>
+<!--        &lt;!&ndash; spring security 安全认证 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-security</artifactId>-->
+<!--        </dependency>-->
+
 <!--&lt;!&ndash;        路过图床&ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>com.google.code.gson</groupId>-->

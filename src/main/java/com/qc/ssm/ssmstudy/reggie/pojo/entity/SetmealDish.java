@@ -3,6 +3,7 @@ package com.qc.ssm.ssmstudy.reggie.pojo.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Data;
 
@@ -31,6 +32,9 @@ public class SetmealDish implements Serializable {
     //菜品原价
     private BigDecimal price;
 
+
+//    private String image;
+
     //份数
     private Integer copies;
 
@@ -50,6 +54,7 @@ public class SetmealDish implements Serializable {
     private Long updateUser;
 
     //是否删除
+    @TableLogic
     @TableField(fill = FieldFill.INSERT)
     private Integer isDeleted;
 

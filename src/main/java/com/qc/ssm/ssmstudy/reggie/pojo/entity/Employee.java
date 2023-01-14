@@ -55,5 +55,6 @@ public class Employee implements Serializable {
 
     private Integer permissions;//权限，1为admin，2为门店管理员，3为门店员工，2,3必须有对应的门店id
 
+//    private Long role;//权限更改为角色，再去查询角色所有的权限
     private Long storeId;//绑定门店Id，非必要
 }

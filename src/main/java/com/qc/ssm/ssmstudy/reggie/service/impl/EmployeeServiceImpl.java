@@ -1,5 +1,7 @@
 package com.qc.ssm.ssmstudy.reggie.service.impl;
 
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
@@ -19,6 +21,7 @@ import com.qc.ssm.ssmstudy.reggie.service.EmployeeService;
 import com.qc.ssm.ssmstudy.reggie.service.IStringRedisService;
 import com.qc.ssm.ssmstudy.reggie.utils.JWTUtil;
 import com.qc.ssm.ssmstudy.reggie.utils.PWDMD5;
+import com.qc.ssm.ssmstudy.reggie.utils.RandomName;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -58,9 +62,11 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         if(one.getStatus() == 0){
             return R.error("账号已禁用!");
         }
-        //jwt生成token，token里面有userid
-        String token = JWTUtil.createToken(one.getId());
-        iStringRedisService.setTokenWithTime(token, String.valueOf(one.getId()),3600L);
+        //jwt生成token，token里面有userid，redis里存uuid
+        String uuid = RandomName.getUUID();//uuid作为key
+
+        String token = JWTUtil.getToken(String.valueOf(one.getId()),String.valueOf(one.getPermissions()),uuid);
+        iStringRedisService.setTokenWithTime(uuid, String.valueOf(one.getId()),3600L);//token作为value，id是不允许更改的
         EmployeeResult employeeResult = new EmployeeResult(String.valueOf(one.getId()),one.getUsername(),one.getName(),one.getPhone(),one.getSex(),one.getIdNumber(),one.getPermissions(),one.getStatus(),String.valueOf(one.getStoreId()),token);
 
         return R.success(employeeResult);
@@ -68,7 +74,9 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
 
     @Override
     public R<EmployeeResult> logout(String token) {
-        iStringRedisService.del(token);
+        DecodedJWT decodedJWT = JWTUtil.deToken(token);
+        Claim uuid = decodedJWT.getClaim("uuid");
+        iStringRedisService.del(uuid.asString());
         return R.successOnlyMsg("安全退出成功", Code.DEL_TOKEN);//前端在拦截器配置，只要是返回的900错误码都是删除token和本地userInfo的缓存
     }
 
@@ -80,11 +88,13 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         if (token.equals("")){
             return R.error(Code.DEL_TOKEN,"token校验失败");
         }
-        String tokenId = iStringRedisService.getTokenId(token);
+        DecodedJWT decodedJWT = JWTUtil.deToken(token);
+        Claim tokenId = decodedJWT.getClaim("id");
+//        String tokenId = iStringRedisService.getTokenId(token);
         if (tokenId==null){
             return R.error(Code.DEL_TOKEN,"token校验失败");
         }
-        Long aLong = Long.valueOf(tokenId);
+        Long aLong = Long.valueOf(tokenId.asString());
         Employee employee = employeeMapper.selectById(aLong);
         if (employee==null){
             return R.error(Code.DEL_TOKEN,"token校验失败");
@@ -103,9 +113,13 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
             return R.error("手机号为11位");
         }
 
-
+        DecodedJWT decodedJWT = JWTUtil.deToken(token);
+        Claim id1 = decodedJWT.getClaim("id");
+        if (Long.valueOf(id1.asString())!=id){
+            throw new CustomException("不安全");
+        }
         Employee employee = new Employee();
-        employee.setId(id);
+        employee.setId(Long.valueOf(id1.asString()));//更新操作是更新操作者自身的信息
 //        employee.setUpdateUser(id);
 
         employee.setSex(sex);
@@ -332,12 +346,18 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
     }
 
     @Override
-    public R<String> updataEmployee(String caozuoId, String userid,String name, String username, String phone, String idNumber, String status, String permissions, String storeId, String sex, String token) {
+    public R<String> updataEmployee(String userid,String name, String username, String phone, String idNumber, String status, String permissions, String storeId, String sex, String token) {
         if (token==null){
             return R.error(Code.DEL_TOKEN,"环境异常,强制下线");
         }
+//        if (caozuoId==null){
+//            iStringRedisService.del(token);
+//            return R.error(Code.DEL_TOKEN,"环境异常,强制下线");
+//        }
+        DecodedJWT decodedJWT = JWTUtil.deToken(token);
+        Claim id = decodedJWT.getClaim("id");
+        String caozuoId = id.asString();
         if (caozuoId==null){
-            iStringRedisService.del(token);
             return R.error(Code.DEL_TOKEN,"环境异常,强制下线");
         }
         if (userid==null){

@@ -8,9 +8,7 @@ import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.mapper.SetmealMapper;
 import com.qc.ssm.ssmstudy.reggie.pojo.DishResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.SetmealResult;
-import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
-import com.qc.ssm.ssmstudy.reggie.pojo.entity.Setmeal;
-import com.qc.ssm.ssmstudy.reggie.pojo.entity.SetmealDish;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.*;
 import com.qc.ssm.ssmstudy.reggie.pojo.vo.DishAndCategoryVO;
 import com.qc.ssm.ssmstudy.reggie.pojo.vo.SetmealAndCategoryVO;
 import com.qc.ssm.ssmstudy.reggie.service.SetmealDishService;
@@ -23,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -66,6 +65,8 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
 
         List<SetmealAndCategoryVO> setmealResults = pageInfo.getRecords();
         List<SetmealResult> setmealResultList = new ArrayList<>();
+
+
         for (SetmealAndCategoryVO setmealAndCategoryVO:
                 setmealResults) {
             SetmealResult setmealResult = new SetmealResult();
@@ -84,6 +85,9 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
             setmealResult.setUpdateTime(setmealAndCategoryVO.getUpdateTime());
             setmealResult.setUpdateUser(String.valueOf(setmealAndCategoryVO.getUpdateUser()));
             setmealResult.setCategoryName(setmealAndCategoryVO.getCategoryName());
+
+//
+//            setmealResult.setDishResults(dishResults);
             setmealResultList.add(setmealResult);
         }
         PageData<SetmealResult> resultPageData = new PageData<>();
@@ -136,6 +140,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         setmeal.setPrice(bigDecimal);
         setmeal.setName(setmealResult.getName());
         setmeal.setStatus(setmealResult.getStatus());
+        setmeal.setImage(setmealResult.getImage());
         setmeal.setCategoryId(Long.valueOf(setmealResult.getCategoryId()));
         setmeal.setStoreId(Long.valueOf(setmealResult.getStoreId()));
         boolean save = setmealService.save(setmeal);
@@ -163,6 +168,58 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
             return R.success("注意，你这套餐的菜品为空哦");//允许新增空菜品的套餐
         }
         return R.success("新增成功");
+    }
+
+    @Transactional
+    @Override
+    public R<String> updateStatus(String id, String status) {
+        log.info("id = {},status = {}",id,status);
+        Collection<Setmeal> entityList = new ArrayList<>();
+        String[] split = id.split(",");
+
+        for(int i =0; i < split.length ; i++){
+            Setmeal setmeal = new Setmeal();
+            setmeal.setId(Long.valueOf(split[i]));
+            setmeal.setStatus(Integer.valueOf(status));
+            entityList.add(setmeal);
+        }
+        boolean b = setmealService.updateBatchById(entityList);
+        if (b){
+            return R.success("更新成功");
+        }
+        return R.error("更新失败");
+    }
+
+    @Override
+    @Transactional
+    public R<String> deleteSetmeal(String id) {
+        log.info("id = {}",id);
+        Collection<Long> longList = new ArrayList<>();
+        Collection<SetmealDish> listBig = new ArrayList<>();
+        String[] split = id.split(",");
+        for(int i =0; i < split.length ; i++){
+            longList.add(Long.valueOf(split[i]));
+            SetmealDish setmealDish = new SetmealDish();
+            setmealDish.setSetmealId(Long.valueOf(split[i]));
+            listBig.add(setmealDish);
+        }
+        /**
+         * notebook:这里批量删除Id是什么类型就用泛型就填什么，直接放入实体类会报错
+         */
+        boolean b = setmealService.removeByIds(longList);
+        Collection<Long> setmealDishOnlyIdListBySetmealIdList = setmealDishService.getSetmealDishOnlyIdListBySetmealIdList(listBig);
+        if (setmealDishOnlyIdListBySetmealIdList.size()==0){
+            return R.success("删除成功");
+        }
+        boolean b1 = setmealDishService.removeByIds(setmealDishOnlyIdListBySetmealIdList);
+        if (!b){
+            throw new CustomException("业务异常:setmealService");
+        }
+        if (!b1){
+            throw new CustomException("业务异常:setmealDishService");
+        }
+
+        return R.success("删除成功");
     }
 }
 

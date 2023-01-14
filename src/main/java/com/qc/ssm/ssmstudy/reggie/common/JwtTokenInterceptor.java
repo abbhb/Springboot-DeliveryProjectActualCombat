@@ -1,6 +1,9 @@
 package com.qc.ssm.ssmstudy.reggie.common;
 
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.qc.ssm.ssmstudy.reggie.service.IStringRedisService;
+import com.qc.ssm.ssmstudy.reggie.utils.JWTUtil;
 import com.qc.ssm.ssmstudy.reggie.utils.RedisOperator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.Date;
 
 @Slf4j
 @Component
@@ -38,7 +42,7 @@ public class JwtTokenInterceptor extends HandlerInterceptorAdapter {
 
             String authorization =  request.getHeader("Authorization");
 
-            String id =  request.getHeader("userid");//此处id为字符串
+            String id =  request.getHeader("userid");//此处id为字符串，正常携带，双重判断
 
 //            System.out.println("authorization = " + authorization);
 //            if(redisOperator)
@@ -50,9 +54,21 @@ public class JwtTokenInterceptor extends HandlerInterceptorAdapter {
                 response.setStatus(Code.DEL_TOKEN);
                 return false;
             }
-            System.out.println("authorization = " + authorization);//将id直接传回
+//            System.out.println("authorization = " + authorization);//将id直接传回
 
-            Long tokenTTL = iStringRedisService.getTokenTTL(authorization);
+            DecodedJWT decodedJWT = JWTUtil.deToken(authorization);
+            Claim uuid = decodedJWT.getClaim("uuid");
+            Claim cid = decodedJWT.getClaim("id");
+//            log.info(expiresAt.toString());
+            if (cid==null){
+                throw new CustomException("不安全");//后期加上安全处理
+            }
+            if (Long.valueOf(cid.asString())!=Long.valueOf(id)){
+                throw new CustomException("不安全");//后期加上安全处理
+            }
+
+            Long tokenTTL = iStringRedisService.getTokenTTL(uuid.asString());
+
 
             if (tokenTTL==null){
                 log.info("tokenTTL==null");
@@ -60,9 +76,9 @@ public class JwtTokenInterceptor extends HandlerInterceptorAdapter {
                 return false;
             }else {
                 if (tokenTTL.intValue()!=-2){
-                    if (tokenTTL.intValue()<=1500){
+                    if (tokenTTL.intValue()<=1500){//刷新统一放在刷新接口中
                         //一小时内如果访问过需要token的接口且token剩余时间小于1500s的话重置token过期时间为3600s
-                        iStringRedisService.setTokenWithTime(authorization,id,3600L);
+                        iStringRedisService.setTokenWithTime(uuid.asString(),cid.asString(),3600L);
                     }
                 }else {
                     log.info("tokenTTL==-2");

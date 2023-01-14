@@ -10,4 +10,8 @@ public interface SetmealService extends IService<Setmeal> {
     R<PageData<SetmealResult>> getSetmeal(Integer pageNum, Integer pageSize, Long storeId, String name);
 
     R<String> addSetmeal(SetmealResult setmealResult);
+
+    R<String> updateStatus(String id, String status);
+
+    R<String> deleteSetmeal(String id);
 }

@@ -1,8 +1,11 @@
 package com.qc.ssm.ssmstudy.reggie.test;
 
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.Employee;
 import com.qc.ssm.ssmstudy.reggie.mapper.EmployeeMapper;
 import com.qc.ssm.ssmstudy.reggie.service.IStringRedisService;
+import com.qc.ssm.ssmstudy.reggie.utils.JWTUtil;
 import com.qc.ssm.ssmstudy.reggie.utils.PWDMD5;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +21,22 @@ public class EmployeeMybatisPlusTest {
     @Autowired
     private IStringRedisService iStringRedisService;
 
+//    @Autowired
+//    private JWTUtil jwtUtil;
     @Test
     public void testFind(){
-        List<Employee> employees = employeeMapper.selectList(null);
-
-        //若没有条件设置，将条件设置为null
-        employees.forEach(System.out::println);
+//        List<Employee> employees = employeeMapper.selectList(null);
+//
+//        //若没有条件设置，将条件设置为null
+//        employees.forEach(System.out::println);
+//        String token = JWTUtil.getToken("1", "1");
+//        DecodedJWT decodedJWT = JWTUtil.deToken(token);
+//        Claim permissions = null;
+//
+//
+//        Claim id = decodedJWT.getClaim("id");
+//        Long aLong = id.asLong();
+//        System.out.println(aLong);
     }
     @Test
     public void testPWDMD5(){

@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.Version;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.Setmeal;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.SetmealDish;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class SetmealAndCategoryVO implements Serializable {
@@ -71,4 +73,5 @@ public class SetmealAndCategoryVO implements Serializable {
     private String categoryName;
 
     private Integer categoryVersion;
+
 }

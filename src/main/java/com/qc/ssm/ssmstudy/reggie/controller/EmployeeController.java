@@ -116,7 +116,7 @@ public class EmployeeController {
 
     @NeedToken
     @PostMapping("/updataemployee")
-    public R<String> updataEmployee(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestHeader(value="userid", defaultValue = "") String caozuoId,@RequestBody Map<String, Object> employee){
+    public R<String> updataEmployee(@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> employee){
 //        String userId = (String) employee.get("userId");//因为雪花算法，所以ID来回传递使用字符串,传回Service前转会Long
        // caozuoId//操作者id
 //        return employeeService.deleteEmployee(userId,caozuoId,token);
@@ -132,7 +132,7 @@ public class EmployeeController {
         String storeId = (String) employee.get("storeId");
         String sex = (String) employee.get("sex");
         String userid = (String) employee.get("userid");
-        return employeeService.updataEmployee(caozuoId,userid,name,username,phone,idNumber,status,permissions,storeId,sex,token);
+        return employeeService.updataEmployee(userid,name,username,phone,idNumber,status,permissions,storeId,sex,token);
     }
 
     @NeedToken

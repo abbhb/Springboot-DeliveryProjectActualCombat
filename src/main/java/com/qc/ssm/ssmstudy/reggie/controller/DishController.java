@@ -1,5 +1,6 @@
 package com.qc.ssm.ssmstudy.reggie.controller;
 
+import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.pojo.DishAndCategoryResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.DishFlavorResult;
@@ -28,18 +29,21 @@ public class DishController {
     private DishFlavorService dishFlavorService;
     @Autowired
     private DishService dishService;
+    @NeedToken
     @PostMapping("/add")
     public R<String> addDish(@RequestBody DishResult dishResult){
         log.info(dishResult.toString());
         return dishService.addDish(dishResult);
     }
 
+    @NeedToken
     @PostMapping("/edit")
     public R<String> editDish(@RequestBody DishResult dishResult){
         log.info(dishResult.toString());
         return dishService.editDish(dishResult);
     }
 
+    @NeedToken
     @GetMapping ("/get")
     public R<PageData<DishAndCategoryResult>> getDish(@RequestParam(value = "pageNum",required = false) Integer pageNum,@RequestParam(value = "pageSize",required = false) Integer pageSize,@RequestParam(value = "storeId",required = true) Long storeId,@RequestParam(value = "name",required = false) String name){
         log.info(name);
@@ -47,6 +51,7 @@ public class DishController {
     }
 
     @ApiOperation("put请求-单个参数RequestParam、文件上传")
+    @NeedToken
     @PutMapping("/put")
     public R<String> putMapping(@RequestParam String id,
                                  @RequestParam String status) {
@@ -59,6 +64,7 @@ public class DishController {
      * @return
      */
     @DeleteMapping("/del")
+    @NeedToken
     public R<String> deleteMapping(
             @ApiParam(required = false, value = "主键id") @RequestParam String id) {
         return dishService.deleteDishAndFlavor(id);
@@ -69,12 +75,14 @@ public class DishController {
      * @return
      */
     @GetMapping ("/get/flavor")
+    @NeedToken
     public R<List<DishFlavorResult>> getDishFlavor(@RequestParam(value = "id") String id){
         log.info(id);
         return dishFlavorService.getDishFlavorResultByDishId(id);
     }
 
     @GetMapping ("/get/listbycategory")
+    @NeedToken
     public R<List<DishResult>> getDishListByCategoryId(@RequestParam(value = "categoryId",required = false) Long categoryId,@RequestParam(value = "storeId",required = true) Long storeId,@RequestParam(value = "name",required = false) String name){
         return dishService.getDishListByCategoryId(categoryId,storeId,name);
     }

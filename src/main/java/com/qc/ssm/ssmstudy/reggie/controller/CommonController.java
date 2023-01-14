@@ -1,6 +1,7 @@
 package com.qc.ssm.ssmstudy.reggie.controller;
 
 
+import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.service.CommonService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ public class CommonController {
 
     @Autowired
     private CommonService commonService;
+    @NeedToken
     @PostMapping("/uploadimage")
     public R<String> uploadImage(MultipartFile file){
         return commonService.uploadImage(file);

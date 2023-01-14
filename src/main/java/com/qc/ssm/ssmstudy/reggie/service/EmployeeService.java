@@ -27,7 +27,7 @@ public interface EmployeeService extends IService<Employee> {
 
     R<EmployeeResult> deleteEmployee(String userId, String caozuoId, String token);
 
-    R<String> updataEmployee(String caozuoId, String userid, String name, String username, String phone, String idNumber, String status, String permissions, String storeId, String sex, String token);
+    R<String> updataEmployee(String userid, String name, String username, String phone, String idNumber, String status, String permissions, String storeId, String sex, String token);
 
     R<EmployeeResult> addEmployee(String caozuoId, String name, String username, String password, String phone, String idNumber, String status, String permissions, String storeId, String sex, String token);
 
