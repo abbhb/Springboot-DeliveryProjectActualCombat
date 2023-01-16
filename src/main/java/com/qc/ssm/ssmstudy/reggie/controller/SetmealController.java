@@ -73,4 +73,16 @@ public class SetmealController {
         log.info("id = {}",id);
         return setmealDishService.getSetmealDish(id);//storeId必须不为空
     }
+
+    /**
+     * 更新套餐
+     * @param setmealResult
+     * @return
+     */
+    @PostMapping("/edit")
+    @NeedToken
+    public R<String> editSetmeal(@RequestBody SetmealResult setmealResult){
+        log.info(setmealResult.toString());
+        return setmealService.editSetmeal(setmealResult);
+    }
 }

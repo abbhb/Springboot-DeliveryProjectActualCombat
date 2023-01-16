@@ -38,8 +38,8 @@ public class SetmealDish implements Serializable {
     //份数
     private Integer copies;
 
-    //排序
-    private Integer sort;
+//    //排序
+//    private Integer sort;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

@@ -34,6 +34,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         log.info("开始静态资源映射");
         registry.addResourceHandler("/front/**").addResourceLocations("classpath:/front/");//此处classpath:/front/必须得在末尾加/，否则无法访问
         registry.addResourceHandler("/backend/**").addResourceLocations("classpath:/backend/");
+//        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

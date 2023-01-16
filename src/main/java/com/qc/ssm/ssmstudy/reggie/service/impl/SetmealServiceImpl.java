@@ -1,6 +1,8 @@
 package com.qc.ssm.ssmstudy.reggie.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qc.ssm.ssmstudy.reggie.common.CustomException;
@@ -153,7 +155,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
             setmealDish.setDishId(Long.valueOf(dish.getId()));//每个dish的ID
             setmealDish.setSetmealId(setmeal.getId());//上方添加完返回
             setmealDish.setName(dish.getName());
-            setmealDish.setSort(dish.getSort());
+//            setmealDish.setSort(dish.getSort());
             setmealDish.setCopies(dish.getCopies());
             BigDecimal bigDecimals = new BigDecimal(dish.getPrice());
             bigDecimals.setScale(2,BigDecimal.ROUND_HALF_UP);//小数位数2位，四舍五入法
@@ -220,6 +222,80 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         }
 
         return R.success("删除成功");
+    }
+
+    @Override
+    @Transactional
+    public R<String> editSetmeal(SetmealResult setmealResult) {
+        if (!StringUtils.isNotEmpty(setmealResult.getId())){return R.error("id");}
+        if (!StringUtils.isNotEmpty(setmealResult.getCategoryId())){return R.error("分类Id");}
+        if (!StringUtils.isNotEmpty(setmealResult.getPrice())){return R.error("价格不为空");}
+        if (!StringUtils.isNotEmpty(setmealResult.getName())){return R.error("名称不能为空");}
+        if (!StringUtils.isNotEmpty(setmealResult.getStoreId())){return R.error("门店id不能为空");}
+        if (setmealResult.getVersion()==null){return R.error("版本异常");}
+        if (setmealResult.getSort()==null){return R.error("排序不能为空");}
+        if (setmealResult.getStatus()==null){return R.error("状态不能为空");}
+        Setmeal setmeal = new Setmeal();
+        setmeal.setCategoryId(Long.valueOf(setmealResult.getCategoryId()));
+        setmeal.setName(setmealResult.getName());
+        setmeal.setCode(setmealResult.getCode());
+        BigDecimal bigDecimal = new BigDecimal(setmealResult.getPrice());
+        bigDecimal.setScale(2,BigDecimal.ROUND_HALF_UP);//小数位数2位，四舍五入法
+        setmeal.setPrice(bigDecimal);
+        setmeal.setSort(setmealResult.getSort());
+        setmeal.setImage(setmealResult.getImage());
+        setmeal.setStatus(setmealResult.getStatus());
+        setmeal.setDescription(setmealResult.getDescription());
+        setmeal.setVersion(setmealResult.getVersion());//传入版本,乐观锁插件会自动去校验版本，如果一致就执行并且自增版本
+        LambdaUpdateWrapper<Setmeal> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Setmeal::getId,Long.valueOf(setmealResult.getId()));
+        updateWrapper.eq(Setmeal::getStoreId,Long.valueOf(setmealResult.getStoreId()));
+        boolean update = setmealService.update(setmeal, updateWrapper);
+        if (!update){
+            throw new CustomException("业务异常:update");
+        }
+        //查询这个套餐原有绑定的IdList
+        LambdaQueryWrapper<SetmealDish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SetmealDish::getSetmealId,Long.valueOf(setmealResult.getId()));
+        queryWrapper.eq(SetmealDish::getStoreId,Long.valueOf(setmealResult.getStoreId()));
+        List<SetmealDish> list = setmealDishService.list(queryWrapper);
+        //判空，可能套餐没有绑定菜品
+        if (list.size()!=0){
+            //list转换成idList
+            Collection<Long> idList = new ArrayList<>();
+            for (SetmealDish sd:
+                    list) {
+                idList.add(sd.getId());
+            }
+            //删除原有的菜品关系
+            boolean b = setmealDishService.removeByIds(idList);
+            if (!b){
+                throw new CustomException("业务异常:removeByIds");
+            }
+        }
+
+        if (setmealResult.getDishResults().size()!=0){
+            List<DishResult> dishResults = setmealResult.getDishResults();
+            List<SetmealDish> setmealDishList = new ArrayList<>();
+            for (DishResult d:
+                 dishResults) {
+                SetmealDish setmealDish = new SetmealDish();
+                setmealDish.setDishId(Long.valueOf(d.getId()));
+                setmealDish.setName(d.getName());
+                BigDecimal bigDecimalS = new BigDecimal(d.getPrice());
+                bigDecimalS.setScale(2,BigDecimal.ROUND_HALF_UP);//小数位数2位，四舍五入法
+                setmealDish.setPrice(bigDecimalS);
+                setmealDish.setSetmealId(Long.valueOf(setmealResult.getId()));
+                setmealDish.setStoreId(Long.valueOf(setmealResult.getStoreId()));
+                setmealDish.setCopies(d.getCopies());
+                setmealDishList.add(setmealDish);
+            }
+            boolean b = setmealDishService.saveBatch(setmealDishList);
+            if (!b){
+                throw new CustomException("业务异常:saveBatch");
+            }
+        }
+        return R.success("更新成功");
     }
 }
 

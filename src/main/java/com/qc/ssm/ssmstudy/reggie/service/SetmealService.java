@@ -14,4 +14,6 @@ public interface SetmealService extends IService<Setmeal> {
     R<String> updateStatus(String id, String status);
 
     R<String> deleteSetmeal(String id);
+
+    R<String> editSetmeal(SetmealResult setmealResult);
 }

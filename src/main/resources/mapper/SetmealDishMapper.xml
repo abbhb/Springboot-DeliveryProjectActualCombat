@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qc.ssm.ssmstudy.reggie.mapper.SetmealDishMapper">
+<!--    int insertBatchSetmealDish(@Param("sd") List<SetmealDish> setmealDishList);-->
+<!--    <insert id="insertBatchSetmealDish" parameterType="java.util.List">-->
+<!--        INSERT INTO setmeal_dish (id, setmeal_id, dish_id, name, price, copies, sort, create_time, update_time, create_user, update_user, is_deleted, store_id) VALUES-->
+<!--        <foreach collection="list" item="entity" index= "index" separator =",">-->
+<!--            (-->
+<!--            #{entity.id}, #{entity.setmealId}, #{entity.dishId}, #{entity.name}, #{entity.price}, #{entity.copies}, #{entity.sort}, #{entity.createTime}, #{entity.updateTime}, #{entity.createUser}, #{entity.updateUser}, #{entity.isDeleted}, #{entity.storeId}-->
+<!--            )-->
+<!--        </foreach>-->
+<!--    </insert>-->
+
+</mapper>
