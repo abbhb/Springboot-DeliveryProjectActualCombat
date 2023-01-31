@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
-    <title>菩提阁</title>
+    <meta name="referrer" content="no-referrer" />
+    <title>XX</title>
     <link rel="icon" href="images/favico.ico">
     <!--不同屏幕尺寸根字体设置-->
     <script src="js/base.js"></script>
@@ -27,7 +28,7 @@
         <div class="divStatic">
           <img src="images/logo.png" class="logo"/>
           <div class="divDesc">
-            <div class="divName">菩提阁餐厅</div>
+            <div id="divName" class="divName">XX餐厅</div>
             <div class="divSend">
                 <span><img src="images/time.png"/> 距离1.5km</span>
                 <span><img src="images/money.png"/> 配送费6元</span>
@@ -35,8 +36,8 @@
             </div>
           </div>
         </div>
-        <div class="divDesc">
-          简介: 菩提阁中餐厅是菩提阁点餐的独立的品牌，定位“大众 化的美食外送餐饮”，旨为顾客打造专业美食。
+        <div id="introller" class="divDesc">
+          简介: XX中餐厅是XX点餐的独立的品牌，定位“大众 化的美食外送餐饮”，旨为顾客打造专业美食。
         </div>
       </div>
       <div class="divBody">
@@ -56,7 +57,7 @@
               <div>
                 <div class="divName">{{item.name}}</div>
                 <div class="divDesc">{{item.description}}</div>
-                <div class="divDesc">{{'月销' + (item.saleNum ? item.saleNum : 0)  }}</div>
+                <div class="divDesc">{{'销量' + (String(item.saleNum)==='null' ? 0 : item.saleNum)  }}</div>
                 <div class="divBottom"><span>￥</span><span>{{item.price/100}}</span></div>
                 <div class="divNum">
                   <div class="divSubtract" v-if="item.number > 0">
@@ -256,6 +257,8 @@
                 show:false,
                 item:{}
               },
+              storeId:'',
+              storeStatus:'',
             }
           },
           computed:{
@@ -279,6 +282,26 @@
             }
           },
           created(){
+            var url = window.location.href ;             //获取当前url
+            var dz_url = url.split('#')[0];                //获取#/之前的字符串
+            var cs = dz_url.split('?')[1];                //获取?之后的参数字符串
+            if (cs==undefined){
+              console.log("未知门店");
+              window.top.location.href = '../front/page/no-params.html'
+            }else {
+              var cs_arr = cs.split('&');                    //参数字符串分割为数组
+              var cs={};
+              for(var i=0;i<cs_arr.length;i++){         //遍历数组，拿到json对象
+                cs[cs_arr[i].split('=')[0]] = cs_arr[i].split('=')[1]
+              }
+              if ((cs.storeId==undefined)){
+                console.log("未知门店");
+                window.top.location.href = '../front/page/no-params.html'
+              }
+            }
+            this.storeId = cs.storeId;
+            console.log(cs.storeId);
+
           },
           watch:{
             'dialogFlavor.show'(flag){
@@ -288,35 +311,57 @@
                 document.querySelector('.divCart').style.zIndex = 3000
               }
             },
+            'storeId'(){
+              this.updataStore()
+            }
           },
           mounted(){
             this.initData()
           },
           methods:{
             //初始化数据
-            initData(){
-              Promise.all([categoryListApi(),cartListApi({})]).then(res=>{
-                //获取分类数据
-                if(res[0].code === 1){
-                  this.categoryList = res[0].data
-                  if(Array.isArray(res[0].data) && res[0].data.length > 0){
-                    this.categoryId = res[0].data[0].id
-                    if(res[0].data[0].type === 1){
+            async initData() {
+              const res = await categoryListApi(this.storeId);
+                if (String(res.code) === '1') {
+                  console.log(res)
+                  this.categoryList = res.data
+                  if (Array.isArray(res.data) && res.data.length > 0) {
+                    this.categoryId = res.data[0].id
+                    if (String(res.data[0].type) === '1') {
+                      //获取菜品列表
                       this.getDishList()
-                    }else{
-                      this.getSetmealData()
+                    } else {
+                      //获取套餐列表
+                      // this.getSetmealData()
                     }
                   }
-                }else{
-                  this.$notify({ type:'warning', message:res[0].msg});
+                } else {
+                  this.$notify({type: 'warning', message: res[0].msg});
                 }
-                //获取菜品数据
-                if(res[1].code === 1){
-                this.cartData = res[1].data
-                }else{
-                  this.$notify({ type:'warning', message:res[1].msg});
-                }
-              })
+              // Promise.all([, cartListApi({})]).then(res => {
+              //   //获取分类数据
+              //   if (String(res[0].code) === '1') {
+              //     console.log(res)
+              //     this.categoryList = res[0].data
+              //     if (Array.isArray(res[0].data) && res[0].data.length > 0) {
+              //       this.categoryId = res[0].data[0].id
+              //       if (String(res[0].data[0].type) === '1') {
+              //
+              //         this.getDishList()
+              //       } else {
+              //         this.getSetmealData()
+              //       }
+              //     }
+              //   } else {
+              //     this.$notify({type: 'warning', message: res[0].msg});
+              //   }
+              //   //获取菜品数据
+              //   if (res[1].code === 1) {
+              //     this.cartData = res[1].data
+              //   } else {
+              //     this.$notify({type: 'warning', message: res[1].msg});
+              //   }
+              // })
             },
             //分类点击
             categoryClick(index,id,type){
@@ -328,13 +373,28 @@
                 this.getSetmealData()
               }
             },
+            //更新商店
+            async updataStore() {
+              const res = await getStoreInfo(this.storeId)
+              if (String(res.code)==='1'){
+                document.title = res.data.name
+                document.getElementById('introller').setHTML(res.data.introduction)
+                document.getElementById('divName').setHTML(res.data.name)
+                this.storeStatus = String(res.data.status)
+              }else {
+                this.$notify({ type:'warning', message:res.msg});
+              }
+            },
             //获取菜品数据
             async getDishList(){
               if(!this.categoryId){
                 return
               }
-              const res = await dishListApi({categoryId:this.categoryId,status:1})
-              if(res.code === 1){
+              if (!this.storeId){
+                return
+              }
+              const res = await dishListApi({storeId:this.storeId,categoryId:this.categoryId})
+              if(String(res.code) === '1'){
                 let dishList = res.data
                 const cartData  = this.cartData
                 if(dishList.length > 0 && cartData.length > 0){
@@ -356,7 +416,7 @@
               if(!this.categoryId){
                 return
               }
-              const res = await setmealListApi({categoryId:this.categoryId,status:1})
+              const res = await setmealListApi({storeId:this.storeId,categoryId:this.categoryId})
               if(res.code === 1){
                   let dishList = res.data
                   const cartData  = this.cartData
@@ -562,7 +622,9 @@
             },
             //网络图片路径转换
             imgPathConvert(path){
-              return imgPath(path)
+              // return imgPath(path)
+              console.log("图片:"+path)
+              return path
             },
             //跳转到去结算界面
             toAddOrderPage(){

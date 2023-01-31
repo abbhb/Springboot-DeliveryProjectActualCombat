@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -266,6 +267,23 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
         storeResult.setName(store.getStoreName());
         storeResult.setStatus(store.getStoreStatus());
         storeResult.setIntroduction(store.getStoreIntroduction());
+        return R.success(storeResult);
+    }
+
+    @Override
+    public R<StoreResult> getStoreInfo(Long storeId) {
+        if (ObjectUtils.isEmpty(storeId)){
+            return R.error("异常");
+        }
+        Store byId = storeService.getById(storeId);
+        if (byId==null){
+            return R.error("异常");
+        }
+        StoreResult storeResult = new StoreResult();
+        storeResult.setId(String.valueOf(byId.getStoreId()));
+        storeResult.setStatus(byId.getStoreStatus());
+        storeResult.setIntroduction(byId.getStoreIntroduction());
+        storeResult.setName(byId.getStoreName());
         return R.success(storeResult);
     }
 }

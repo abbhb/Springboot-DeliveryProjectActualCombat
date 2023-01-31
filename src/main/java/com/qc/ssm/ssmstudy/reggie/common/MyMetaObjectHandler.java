@@ -43,11 +43,16 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         log.info("公共字段自动填充");
 //        Long userId = Long.valueOf(httpServletRequest.getHeader("userid"));
-        String authorization =  httpServletRequest.getHeader("Authorization");
-        DecodedJWT decodedJWT = JWTUtil.deToken(authorization);
-        Claim id = decodedJWT.getClaim("id");
-        //此处可能会出现异常,要是userid为null此处异常
-        metaObject.setValue("updateUser",Long.valueOf(id.asString()));
+        try {
+            String authorization =  httpServletRequest.getHeader("Authorization");
+            DecodedJWT decodedJWT = JWTUtil.deToken(authorization);
+            Claim id = decodedJWT.getClaim("id");
+            //此处可能会出现异常,要是userid为null此处异常
+            metaObject.setValue("updateUser",Long.valueOf(id.asString()));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         metaObject.setValue("updateTime",LocalDateTime.now());
     }
 }

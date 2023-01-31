@@ -23,9 +23,9 @@ mybatis-plus:
 
 # ====================== ↓↓↓↓↓↓ MinIO文件服务器 ↓↓↓↓↓↓ ======================
 minio:
-  url: http://192.168.220.135:9000
+  url: http://8.130.42.191:9000
   accessKey: reggit
-  secretKey: 12345678
+  secretKey: fiHiG66pBTwJ6Uvmrhq9Y7BkXyhMOMjy
   bucketName: reggit
 # ====================== ↓↓↓↓↓↓ 私有配置 ↓↓↓↓↓↓ ======================
 privateconfig:

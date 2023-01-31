@@ -36,4 +36,9 @@ public class IStringRedisServiceImpl implements IStringRedisService {
         Long expire = redisTemplate.getExpire(uuid);
         return expire;
     }
+
+    @Override
+    public String getValue(String key) {
+        return (String)redisTemplate.opsForValue().get(key);
+    }
 }

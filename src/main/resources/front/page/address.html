@@ -32,13 +32,13 @@
                     </div>
                     <div class="divUserPhone">
                         <span>{{item.consignee}}</span>
-                        <span>{{item.sex === '0' ? '女士' : '先生'}}</span>
+                        <span>{{item.sex}}</span>
                         <span>{{item.phone}}</span>
                     </div>
                     <img src="../images/edit.png" @click.stop.prevent="toAddressEditPage(item)"/>
                     <div class="divSplit"></div>
                     <div class="divDefault" >
-                        <img src="../images/checked_true.png" v-if="item.isDefault === 1">
+                        <img src="../images/checked_true.png" v-if="String(item.isDefault) === '1'">
                         <img src="../images/checked_false.png" @click.stop.prevent="setDefaultAddress(item)" v-else>设为默认地址
                     </div>
                 </div>
@@ -117,7 +117,7 @@
                     },
                     toAddressEditPage(item){
                         window.requestAnimationFrame(()=>{
-                            window.location.href= `address-edit.html`
+                            window.location.href= `address-edit.html`+'?id='+item.id
                         })
                     },
                     toAddressCreatePage(){

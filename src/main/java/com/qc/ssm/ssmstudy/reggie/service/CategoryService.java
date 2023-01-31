@@ -19,4 +19,6 @@ public interface CategoryService extends IService<Category> {
     R<String> updataCategory(Category category);
 
     R<List<ValueLabelResult>> getCategoryLableValueList(String storeId,String type);
+
+    R<List<CategoryResult>> getCategoryList(Long storeId);
 }

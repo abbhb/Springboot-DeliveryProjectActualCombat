@@ -76,4 +76,9 @@ public class Dish implements Serializable {
     @Version
     @TableField(fill = FieldFill.INSERT)
     private Integer version;
+
+    /**
+     * 销量
+     */
+    private Long saleNum;
 }

@@ -85,4 +85,16 @@ public class SetmealController {
         log.info(setmealResult.toString());
         return setmealService.editSetmeal(setmealResult);
     }
+
+    /**
+     * 返回给前端
+     * @param categoryId
+     * @param storeId
+     * @return
+     */
+    @GetMapping("list")
+    public R<List<SetmealResult>> getSetmealList(@RequestParam(value = "categoryId",required = true) Long categoryId,@RequestParam(value = "storeId",required = true) Long storeId){
+        //在这里限制必须要有分类id
+        return setmealService.getSetmealList(categoryId, storeId);
+    }
 }

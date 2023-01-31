@@ -64,4 +64,6 @@ public class DishResult implements Serializable {
     private List dishFlavors;//不能指定DishFlavorResult,在口味中
 
     private Integer copies;//份数
+
+    private String saleNum;//销量
 }

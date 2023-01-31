@@ -82,6 +82,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
         dish.setStoreId(Long.valueOf(dishResult.getStoreId()));
         dish.setCategoryId(Long.valueOf(dishResult.getCategoryId()));
         dish.setImage(imageUrl);
+        dish.setSaleNum(0L);//刚创建销量为0
         dish.setDescription(dishResult.getDescription()==null?"": dishResult.getDescription());
 
         //添加菜品
@@ -336,6 +337,44 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
             dishResult.setPrice(String.valueOf(dish.getPrice()));
             dishResult.setStatus(dish.getStatus());
             dishResult.setVersion(String.valueOf(dish.getVersion()));
+            //其实我感觉应该把每个菜的version传入，新增的时候判断下此时的菜品表是没有被更改的,
+            dishResults.add(dishResult);
+        }
+        return R.success(dishResults);
+    }
+
+    /**
+     * 需要返回口味
+     * @param categoryId
+     * @param storeId
+     * @return
+     */
+    @Override
+    public R<List<DishResult>> getDishList(Long categoryId, Long storeId) {
+        if (storeId == null){
+            return R.error("业务异常");
+        }
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        if (categoryId!=null){
+            queryWrapper.eq(Dish::getCategoryId,categoryId);
+        }
+        queryWrapper.eq(Dish::getStoreId,storeId);
+        queryWrapper.orderByAsc(Dish::getSort);
+        List<Dish> list = dishService.list(queryWrapper);
+        if (list==null){
+            return R.error("业务异常");
+        }
+        List<DishResult> dishResults = new ArrayList<>();
+        for (Dish dish:
+                list) {
+            DishResult dishResult = new DishResult();
+            dishResult.setId(String.valueOf(dish.getId()));
+            dishResult.setName(dish.getName());
+            dishResult.setImage(dish.getImage());
+            dishResult.setPrice(String.valueOf(dish.getPrice()));
+            dishResult.setStatus(dish.getStatus());
+            dishResult.setVersion(String.valueOf(dish.getVersion()));
+            dishResult.setSaleNum(String.valueOf(dish.getSaleNum()));
             //其实我感觉应该把每个菜的version传入，新增的时候判断下此时的菜品表是没有被更改的,
             dishResults.add(dishResult);
         }

@@ -8,4 +8,5 @@ public interface IStringRedisService {
     void del(String token);
 
     Long getTokenTTL(String uuid);
+    String getValue(String key);
 }

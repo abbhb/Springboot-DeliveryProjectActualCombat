@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,5 +157,21 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         }
 
         return R.success(valueLabelResultList);
+    }
+
+    @Override
+    public R<List<CategoryResult>> getCategoryList(Long storeId) {
+        if (ObjectUtils.isEmpty(storeId)){
+            return R.error("业务异常");
+        }
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Category::getStoreId,storeId);
+        queryWrapper.orderByAsc(Category::getSort);
+        List<CategoryResult> categoryResults = new ArrayList<>();
+        for (Category category : categoryService.list(queryWrapper)) {
+            CategoryResult categoryResult = new CategoryResult(String.valueOf(category.getId()),category.getType(),category.getName(),category.getSort(),String.valueOf(category.getStoreId()),category.getCreateTime(),category.getUpdateTime(),String.valueOf(category.getCreateUser()),String.valueOf(category.getUpdateUser()),category.getVersion());
+            categoryResults.add(categoryResult);
+        }
+        return R.success(categoryResults);
     }
 }

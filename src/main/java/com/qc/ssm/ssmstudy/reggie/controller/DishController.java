@@ -86,4 +86,18 @@ public class DishController {
     public R<List<DishResult>> getDishListByCategoryId(@RequestParam(value = "categoryId",required = false) Long categoryId,@RequestParam(value = "storeId",required = true) Long storeId,@RequestParam(value = "name",required = false) String name){
         return dishService.getDishListByCategoryId(categoryId,storeId,name);
     }
+
+
+    /**
+     * 返回给前端
+     * @param categoryId
+     * @param storeId
+     * @return
+     */
+    @GetMapping("list")
+    public R<List<DishResult>> getDishList(@RequestParam(value = "categoryId",required = true) Long categoryId,@RequestParam(value = "storeId",required = true) Long storeId){
+        //在这里限制必须要有分类id
+        return dishService.getDishList(categoryId, storeId);
+    }
+
 }

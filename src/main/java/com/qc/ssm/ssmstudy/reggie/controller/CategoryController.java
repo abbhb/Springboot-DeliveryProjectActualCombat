@@ -96,4 +96,10 @@ public class CategoryController {
         String type = (String) category.get("type");
         return categoryService.getCategoryLableValueList(storeId,type);
     }
+
+
+    @GetMapping("/list")
+    public R<List<CategoryResult>> getCategoryList(@RequestParam("storeId") Long storeId){
+        return categoryService.getCategoryList(storeId);
+    }
 }

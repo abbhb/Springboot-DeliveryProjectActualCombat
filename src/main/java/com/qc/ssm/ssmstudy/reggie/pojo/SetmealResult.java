@@ -68,5 +68,10 @@ public class SetmealResult {
 
     private String categoryName;
 
+    /**
+     * 销量
+     */
+    private String saleNum;
+
     private List<DishResult> dishResults;//套餐中的菜品
 }

@@ -55,28 +55,57 @@
                 }
             },
             computed:{},
-            created(){},
+            created(){
+                var url = location.search;
+                var theRequest = {};
+                if ( url.indexOf( "?" ) !== -1 ) {
+                    var str = url.substr(1); //substr()方法返回从参数值开始到结束的字符串；
+                    var strs = str.split("&");
+                    for (var i = 0; i < strs.length; i++) {
+                        theRequest[strs[i].split("=")[0]] = (strs[i].split("=")[1]);
+                    }
+                    console.log(theRequest); //此时的theRequest就是我们需要的参数；
+                }
+                if (String(theRequest.messagecode)==='1'){
+                    window.vant.Notify({
+                        message: "登录过期,请重新登录",
+                        type: 'warning',
+                        duration: 5 * 1000
+                    })
+                }
+            },
             mounted(){},
             methods:{
-                getCode(){
+                async getCode() {
                     this.form.code = ''
                     const regex = /^(13[0-9]{9})|(15[0-9]{9})|(17[0-9]{9})|(18[0-9]{9})|(19[0-9]{9})$/;
                     if (regex.test(this.form.phone)) {
                         this.msgFlag = false
-                        this.form.code = (Math.random()*1000000).toFixed(0)
-                    }else{
+                        let params = {}
+                        params.phone = this.form.phone
+                        const res = await sendCodeApi(params)
+                        if (String(res.code)==='1'){
+                            this.$notify({ type:'success', message:res.msg});
+                        }else {
+                            this.$notify({type:'warning', message:res.msg});
+                        }
+                        // this.form.code = (Math.random()*1000000).toFixed(0)
+                    } else {
                         this.msgFlag = true
                     }
                 },
                 async btnLogin(){
                     if(this.form.phone && this.form.code){
                         this.loading = true
-                        const res = await loginApi({phone:this.form.phone})
+                        const res = await loginApi({phone:this.form.phone,code:this.form.code})
                         this.loading = false
                         if(res.code === 1){
                             sessionStorage.setItem("userPhone",this.form.phone)
+                            localStorage.setItem("fuserinfo",JSON.stringify(res.data))
+                            localStorage.setItem('fuserid',String(res.data.id))
+                            localStorage.setItem("ftoken",String(res.data.token))
                             window.requestAnimationFrame(()=>{
-                                window.location.href= '../index.html'
+                                window.location.href= '../index.html'//得回调商店id
                             })                           
                         }else{
                             this.$notify({ type:'warning', message:res.msg});

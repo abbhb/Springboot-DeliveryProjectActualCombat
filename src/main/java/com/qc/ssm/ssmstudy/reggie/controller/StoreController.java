@@ -43,6 +43,12 @@ public class StoreController {
     public R<List<ValueLabelResult>> getStoreListOnlyIdWithName(@RequestHeader(value="userid", defaultValue = "") String caozuoId){
         return storeService.getStoreListOnlyIdWithName(caozuoId);
     }
+
+
+    @GetMapping("/getInfo")
+    public R<StoreResult> getStoreInfo(@RequestParam(value = "storeId",required = true) Long storeId){
+        return storeService.getStoreInfo(storeId);
+    }
     @NeedToken
     @PostMapping("/updatastorestatus")
     public R<StoreResult> updataStoreStatus(@RequestHeader(value="userid", defaultValue = "") String caozuoId,@RequestHeader(value="Authorization", defaultValue = "") String token,@RequestBody Map<String, Object> store){

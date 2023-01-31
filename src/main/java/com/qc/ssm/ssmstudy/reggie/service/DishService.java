@@ -22,4 +22,6 @@ public interface DishService extends IService<Dish> {
     R<String> editDish(DishResult dishResult);
 
     R<List<DishResult>> getDishListByCategoryId(Long categoryId, Long storeId,String name);
+
+    R<List<DishResult>> getDishList(Long categoryId, Long storeId);
 }

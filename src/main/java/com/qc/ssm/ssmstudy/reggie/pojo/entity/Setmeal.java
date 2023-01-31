@@ -80,4 +80,9 @@ public class Setmeal implements Serializable {
 
     private Integer sort;//排序
 
+    /**
+     * 销量
+     */
+    private Long saleNum;
+
 }

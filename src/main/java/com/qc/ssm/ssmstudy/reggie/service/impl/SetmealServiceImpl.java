@@ -17,6 +17,7 @@ import com.qc.ssm.ssmstudy.reggie.service.SetmealDishService;
 import com.qc.ssm.ssmstudy.reggie.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -143,6 +144,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         setmeal.setName(setmealResult.getName());
         setmeal.setStatus(setmealResult.getStatus());
         setmeal.setImage(setmealResult.getImage());
+        setmeal.setSaleNum(0L);//刚创建销量为0
         setmeal.setCategoryId(Long.valueOf(setmealResult.getCategoryId()));
         setmeal.setStoreId(Long.valueOf(setmealResult.getStoreId()));
         boolean save = setmealService.save(setmeal);
@@ -296,6 +298,32 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
             }
         }
         return R.success("更新成功");
+    }
+
+    @Override
+    public R<List<SetmealResult>> getSetmealList(Long categoryId, Long storeId) {
+        if (categoryId==null){
+            return R.error("参数异常");
+        }
+        if (storeId==null){
+            return R.error("参数异常");
+        }
+        LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Setmeal::getStoreId,storeId);
+        queryWrapper.eq(Setmeal::getCategoryId,categoryId);
+        queryWrapper.orderByAsc(Setmeal::getSort);
+        List<Setmeal> list = super.list(queryWrapper);
+        if (list==null){
+            R.error("没有找到");
+        }
+        List<SetmealResult> setmealResultList = new ArrayList<>();
+        for (Setmeal setmeal:
+             list) {
+            SetmealResult setmealResult = new SetmealResult();
+            BeanUtils.copyProperties(setmeal,setmealResult);
+            setmealResultList.add(setmealResult);
+        }
+        return R.success(setmealResultList);
     }
 }
 

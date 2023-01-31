@@ -25,4 +25,6 @@ public interface StoreService extends IService<Store> {
 
 
     R<StoreResult> getStoreById(String storeid);
+
+    R<StoreResult> getStoreInfo(Long storeId);
 }

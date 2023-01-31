@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(RuntimeException.class)
     public R<String> runtimeExceptionHandler(RuntimeException e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(),e.getClass());
         return R.error("运行异常");
     }
 

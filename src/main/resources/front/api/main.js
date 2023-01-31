@@ -1,10 +1,25 @@
 //获取所有的菜品分类
-function categoryListApi() {
+function categoryListApi(storeId) {
     return $axios({
       'url': '/category/list',
       'method': 'get',
+        params:{
+          storeId:storeId
+        }
     })
-  }
+}
+
+
+//获取商店信息
+function getStoreInfo(storeId) {
+    return $axios({
+        'url': '/store/getInfo',
+        'method': 'get',
+        params:{
+            storeId:storeId
+        }
+    })
+}
 
 //获取菜品分类对应的菜品
 function dishListApi(data) {

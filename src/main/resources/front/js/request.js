@@ -14,6 +14,9 @@
     // if (getToken() && !isToken) {
     //   config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     // }
+    config.headers.Authorization = localStorage.getItem("ftoken")
+    config.headers.userid = localStorage.getItem("fuserid")
+    config.headers.type = "front"//前端,前端的token后端自动加上user:
     // get请求映射params参数
     if (config.method === 'get' && config.params) {
       let url = config.url + '?';
@@ -44,7 +47,7 @@
   // 响应拦截器
   service.interceptors.response.use(res => {
       console.log('---响应拦截器---',res)
-      if (res.data.code === 0 && res.data.msg === 'NOTLOGIN') {// 返回登录页面
+      if (String(res.code) === '900') {// 返回登录页面
         window.top.location.href = '../page/login.html'
       } else {
         return res.data
@@ -61,6 +64,9 @@
       else if (message.includes("Request failed with status code")) {
         message = "系统接口" + message.substr(message.length - 3) + "异常";
       }
+      if (String(error.response.status) === '900') {// 返回登录页面
+        window.top.location.href = '../page/login.html'+'?messagecode=1'
+      }
       window.vant.Notify({
         message: message,
         type: 'warning',
@@ -70,5 +76,5 @@
       return Promise.reject(error)
     }
   )
-  win.$axios = service
+  win.$axios = service
 })(window);
