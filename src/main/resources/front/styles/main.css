@@ -787,7 +787,6 @@
   line-height: 25rem;
   letter-spacing: 0rem;
 }
-
 #main
   .setMealDetailsDialog
   .divContainer
@@ -812,13 +811,18 @@
 }
 
 #main .setMealDetailsDialog .content {
-  opacity: 1;
+  /*opacity: 4;*/
   font-size: 14rem;
-  font-family: PingFangSC, PingFangSC-Regular;
-  font-weight: 400;
+  /*font-family: PingFangSC, PingFangSC-Regular, serif;*/
+  /*font-weight: 200;*/
   text-align: justify;
   color: #333333;
-  line-height: 24rem;
+  /*这两行代码可以解决大部分场景下的换行问题*/
+  word-break: break-all;
+  word-wrap: break-word;
+  /*但在有些场景中，还需要加上下面这行代码*/
+  white-space: normal;
+  /*line-height: 24rem;*/
 }
 
 #main .setMealDetailsDialog .divNum {

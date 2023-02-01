@@ -58,7 +58,7 @@
                 <div class="divName">{{item.name}}</div>
                 <div class="divDesc">{{item.description}}</div>
                 <div class="divDesc">{{'销量' + (String(item.saleNum)==='null' ? 0 : item.saleNum)  }}</div>
-                <div class="divBottom"><span>￥</span><span>{{item.price/100}}</span></div>
+                <div class="divBottom"><span>￥</span><span>{{item.price}}</span></div>
                 <div class="divNum">
                   <div class="divSubtract" v-if="item.number > 0">
                     <img src="images/subtract.png" @click.prevent.stop="subtractCart(item)"/>
@@ -94,7 +94,8 @@
           <div class="divContent">
             <div v-for="flavor in dialogFlavor.flavors" :key="flavor.id">
                 <div class="divFlavorTitle">{{flavor.name}}</div>
-                <span v-for="item in JSON.parse(flavor.value)" 
+                <span v-for="item in flavor.value"
+
                 :key="item"  
                 @click="flavorClick(flavor,item)"
                 :class="{spanActive:flavor.dishFlavor === item}"
@@ -102,7 +103,7 @@
             </div>
           </div>
           <div class="divBottom">
-            <div><span class="spanMoney">￥</span>{{dialogFlavor.price/100}}</div>
+            <div><span class="spanMoney">￥</span>{{dialogFlavor.price}}</div>
             <div @click="dialogFlavorAddCart">加入购物车</div>
           </div>
           <div class="divFlavorClose" @click="dialogFlavor.show = false">
@@ -158,7 +159,7 @@
           </div>
           <div class="divNum">
             <div class="left">
-              <span>￥</span><span>{{detailsDialog.item.price/100}}</span>
+              <span>￥</span><span>{{detailsDialog.item.price}}</span>
             </div>
             <div class="right">
                 <div class="divSubtract" v-if="detailsDialog.item.number > 0">
@@ -182,24 +183,30 @@
                     v-if="setMealDialog.show"
                     >
           <div class="divContainer">
-            <div class="title">{{setMealDialog.item.name}}</div>
-              <div class="item" v-for="(item,index) in setMealDialog.item.list" :key="index">
-                <el-image :src="imgPathConvert(item.image)">
-                  <div slot="error" class="image-slot">
-                    <img src="images/noImg.png"/>
-                  </div>
-                </el-image>
-                <div class="divSubTitle">{{item.name + '(' + item.copies + '份)' }}
+            <div class="title">{{setMealDialog.item.list.name}}</div>
+
+            <div class="content">{{setMealDialog.item.list.description}}</div>
+            <div style="border: 0.5px solid #4b4b4b;border-radius: 5px;padding: 5px 5px 5px 5px;">
+              <div>套餐包含</div>
+              <div class="item" v-for="(item,index) in setMealDialog.item.list.dishResults" :key="index">
+                <!--                <el-image src="images/noImg.png">-->
+                <!--                  <div slot="error" class="image-slot">-->
+                <!--                    <img src="images/noImg.png"/>-->
+                <!--                  </div>-->
+                <!--                </el-image>-->
+                <div class="divSubTitle">
+                  <el-image style="width: 40px;" :src="item.image"></el-image>
+                  <span>{{item.name + '(' + item.copies + '份)' }}</span>
                   <div class="divPrice">
-                    <span>￥</span><span>{{item.price/100}}</span>
+                     <span>￥</span><span>{{item.price}}</span>
                   </div>
-                </div>                
-                <div class="content">{{item.description}}</div>
+                </div>
               </div>
+            </div>
             </div>
           <div class="divNum">
               <div class="left">
-                <span>￥</span><span>{{setMealDialog.item.price/100}}</span>
+                <span style="font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;">仅售</span><span>￥</span><span>{{setMealDialog.item.price}}</span>
               </div>
               <div class="right">
                   <div class="divSubtract" v-if="setMealDialog.item.number > 0">
@@ -401,12 +408,34 @@
                   dishList.forEach(dish=>{
                     cartData.forEach(cart=>{
                       if(dish.id === cart.dishId){
-                        dish.number = cart.number
+                        dish.number = cart.number//同步购物车里的数量
                       }
                     })
                   })
                 }
+                dishList.forEach(dish=>{
+                  const flavors = dish.flavors;
+                  if (flavors.length>0){
+                    for (let i=0; i< flavors.length; i++){
+
+                      let str = flavors[i].value;
+                      console.log("0:"+str)
+                      str = str.replace(/\[|]/g,'')
+                      console.log("1:"+str)
+                      const ass = str.split(", ");
+                      console.log("3"+ass)
+                      flavors[i].value = str.split(", ")//json问题
+                      console.log(flavors[i].value)
+                    }
+                    console.log(dish.flavors)
+                    dish.flavors = flavors
+                  }
+
+                })
                 this.dishList = dishList
+
+
+
               }else{
                 this.$notify({ type:'warning', message:res.msg});
               }
@@ -446,7 +475,7 @@
             //菜单中往购物车中添加商品
             async addCart(item){
               let params = {
-                amount:item.price/100,//金额
+                amount:item.price,//金额
                 dishFlavor:item.dishFlavor,//口味  如果没有传undefined
                 dishId:undefined,//菜品id
                 setmealId:undefined,//套餐id
@@ -579,14 +608,18 @@
                 price:undefined,
                 show:false
               }
+
+
+              // this.dialogFlavor.flavors =
               this.dialogFlavor={
                 name:item.name,
                 flavors:item.flavors,
-                dishId:item.id,
+                dishId:item.dishId,//提交订单以后端数据为准，价格等等都以后端为准，菜品和套餐都有版本号，匹配版本号有没有改变
                 price:item.price,
-                show:true,
+                show:true,//显示
                 image:item.image
               }
+              console.log(this.dialogFlavor.flavors)
             },
             flavorClick(flavor,item){
               flavor.dishFlavor = item

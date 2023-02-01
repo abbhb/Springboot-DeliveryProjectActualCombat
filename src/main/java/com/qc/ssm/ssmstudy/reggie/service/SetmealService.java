@@ -20,4 +20,6 @@ public interface SetmealService extends IService<Setmeal> {
     R<String> editSetmeal(SetmealResult setmealResult);
 
     R<List<SetmealResult>> getSetmealList(Long categoryId, Long storeId);
+
+    R<SetmealResult> getSetmealDetail(String setmealId);
 }

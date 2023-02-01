@@ -32,8 +32,8 @@ public class SetmealDish implements Serializable {
     //菜品原价
     private BigDecimal price;
 
-
-//    private String image;
+    //菜品图片
+    private String image;
 
     //份数
     private Integer copies;

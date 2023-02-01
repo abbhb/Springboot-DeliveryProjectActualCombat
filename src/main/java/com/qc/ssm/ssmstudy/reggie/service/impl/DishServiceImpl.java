@@ -23,6 +23,7 @@ import com.qc.ssm.ssmstudy.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -344,7 +345,6 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
     }
 
     /**
-     * 需要返回口味
      * @param categoryId
      * @param storeId
      * @return
@@ -367,12 +367,24 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
         List<DishResult> dishResults = new ArrayList<>();
         for (Dish dish:
                 list) {
+            //返回每一个是否有口味
+            LambdaQueryWrapper<DishFlavor> queryWrapper1 = new LambdaQueryWrapper<>();
+            queryWrapper1.eq(DishFlavor::getDishId, dish.getId());
+            List<DishFlavor> list1 = dishFlavorService.list(queryWrapper1);
+            List<DishFlavorResult> list2 = new ArrayList<>();
+            for (DishFlavor dishFlavor:
+                    list1) {
+                DishFlavorResult dishFlavorResult = new DishFlavorResult();
+                BeanUtils.copyProperties(dishFlavor,dishFlavorResult);
+                list2.add(dishFlavorResult);
+            }
             DishResult dishResult = new DishResult();
             dishResult.setId(String.valueOf(dish.getId()));
             dishResult.setName(dish.getName());
             dishResult.setImage(dish.getImage());
             dishResult.setPrice(String.valueOf(dish.getPrice()));
             dishResult.setStatus(dish.getStatus());
+            dishResult.setFlavors(list2);
             dishResult.setVersion(String.valueOf(dish.getVersion()));
             dishResult.setSaleNum(String.valueOf(dish.getSaleNum()));
             //其实我感觉应该把每个菜的version传入，新增的时候判断下此时的菜品表是没有被更改的,

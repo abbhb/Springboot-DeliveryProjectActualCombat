@@ -162,6 +162,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
             BigDecimal bigDecimals = new BigDecimal(dish.getPrice());
             bigDecimals.setScale(2,BigDecimal.ROUND_HALF_UP);//小数位数2位，四舍五入法
             setmealDish.setPrice(bigDecimals);
+            setmealDish.setImage(dish.getImage());
             setmealDish.setStoreId(Long.valueOf(setmealResult.getStoreId()));
 
             setmealDishService.save(setmealDish);
@@ -290,6 +291,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
                 setmealDish.setSetmealId(Long.valueOf(setmealResult.getId()));
                 setmealDish.setStoreId(Long.valueOf(setmealResult.getStoreId()));
                 setmealDish.setCopies(d.getCopies());
+                setmealDish.setImage(d.getImage());
                 setmealDishList.add(setmealDish);
             }
             boolean b = setmealDishService.saveBatch(setmealDishList);
@@ -320,10 +322,47 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         for (Setmeal setmeal:
              list) {
             SetmealResult setmealResult = new SetmealResult();
-            BeanUtils.copyProperties(setmeal,setmealResult);
+            setmealResult.setName(setmeal.getName());
+            setmealResult.setSort(setmeal.getSort());
+            setmealResult.setStatus(setmeal.getStatus());
+            setmealResult.setCode(setmeal.getCode());
+            setmealResult.setVersion(setmeal.getVersion());
+            setmealResult.setId(String.valueOf(setmeal.getId()));
+            setmealResult.setPrice(String.valueOf(setmeal.getPrice()));
+            setmealResult.setImage(setmeal.getImage());
+            setmealResult.setSaleNum(String.valueOf(setmeal.getSaleNum()));
+            setmealResult.setStoreId(String.valueOf(setmeal.getStoreId()));
             setmealResultList.add(setmealResult);
         }
         return R.success(setmealResultList);
+    }
+
+    @Override
+    public R<SetmealResult> getSetmealDetail(String setmealId) {
+        if (!StringUtils.isNotEmpty(setmealId)){
+            return R.error("缺参数");
+        }
+        Setmeal setmeal = super.getById(Long.valueOf(setmealId));
+        if (setmeal==null){
+            throw new CustomException("错误");
+        }
+        LambdaQueryWrapper<SetmealDish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SetmealDish::getSetmealId,Long.valueOf(setmealId));//套餐id已经是限制了门店，所以不再次判断了
+        List<SetmealDish> list = setmealDishService.list(queryWrapper);
+        SetmealResult setmealResult = new SetmealResult();
+        BeanUtils.copyProperties(setmeal,setmealResult);
+        List<DishResult> dishResults = new ArrayList<>();
+        for (SetmealDish setmealDish:
+             list) {
+            DishResult dishResult = new DishResult();
+            dishResult.setName(setmealDish.getName());//设置套餐中菜品名
+            dishResult.setPrice(String.valueOf(setmealDish.getPrice()));//便于在前端上展示套餐内容原价
+            dishResult.setCopies(setmealDish.getCopies());//份数
+            dishResult.setImage(setmealDish.getImage());
+            dishResults.add(dishResult);
+        }
+        setmealResult.setDishResults(dishResults);
+        return R.success(setmealResult);
     }
 }
 

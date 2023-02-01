@@ -92,9 +92,20 @@ public class SetmealController {
      * @param storeId
      * @return
      */
-    @GetMapping("list")
+    @GetMapping("/list")
     public R<List<SetmealResult>> getSetmealList(@RequestParam(value = "categoryId",required = true) Long categoryId,@RequestParam(value = "storeId",required = true) Long storeId){
         //在这里限制必须要有分类id
         return setmealService.getSetmealList(categoryId, storeId);
+    }
+
+    /**
+     * 获取套餐详情
+     * @param setmealId
+     * @return
+     */
+    @GetMapping(value = "/dish/{setmealId}")
+    public R<SetmealResult> getSetmealDetail(@PathVariable(value = "setmealId") String setmealId){
+
+        return setmealService.getSetmealDetail(setmealId);
     }
 }

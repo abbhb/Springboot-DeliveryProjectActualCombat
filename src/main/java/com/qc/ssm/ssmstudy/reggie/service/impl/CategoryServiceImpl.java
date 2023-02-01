@@ -98,6 +98,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Dish::getCategoryId,Long.valueOf(id));
         int count = dishService.count(queryWrapper);
+        log.info("count:{}",count);
         if (count>0){
             throw new CustomException("当前分类绑定了菜品，请先删除相关菜品");
 //            return R.error("当前分类绑定了菜品，请先删除相关菜品");
