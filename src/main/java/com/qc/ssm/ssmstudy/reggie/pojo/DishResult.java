@@ -68,4 +68,6 @@ public class DishResult implements Serializable {
     private Integer copies;//份数
 
     private String saleNum;//销量
+    //类型1位dish。2为setmeal
+    private Integer type;
 }

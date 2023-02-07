@@ -84,5 +84,7 @@ public class Setmeal implements Serializable {
      * 销量
      */
     private Long saleNum;
-
+    
+    //类型1位dish。2为setmeal
+    private Integer type;
 }

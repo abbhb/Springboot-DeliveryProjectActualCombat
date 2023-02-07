@@ -8,12 +8,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qc.ssm.ssmstudy.reggie.common.CustomException;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.mapper.SetmealMapper;
+import com.qc.ssm.ssmstudy.reggie.pojo.DishFlavorResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.DishResult;
+import com.qc.ssm.ssmstudy.reggie.pojo.SetmealFlavorResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.SetmealResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.*;
-import com.qc.ssm.ssmstudy.reggie.pojo.vo.DishAndCategoryVO;
 import com.qc.ssm.ssmstudy.reggie.pojo.vo.SetmealAndCategoryVO;
 import com.qc.ssm.ssmstudy.reggie.service.SetmealDishService;
+import com.qc.ssm.ssmstudy.reggie.service.SetmealFlavorService;
 import com.qc.ssm.ssmstudy.reggie.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -26,6 +28,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -36,8 +39,16 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
 
     @Autowired
     private SetmealService setmealService;
+
+    private final SetmealFlavorService setmealFlavorService;
     @Autowired
     private SetmealDishService setmealDishService;
+
+    @Autowired
+    public SetmealServiceImpl(SetmealFlavorService setmealFlavorService) {
+        this.setmealFlavorService = setmealFlavorService;
+    }
+
     @Override
     public R<PageData<SetmealResult>> getSetmeal(Integer pageNum, Integer pageSize, Long storeId, String name) {
         Integer pageNumD = 1;
@@ -131,6 +142,9 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         if (setmealResult.getStatus()==null){
             return R.error("状态不能为空");
         }
+        if (setmealResult.getSetmealFlavors()==null){
+            return R.error("至少需要包含一种口味");
+        }
         List<DishResult> dishResults = setmealResult.getDishResults();
 
         Setmeal setmeal = new Setmeal();
@@ -143,6 +157,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         setmeal.setPrice(bigDecimal);
         setmeal.setName(setmealResult.getName());
         setmeal.setStatus(setmealResult.getStatus());
+        setmeal.setType(2);//setmealtype为2
         setmeal.setImage(setmealResult.getImage());
         setmeal.setSaleNum(0L);//刚创建销量为0
         setmeal.setCategoryId(Long.valueOf(setmealResult.getCategoryId()));
@@ -163,10 +178,27 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
             bigDecimals.setScale(2,BigDecimal.ROUND_HALF_UP);//小数位数2位，四舍五入法
             setmealDish.setPrice(bigDecimals);
             setmealDish.setImage(dish.getImage());
+
             setmealDish.setStoreId(Long.valueOf(setmealResult.getStoreId()));
 
             setmealDishService.save(setmealDish);
 
+        }
+
+        //添加口味,已经判断过了，口味不为空
+        for (Object obj:
+                setmealResult.getSetmealFlavors()) {
+            Map<String,Object> setmealFlavors = (Map<String, Object>) obj;
+            System.out.println(setmealFlavors.toString());
+            SetmealFlavor setmealFlavor = new SetmealFlavor();
+            setmealFlavor.setSetmealId(setmeal.getId());//save完成后会自动装入id
+            setmealFlavor.setStoreId(Long.valueOf(setmealResult.getStoreId()));
+            setmealFlavor.setName((String) setmealFlavors.get("name"));
+            setmealFlavor.setValue(String.valueOf((List) setmealFlavors.get("value")));
+            boolean save1 = setmealFlavorService.save(setmealFlavor);
+            if (!save1){
+                throw new CustomException("业务异常:Setmeal->addSetmealFlavor");
+            }
         }
 
         if (setmealResult.getDishResults().size()==0){
@@ -201,27 +233,31 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         log.info("id = {}",id);
         Collection<Long> longList = new ArrayList<>();
         Collection<SetmealDish> listBig = new ArrayList<>();
+        Collection<Setmeal> setmeals = new ArrayList<>();
         String[] split = id.split(",");
         for(int i =0; i < split.length ; i++){
             longList.add(Long.valueOf(split[i]));
             SetmealDish setmealDish = new SetmealDish();
             setmealDish.setSetmealId(Long.valueOf(split[i]));
+            Setmeal setmeal = new Setmeal();
+            setmeal.setId(Long.valueOf(split[i]));
+            setmeals.add(setmeal);
             listBig.add(setmealDish);
         }
         /**
          * notebook:这里批量删除Id是什么类型就用泛型就填什么，直接放入实体类会报错
          */
-        boolean b = setmealService.removeByIds(longList);
+        //删除套餐
+        setmealService.removeByIds(longList);
+        //删除套餐绑定的菜品
         Collection<Long> setmealDishOnlyIdListBySetmealIdList = setmealDishService.getSetmealDishOnlyIdListBySetmealIdList(listBig);
-        if (setmealDishOnlyIdListBySetmealIdList.size()==0){
-            return R.success("删除成功");
+        if (setmealDishOnlyIdListBySetmealIdList.size()!=0){
+            setmealDishService.removeByIds(setmealDishOnlyIdListBySetmealIdList);
         }
-        boolean b1 = setmealDishService.removeByIds(setmealDishOnlyIdListBySetmealIdList);
-        if (!b){
-            throw new CustomException("业务异常:setmealService");
-        }
-        if (!b1){
-            throw new CustomException("业务异常:setmealDishService");
+        //删除套餐绑定的口味
+        Collection<Long> setmealFlavorOnlyIdListBySetmealIdList = setmealFlavorService.getSetmealFlavorOnlyIdListBySetmealIdList(setmeals);
+        if (setmealFlavorOnlyIdListBySetmealIdList.size()!=0){
+            setmealFlavorService.removeByIds(setmealFlavorOnlyIdListBySetmealIdList);
         }
 
         return R.success("删除成功");
@@ -238,6 +274,12 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         if (setmealResult.getVersion()==null){return R.error("版本异常");}
         if (setmealResult.getSort()==null){return R.error("排序不能为空");}
         if (setmealResult.getStatus()==null){return R.error("状态不能为空");}
+        if (setmealResult.getSetmealFlavors()==null){
+            return R.error("至少需要包含一种口味");
+        }
+        if (setmealResult.getSetmealFlavors().size()==0){
+            return R.error("至少包含一种口味");
+        }
         Setmeal setmeal = new Setmeal();
         setmeal.setCategoryId(Long.valueOf(setmealResult.getCategoryId()));
         setmeal.setName(setmealResult.getName());
@@ -248,6 +290,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         setmeal.setSort(setmealResult.getSort());
         setmeal.setImage(setmealResult.getImage());
         setmeal.setStatus(setmealResult.getStatus());
+
         setmeal.setDescription(setmealResult.getDescription());
         setmeal.setVersion(setmealResult.getVersion());//传入版本,乐观锁插件会自动去校验版本，如果一致就执行并且自增版本
         LambdaUpdateWrapper<Setmeal> updateWrapper = new LambdaUpdateWrapper<>();
@@ -257,7 +300,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         if (!update){
             throw new CustomException("业务异常:update");
         }
-        //查询这个套餐原有绑定的IdList
+        //查询这个套餐原有绑定菜品的IdList
         LambdaQueryWrapper<SetmealDish> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SetmealDish::getSetmealId,Long.valueOf(setmealResult.getId()));
         queryWrapper.eq(SetmealDish::getStoreId,Long.valueOf(setmealResult.getStoreId()));
@@ -272,6 +315,26 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
             }
             //删除原有的菜品关系
             boolean b = setmealDishService.removeByIds(idList);
+            if (!b){
+                throw new CustomException("业务异常:removeByIds");
+            }
+        }
+
+        //查询这个套餐原有绑定口味的IdList
+        LambdaQueryWrapper<SetmealFlavor> queryWrapperSetmealFlavor = new LambdaQueryWrapper<>();
+        queryWrapperSetmealFlavor.eq(SetmealFlavor::getSetmealId,Long.valueOf(setmealResult.getId()));
+        queryWrapperSetmealFlavor.eq(SetmealFlavor::getStoreId,Long.valueOf(setmealResult.getStoreId()));
+        List<SetmealFlavor> listSetmealFlavor = setmealFlavorService.list(queryWrapperSetmealFlavor);
+        //判空，可能套餐没有绑定菜品
+        if (listSetmealFlavor.size()!=0){
+            //list转换成idList
+            Collection<Long> idList = new ArrayList<>();
+            for (SetmealFlavor sd:
+                    listSetmealFlavor) {
+                idList.add(sd.getId());
+            }
+            //删除原有的口味关系
+            boolean b = setmealFlavorService.removeByIds(idList);
             if (!b){
                 throw new CustomException("业务异常:removeByIds");
             }
@@ -299,6 +362,22 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
                 throw new CustomException("业务异常:saveBatch");
             }
         }
+
+        for (Object obj:
+                setmealResult.getSetmealFlavors()) {
+            Map<String,Object> setmealFlavors = (Map<String, Object>) obj;
+            System.out.println(setmealFlavors.toString());
+            SetmealFlavor setmealFlavor = new SetmealFlavor();
+            setmealFlavor.setSetmealId(Long.valueOf(setmealResult.getId()));
+            setmealFlavor.setStoreId(Long.valueOf(setmealResult.getStoreId()));
+            setmealFlavor.setName((String) setmealFlavors.get("name"));
+            setmealFlavor.setValue(String.valueOf((List) setmealFlavors.get("value")));
+            boolean save1 = setmealFlavorService.save(setmealFlavor);
+            if (!save1){
+                throw new CustomException("业务异常:Setmeal->addSetmealFlavor");
+            }
+        }
+
         return R.success("更新成功");
     }
 
@@ -321,6 +400,18 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         List<SetmealResult> setmealResultList = new ArrayList<>();
         for (Setmeal setmeal:
              list) {
+            //返回每一个是否有口味
+            LambdaQueryWrapper<SetmealFlavor> queryWrapper1 = new LambdaQueryWrapper<>();
+            queryWrapper1.eq(SetmealFlavor::getSetmealId, setmeal.getId());
+            List<SetmealFlavor> list1 = setmealFlavorService.list(queryWrapper1);
+            List<SetmealFlavorResult> list2 = new ArrayList<>();
+            for (SetmealFlavor setmealFlavor:
+                    list1) {
+                SetmealFlavorResult setmealFlavorResult = new SetmealFlavorResult();
+                //拷贝，可能会出问题
+                BeanUtils.copyProperties(setmealFlavor,setmealFlavorResult);
+                list2.add(setmealFlavorResult);
+            }
             SetmealResult setmealResult = new SetmealResult();
             setmealResult.setName(setmeal.getName());
             setmealResult.setSort(setmeal.getSort());
@@ -330,6 +421,8 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
             setmealResult.setId(String.valueOf(setmeal.getId()));
             setmealResult.setPrice(String.valueOf(setmeal.getPrice()));
             setmealResult.setImage(setmeal.getImage());
+            setmealResult.setFlavors(list2);
+            setmealResult.setType(setmeal.getType());
             setmealResult.setSaleNum(String.valueOf(setmeal.getSaleNum()));
             setmealResult.setStoreId(String.valueOf(setmeal.getStoreId()));
             setmealResultList.add(setmealResult);

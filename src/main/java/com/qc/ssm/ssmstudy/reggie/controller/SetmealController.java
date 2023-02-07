@@ -2,12 +2,10 @@ package com.qc.ssm.ssmstudy.reggie.controller;
 
 import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
-import com.qc.ssm.ssmstudy.reggie.pojo.DishAndCategoryResult;
-import com.qc.ssm.ssmstudy.reggie.pojo.DishResult;
-import com.qc.ssm.ssmstudy.reggie.pojo.SetmealResult;
+import com.qc.ssm.ssmstudy.reggie.pojo.*;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
-import com.qc.ssm.ssmstudy.reggie.pojo.entity.SetmealDish;
 import com.qc.ssm.ssmstudy.reggie.service.SetmealDishService;
+import com.qc.ssm.ssmstudy.reggie.service.SetmealFlavorService;
 import com.qc.ssm.ssmstudy.reggie.service.SetmealService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -25,8 +23,15 @@ public class SetmealController {
     @Autowired
     private SetmealService setmealService;
 
+    private final SetmealFlavorService setmealFlavorService;
     @Autowired
     private SetmealDishService setmealDishService;
+
+    @Autowired
+    public SetmealController(SetmealFlavorService setmealFlavorService) {
+        this.setmealFlavorService = setmealFlavorService;
+    }
+
     @GetMapping("/get")
     @NeedToken
     public R<PageData<SetmealResult>> getSetmeal(@RequestParam(value = "pageNum",required = false) Integer pageNum, @RequestParam(value = "pageSize",required = false) Integer pageSize, @RequestParam(value = "storeId",required = true) Long storeId, @RequestParam(value = "name",required = false) String name){
@@ -72,6 +77,17 @@ public class SetmealController {
     public R<List<DishResult>> getSetmeal(@ApiParam("套餐id")@RequestParam(value = "id",required = true) Long id){
         log.info("id = {}",id);
         return setmealDishService.getSetmealDish(id);//storeId必须不为空
+    }
+
+    /**
+     * 获取口味情况
+     * @return
+     */
+    @GetMapping ("/get/flavor")
+    @NeedToken
+    public R<List<SetmealFlavorResult>> getSetmealFlavor(@RequestParam(value = "id") String id){
+        log.info(id);
+        return setmealFlavorService.getSetmealFlavorResultBySetmealId(id);
     }
 
     /**

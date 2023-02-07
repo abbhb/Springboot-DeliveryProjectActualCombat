@@ -83,6 +83,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
         dish.setStoreId(Long.valueOf(dishResult.getStoreId()));
         dish.setCategoryId(Long.valueOf(dishResult.getCategoryId()));
         dish.setImage(imageUrl);
+        dish.setType(1);//dishType为1
         dish.setSaleNum(0L);//刚创建销量为0
         dish.setDescription(dishResult.getDescription()==null?"": dishResult.getDescription());
 
@@ -385,6 +386,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
             dishResult.setPrice(String.valueOf(dish.getPrice()));
             dishResult.setStatus(dish.getStatus());
             dishResult.setFlavors(list2);
+            dishResult.setType(dish.getType());
             dishResult.setVersion(String.valueOf(dish.getVersion()));
             dishResult.setSaleNum(String.valueOf(dish.getSaleNum()));
             //其实我感觉应该把每个菜的version传入，新增的时候判断下此时的菜品表是没有被更改的,

@@ -74,4 +74,10 @@ public class SetmealResult {
     private String saleNum;
 
     private List<DishResult> dishResults;//套餐中的菜品
+
+    private List setmealFlavors;//不能指定DishFlavorResult,在口味中
+
+    private List<SetmealFlavorResult> flavors;//兼容用户端，管理端不影响
+    //类型1位dish。2为setmeal
+    private Integer type;
 }

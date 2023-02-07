@@ -48,6 +48,8 @@ public class Dish implements Serializable {
     //顺序
     private Integer sort;
 
+    //类型1位dish。2为setmeal
+    private Integer type;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

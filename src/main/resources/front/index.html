@@ -216,7 +216,11 @@
                   <div class="divAdd" v-if="setMealDialog.item.number">
                     <img src="images/add.png" @click="addCart(setMealDialog.item)"/>
                   </div>
-                  <div class="addCart"  @click="addCart(setMealDialog.item)" v-if="!setMealDialog.item.number">加入购物车</div>
+<!--                  <div class="addCart"  @click="addCart(setMealDialog.item)" v-if="!setMealDialog.item.number">加入购物车</div>-->
+                  <div class="divTypes" v-if="setMealDialog.item.flavors && setMealDialog.item.flavors.length > 0 && !setMealDialog.item.number " @click ="chooseFlavorClick(setMealDialog.item)">选择规格</div>
+                  <div class="divAdd" v-else>
+                    <img src="images/add.png" @click="addCart(setMealDialog.item)"/>
+                  </div>
               </div>
           </div>
           <div class="detailsDialogClose" @click="setMealDialog.show = false">
@@ -458,6 +462,25 @@
                       })
                     })
                   }
+                dishList.forEach(dish=>{
+                  const flavors = dish.flavors;
+                  if (flavors.length>0){
+                    for (let i=0; i< flavors.length; i++){
+
+                      let str = flavors[i].value;
+                      console.log("0:"+str)
+                      str = str.replace(/\[|]/g,'')
+                      console.log("1:"+str)
+                      const ass = str.split(", ");
+                      console.log("3"+ass)
+                      flavors[i].value = str.split(", ")//json问题
+                      console.log(flavors[i].value)
+                    }
+                    console.log(dish.flavors)
+                    dish.flavors = flavors
+                  }
+
+                })
                   this.dishList = dishList
               }else{
                 this.$notify({ type:'warning', message:res.msg});
@@ -676,10 +699,10 @@
               //先清除对象数据，如果不行的话dialog使用v-if
               this.detailsDialog.item = {}
               this.setMealDialog.item = {}
-              if(Array.isArray(item.flavors)){
+              if(String(item.type)==='1'){//Array.isArray(item.flavors)
                 this.detailsDialog.item = item
                 this.detailsDialog.show = true
-              }else{
+              }else if (String(item.type)==='2'){
                 //显示套餐的数据
                 const res = await setMealDishDetailsApi(item.id)
                 if(res.code === 1){
