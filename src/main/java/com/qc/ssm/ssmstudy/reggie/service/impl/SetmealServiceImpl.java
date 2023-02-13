@@ -392,6 +392,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Setmeal::getStoreId,storeId);
         queryWrapper.eq(Setmeal::getCategoryId,categoryId);
+        queryWrapper.eq(Setmeal::getStatus,1);//需要未停售的
         queryWrapper.orderByAsc(Setmeal::getSort);
         List<Setmeal> list = super.list(queryWrapper);
         if (list==null){
@@ -423,6 +424,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
             setmealResult.setImage(setmeal.getImage());
             setmealResult.setFlavors(list2);
             setmealResult.setType(setmeal.getType());
+            log.info("setmeal = {}",setmeal.getType());
             setmealResult.setSaleNum(String.valueOf(setmeal.getSaleNum()));
             setmealResult.setStoreId(String.valueOf(setmeal.getStoreId()));
             setmealResultList.add(setmealResult);

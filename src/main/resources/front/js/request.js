@@ -65,7 +65,7 @@
         message = "系统接口" + message.substr(message.length - 3) + "异常";
       }
       if (String(error.response.status) === '900') {// 返回登录页面
-        window.top.location.href = '../page/login.html'+'?messagecode=1'
+        window.top.location.href = '../front/page/login.html'+'?messagecode=1'
       }
       window.vant.Notify({
         message: message,

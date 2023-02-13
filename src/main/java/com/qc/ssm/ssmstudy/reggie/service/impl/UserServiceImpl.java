@@ -25,11 +25,15 @@ import java.time.LocalDateTime;
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
-    @Autowired
-    private IStringRedisService iStringRedisService;//这个是针对字符串的存储，若是存对象，请使用redisTemplate
+
+    private final IStringRedisService iStringRedisService;//这个是针对字符串的存储，若是存对象，请使用redisTemplate
 
     @Autowired
-    private UserService userService;
+    public UserServiceImpl(IStringRedisService iStringRedisService) {
+        this.iStringRedisService = iStringRedisService;
+    }
+
+
     @Override
     public R<String> sendMsg(String phone) {
         //生成6位验证码
@@ -53,7 +57,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (value.equals(code)){
             LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(User::getPhone,phone);
-            User user = userService.getOne(queryWrapper);
+            User user = super.getOne(queryWrapper);
             if (user==null){
                 user = new User();
 //                log.info("1");
@@ -67,7 +71,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 user.setUpdateTime(LocalDateTime.now());
                 user.setStatus(1);//新建的账号都是启用状态
 
-                boolean save = userService.save(user);
+                boolean save = super.save(user);
                 if (!save){
                     throw new CustomException("业务异常");
                 }

@@ -359,6 +359,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
         if (categoryId!=null){
             queryWrapper.eq(Dish::getCategoryId,categoryId);
         }
+        queryWrapper.eq(Dish::getStatus,1);//未停售
         queryWrapper.eq(Dish::getStoreId,storeId);
         queryWrapper.orderByAsc(Dish::getSort);
         List<Dish> list = dishService.list(queryWrapper);

@@ -51,6 +51,7 @@ public class AddressBookController {
      * 设置默认地址
      */
     @PutMapping("default")
+    @NeedToken
     public R<String> setDefault(@RequestHeader(value="userid", defaultValue = "")String userid,@RequestBody AddressBook addressBook) {
         log.info("addressBook:{},userid:{}", addressBook,userid);
         if (!StringUtils.isNotEmpty(userid)){
@@ -64,6 +65,7 @@ public class AddressBookController {
      * 根据id查询地址
      */
     @GetMapping("/{id}")
+    @NeedToken
     public R<AddressBookResult> get(@PathVariable Long id) {
         AddressBook addressBook = addressBookService.getById(id);
         if (addressBook == null) {
@@ -78,6 +80,7 @@ public class AddressBookController {
      * 查询默认地址
      */
     @GetMapping("default")
+    @NeedToken
     public R<AddressBookResult> getDefault(@RequestHeader(value="userid", defaultValue = "")String userid) {
         if(!StringUtils.isNotEmpty(userid)){
             return R.error("userid");
@@ -100,6 +103,7 @@ public class AddressBookController {
      * 查询指定用户的全部地址
      */
     @GetMapping("/list")
+    @NeedToken
     public R<List<AddressBookResult>> list(@RequestHeader(value="userid", defaultValue = "")String userid) {
         log.info("userid:{}",userid);
         if (!StringUtils.isNotEmpty(userid)){

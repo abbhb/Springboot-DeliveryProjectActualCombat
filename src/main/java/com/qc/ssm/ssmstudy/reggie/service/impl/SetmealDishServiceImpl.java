@@ -61,7 +61,7 @@ public class SetmealDishServiceImpl extends ServiceImpl<SetmealDishMapper, Setme
             dishResult.setCopies(s.getCopies());
             dishResult.setName(s.getName());
             dishResult.setPrice(String.valueOf(s.getPrice()));
-//            dishResult.setImage(s.getImage());
+            dishResult.setImage(s.getImage());
             dishResults.add(dishResult);
         }
         return R.success(dishResults);

@@ -75,6 +75,12 @@
             <version>1.1.23</version>
         </dependency>
 
+        <!--引入websocket依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
         <!-- 引入 redis 依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

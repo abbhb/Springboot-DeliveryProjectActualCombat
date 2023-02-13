@@ -4,7 +4,9 @@
 #main {
   height: 100%;
 }
-
+:root{
+  --primary-color: royalblue;
+}
 #main .divHead {
   background: url(../images/mainBg.png);
   background-repeat: no-repeat;
@@ -696,6 +698,7 @@
   color: #333333;
   line-height: 36rem;
   letter-spacing: 0;
+  margin-right: 5rem;
   width: auto;
 }
 
@@ -736,30 +739,30 @@
   height: 44rem;
 }
 
-#main .setMealDetailsDialog {
+.setMealDetailsDialog {
   display: flex;
   flex-direction: column;
   text-align: center;
 }
 
-#main .setMealDetailsDialog .divContainer {
+.setMealDetailsDialog .divContainer {
   padding: 20rem 20rem 0 20rem;
   overflow: auto;
   max-height: 50vh;
   overflow-y: auto;
 }
 
-#main .setMealDetailsDialog .el-image {
+.setMealDetailsDialog .el-image {
   width: 100%;
   height: 100%;
 }
 
-#main .setMealDetailsDialog .el-image img {
+.setMealDetailsDialog .el-image img {
   width: 100%;
   height: 100%;
 }
 
-#main .setMealDetailsDialog .divSubTitle {
+.setMealDetailsDialog .divSubTitle {
   text-align: left;
   margin-top: 16rem;
   margin-bottom: 6rem;
@@ -775,7 +778,7 @@
   position: relative;
 }
 
-#main .setMealDetailsDialog .divContainer .item .divSubTitle .divPrice {
+.setMealDetailsDialog .divContainer .item .divSubTitle .divPrice {
   position: absolute;
   right: 0;
   top: 0;
@@ -797,7 +800,7 @@
   font-size: 12rem;
 }
 
-#main .setMealDetailsDialog .title {
+.setMealDetailsDialog .title {
   height: 28rem;
   opacity: 1;
   font-size: 20rem;
@@ -810,7 +813,7 @@
   margin-bottom: 11rem;
 }
 
-#main .setMealDetailsDialog .content {
+.setMealDetailsDialog .content {
   /*opacity: 4;*/
   font-size: 14rem;
   /*font-family: PingFangSC, PingFangSC-Regular, serif;*/
@@ -825,7 +828,7 @@
   /*line-height: 24rem;*/
 }
 
-#main .setMealDetailsDialog .divNum {
+.setMealDetailsDialog .divNum {
   display: flex;
   justify-content: space-between;
   margin-top: 23rem;
@@ -834,7 +837,7 @@
   padding-right: 20rem;
 }
 
-#main .setMealDetailsDialog .divNum .left {
+.setMealDetailsDialog .divNum .left {
   font-size: 20rem;
   font-family: DIN, DIN-Medium;
   font-weight: 500;
@@ -844,15 +847,15 @@
   letter-spacing: 0rem;
 }
 
-#main .setMealDetailsDialog .divNum .left span:first-child {
+.setMealDetailsDialog .divNum .left span:first-child {
   font-size: 12rem;
 }
 
-#main .setMealDetailsDialog .divNum .right {
+.setMealDetailsDialog .divNum .right {
   display: flex;
 }
 
-#main .setMealDetailsDialog .divNum .divDishNum {
+.setMealDetailsDialog .divNum .divDishNum {
   font-size: 15rem;
   font-family: PingFangSC, PingFangSC-Regular;
   font-weight: 500;
@@ -863,7 +866,7 @@
   width: auto;
 }
 
-#main .setMealDetailsDialog .divNum .divTypes {
+.setMealDetailsDialog .divNum .divTypes {
   width: 64rem;
   height: 24rem;
   opacity: 1;
@@ -878,17 +881,17 @@
   letter-spacing: 0;
 }
 
-#main .setMealDetailsDialog .divNum .divSubtract,
+.setMealDetailsDialog .divNum .divSubtract,
 .divAdd {
   height: 36rem;
 }
 
-#main .setMealDetailsDialog .divNum img {
+.setMealDetailsDialog .divNum img {
   width: 36rem;
   height: 36rem;
 }
 
-#main .setMealDetailsDialog .divNum .right .addCart {
+.setMealDetailsDialog .divNum .right .addCart {
   width: 100rem;
   height: 30rem;
   opacity: 1;
@@ -902,14 +905,65 @@
   line-height: 30rem;
 }
 
-#main .setMealDetailsDialog .detailsDialogClose {
+.setMealDetailsDialog .detailsDialogClose {
   position: absolute;
   bottom: -70rem;
   left: 50%;
   transform: translate(-50%, 0);
 }
 
-#main .setMealDetailsDialog .detailsDialogClose img {
+.setMealDetailsDialog .detailsDialogClose img {
   width: 44rem;
   height: 44rem;
+}
+
+.需要动画 {
+  display: inline-block;
+  height: 30rem;
+  opacity: 1;
+  background: #ffffff;
+  border: 1rem solid #ffc200;
+  border-radius: 7rem;
+  line-height: 30rem;
+  padding-left: 13rem;
+  padding-right: 13rem;
+  margin: 0 5rem 10rem 5rem;
+  font-size: 14rem;
+  font-family: PingFangSC, PingFangSC-Regular;
+  font-weight: 400;
+  text-align: center;
+  color: #333333;
+}
+.需要动画:hover{
+  /*color: var(--primary-color);*/
+  -webkit-animation-name: flash;
+  animation-name: flash;
+  -webkit-animation-iteration-count: 1;
+  animation-iteration-count: 1;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+}
+
+
+@-webkit-keyframes flash {
+
+  0%,
+  100%
+   {
+    background: #ffffff;
+  }
+  50% {
+    background: #ffc200;
+  }
+}
+
+@keyframes flash {
+  100% {
+    background: #ffffff;
+  }
+  50% {
+    background: #ffc200;
+  }
 }
