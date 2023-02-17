@@ -25,7 +25,9 @@ public class CommonServiceImpl implements CommonService {
         try {
             String fileUrl = MinIoUtil.upload(minIoProperties.getBucketName(), file);
             log.info("imageUrl={}",fileUrl);
-            return R.successOnlyObject(fileUrl);
+            String[] split = fileUrl.split("?");
+
+            return R.successOnlyObject(split[0]);
         }catch (Exception e){
             e.printStackTrace();
             throw new CustomException(e.getMessage());

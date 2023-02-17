@@ -80,8 +80,10 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
                     //没有被下架或者删除
                     //判断版本号是否一致,不一致提醒用户,因为数据都是最新的
                     log.info("itemversion = {},dishversion = {}",item.getVersion(),dish.getVersion());
-                    if (item.getVersion() == dish.getVersion()){
+                    if (!Objects.equals(item.getVersion(), dish.getVersion())){
                         versionNumberReminder = versionNumberReminder + dish.getName()+ ",";
+                        log.info("item = {}",item);
+                        log.info("dish = {}",dish);
                         versionNumberReminderIsSend = true;
                         //顺便更正版本号,保证消息只推送一次
                         LambdaUpdateWrapper<ShoppingCart> shoppingCartLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
@@ -121,7 +123,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
                 } else {
                     //没有被下架或者删除
                     //判断版本号是否一致,不一致提醒用户,因为数据都是最新的
-                    if (item.getVersion() == setmeal.getVersion()){
+                    if (!Objects.equals(item.getVersion(), setmeal.getVersion())){
                         versionNumberReminder = versionNumberReminder + setmeal.getName()+ ",";
                         versionNumberReminderIsSend = true;
                         //顺便更正版本号,保证消息只推送一次
@@ -156,7 +158,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
         //版本号更改的消息提醒
         if (versionNumberReminderIsSend){
-            versionNumberReminder = versionNumberReminder.substring(0,versionNumberReminder.length()-1) +"] 已经发生了改变,这一改变可能来自商家调整,请关注!\n";
+            versionNumberReminder = versionNumberReminder.substring(0,versionNumberReminder.length()-1) +"] 的原配置已经发生了改变,这一改变可能来自商家调整,请关注!\n";
             MessageHashMap.addMessage(String.valueOf(userId),versionNumberReminder);
         }
         if (MessageHashMap.equals(String.valueOf(userId))){
@@ -176,5 +178,23 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             }
         }
         return R.success(shoppingCartResults);
+    }
+
+    @Override
+    public R<String> clean(Long userId, Long storeId) {
+        if (userId==null){
+            return R.error("null");
+        }
+        if (storeId==null){
+            return R.error("null");
+        }
+        LambdaQueryWrapper<ShoppingCart> shoppingCartLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        shoppingCartLambdaQueryWrapper.eq(ShoppingCart::getStoreId,storeId);
+        shoppingCartLambdaQueryWrapper.eq(ShoppingCart::getUserId,userId);
+        boolean remove = super.remove(shoppingCartLambdaQueryWrapper);
+        if (remove){
+            return R.success("清空成功!");
+        }
+        return R.error("没有清空!");
     }
 }

@@ -548,6 +548,11 @@
   overflow-y: auto;
 }
 
+#main .dialogCart .divCartContent .dishFlavor {
+  width: 140rem;
+  padding-left: 5rem;
+}
+
 #main .dialogCart .divCartContent .el-image {
   width: 64rem;
   height: 64rem;
@@ -966,4 +971,21 @@
   50% {
     background: #ffc200;
   }
+}
+.yellowSpan {
+  display: inline-block;
+  height: 20rem;
+  opacity: 1;
+  background: #ffc200;
+  border: 1rem solid #ffc200;
+  border-radius: 7rem;
+  line-height: 20rem;
+  padding-left: 5rem;
+  padding-right: 5rem;
+  margin: 0 2rem 5rem 2rem;
+  font-size: 8rem;
+  font-family: PingFangSC, PingFangSC-Regular;
+  font-weight: 200;
+  text-align: center;
+  color: #333333;
 }

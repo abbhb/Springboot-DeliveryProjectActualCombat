@@ -125,9 +125,18 @@
   background-color: #efefef;
   border: 0;
 }
+#add_order .divContent .order .itemList {
+  display: flex;
+  flex-direction: row;
+}
 
 #add_order .divContent .order .itemList .item {
   display: flex;
+}
+#add_order .divContent .order .itemList .dishFlavor {
+  width: 120rem;
+  padding-left: 10rem;
+  display: table-cell;
 }
 
 #add_order .divContent .order .itemList .item .el-image {
@@ -329,4 +338,21 @@
   width: 25rem;
   height: 25rem;
   line-height: 25rem;
+}
+.yellowSpan {
+  display: inline-block;
+  height: 30rem;
+  opacity: 1;
+  background: #ffc200;
+  border: 1rem solid #ffc200;
+  border-radius: 7rem;
+  line-height: 30rem;
+  padding-left: 8rem;
+  padding-right: 8rem;
+  margin: 0 2rem 5rem 2rem;
+  font-size: 12rem;
+  font-family: PingFangSC, PingFangSC-Regular;
+  font-weight: 300;
+  text-align: center;
+  color: #333333;
 }

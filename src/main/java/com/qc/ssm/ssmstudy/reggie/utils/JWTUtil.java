@@ -60,6 +60,7 @@ public class JWTUtil {
         } catch (JWTVerificationException exception) {
             // Invalid signature/claims
             exception.printStackTrace();
+            throw exception;
         } catch (IllegalArgumentException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

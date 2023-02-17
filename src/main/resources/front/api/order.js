@@ -3,7 +3,7 @@ function  addOrderApi(data){
     return $axios({
         'url': '/order/submit',
         'method': 'post',
-        data
+        data:{...data}
       })
 }
 

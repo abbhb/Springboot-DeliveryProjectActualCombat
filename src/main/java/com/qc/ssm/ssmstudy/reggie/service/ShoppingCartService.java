@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface ShoppingCartService extends IService<ShoppingCart> {
     R<List<ShoppingCartResult>> getList(Long userId, Long storeId);
+
+    R<String> clean(Long userId, Long storeId);
 }

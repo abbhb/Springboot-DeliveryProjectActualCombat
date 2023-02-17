@@ -1,5 +1,6 @@
 package com.qc.ssm.ssmstudy.reggie.controller;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.pojo.ShoppingCartResult;
@@ -62,7 +63,41 @@ public class ShoppingCartController {
         log.info("storeId = {}",storeId);
         return shoppingCartService.getList(Long.valueOf(userid),Long.valueOf(storeId));
     }
+    @DeleteMapping("/clean")
+    @NeedToken
+    public R<String> clean(@RequestHeader(value="userid", required = true)String userid,String storeId){
+        if (!StringUtils.isNotEmpty(userid)){
+            return R.error("错误");
+        }
+        if (!StringUtils.isNotEmpty(storeId)) {
+            return R.error("err");
+        }
+        log.info("storeId = {}",storeId);
+        return shoppingCartService.clean(Long.valueOf(userid),Long.valueOf(storeId));
+    }
 
-
-
+    @PostMapping("/numberUpdate")
+    @NeedToken
+    public R<String> numberUpdate(@RequestHeader(value="userid", required = true)String userid,@RequestBody ShoppingCart shoppingCart){
+        if (!StringUtils.isNotEmpty(userid)){
+            return R.error("参数异常");
+        }
+        if (shoppingCart.getId()==null){
+            return R.error("参数异常");
+        }
+        if (shoppingCart.getNumber()==null){
+            return R.error("参数异常");
+        }
+        if (shoppingCart.getNumber()<1||shoppingCart.getNumber()>99){
+            return R.error("数据不合理");
+        }
+        LambdaUpdateWrapper<ShoppingCart> shoppingCartLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        shoppingCartLambdaUpdateWrapper.set(ShoppingCart::getNumber,shoppingCart.getNumber());
+        shoppingCartLambdaUpdateWrapper.eq(ShoppingCart::getId,shoppingCart.getId());
+        boolean update = shoppingCartService.update(shoppingCartLambdaUpdateWrapper);
+        if (update){
+            return R.success("success");
+        }
+        return R.error("error");
+    }
 }

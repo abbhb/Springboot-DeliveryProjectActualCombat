@@ -25,14 +25,23 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         String authorization =  httpServletRequest.getHeader("Authorization");
         DecodedJWT decodedJWT = JWTUtil.deToken(authorization);
         Claim id = decodedJWT.getClaim("id");
-
         log.info("公共字段自动填充,id = {}",id.asString());
         //此处可能会出现异常,要是userid为null此处异常
-        metaObject.setValue("createUser",Long.valueOf(id.asString()));
-        metaObject.setValue("updateUser",Long.valueOf(id.asString()));
-        metaObject.setValue("createTime", LocalDateTime.now());
-        metaObject.setValue("updateTime",LocalDateTime.now());
-        metaObject.setValue("isDeleted",Integer.valueOf(0));//刚插入默认都是不删除的
+        if (metaObject.hasSetter("createUser")){
+            metaObject.setValue("createUser",Long.valueOf(id.asString()));
+        }
+        if (metaObject.hasSetter("updateUser")){
+            metaObject.setValue("updateUser",Long.valueOf(id.asString()));
+        }
+        if (metaObject.hasSetter("createTime")){
+            metaObject.setValue("createTime", LocalDateTime.now());
+        }
+        if (metaObject.hasSetter("updateTime")){
+            metaObject.setValue("updateTime",LocalDateTime.now());
+        }
+        if (metaObject.hasSetter("isDeleted")){
+            metaObject.setValue("isDeleted",Integer.valueOf(0));//刚插入默认都是不删除的
+        }
         if (metaObject.hasSetter("version")){
             metaObject.setValue("version",Integer.valueOf(0));
         }

@@ -40,22 +40,35 @@
                 <div class="order">
                     <div class="title">订单明细</div>
                     <div class="divSplit"></div>
-                    <div class="itemList">
-                        <div class="item" v-for="(item,index) in cartData" :key="index">
-                            <el-image :src="imgPathConvert(item.image)">
-                                <div slot="error" class="image-slot">
-                                    <img src="../images/noImg.png"/>
-                                </div>
-                            </el-image>
-                            <div class="desc">
-                                <div class="name">{{item.name}}</div>
-                                <div class="numPrice">
-                                    <span class="num">x{{item.number}}</span>
-                                    <div class="price">
-                                        <span class="spanMoney">￥</span>{{item.amount}}</div>
+                    <div>
+                        <div class="itemList" v-for="(item,index) in cartData" :key="index">
+                            <div class="item">
+                                <el-image :src="item.image">
+                                    <div slot="error" class="image-slot">
+                                        <img src="../images/noImg.png"/>
+                                    </div>
+                                </el-image>
+                                <div class="desc">
+                                    <div class="name">{{item.name}}</div>
+                                    <div class="numPrice">
+                                        <span class="num">x{{item.number}}</span>
                                     </div>
                                 </div>
                             </div>
+                            <div class="dishFlavor">
+                                <div class="yellowSpan" v-for="span in (item.dishFlavor.split(','))">{{span}}</div>
+                            </div>
+                            <div class="item" style="margin-left: auto;">
+                                <div class="desc">
+                                    <div class="numPrice">
+                                        <div class="price">
+                                            <span class="spanMoney">￥</span>{{item.amount}}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
                     </div>
                 </div>
                 <div class="note">
@@ -100,6 +113,7 @@
                 el:"#add_order",
                 data(){
                     return {
+                        storeId:'',
                         address:{
                             phone:'',//手机号
                             consignee:'',//姓名
@@ -127,12 +141,31 @@
                     goodsPrice(){
                     let price = 0
                     this.cartData.forEach(item=>{
-                        price += (item.number * item.amount)
+                        price += (Number(item.number) * Number(Number(item.amount).toFixed(2)))
                     })
-                    return price
+                    return Number(price.toFixed(2))
                     }
                 },
                 created(){
+                    var url = window.location.href ;             //获取当前url
+                    var dz_url = url.split('#')[0];                //获取#/之前的字符串
+                    var cs = dz_url.split('?')[1];                //获取?之后的参数字符串
+                    if (cs==undefined){
+                        console.log("未知门店");
+                        window.top.location.href = '../page/no-params.html'
+                    }else {
+                        var cs_arr = cs.split('&');                    //参数字符串分割为数组
+                        var cs={};
+                        for(var i=0;i<cs_arr.length;i++){         //遍历数组，拿到json对象
+                            cs[cs_arr[i].split('=')[0]] = cs_arr[i].split('=')[1]
+                        }
+                        if ((cs.storeId==undefined)){
+                            console.log("未知门店");
+                            window.top.location.href = '../page/no-params.html'
+                        }
+                    }
+                    this.storeId = cs.storeId;
+                    console.log(cs.storeId);
                     this.initData()
                 },
                 mounted(){},
@@ -178,7 +211,9 @@
                     },
                     //获取购物车数据
                     async getCartData(){
-                        const res = await cartListApi({})
+                        let params = {}
+                        params.storeId = String(this.storeId)
+                        const res = await cartListApi(params)
                         if(res.code === 1){
                             this.cartData = res.data
                         }else{
@@ -188,9 +223,13 @@
                     async goToPaySuccess(){
                         const params = {
                             remark:this.note,
-                            payMethod:1,
-                            addressBookId:this.address.id
+                            payMethod:0,//测试专用
+                            addressBookId:this.address.id,
+                            orderDetails:this.cartData,
+                            storeId:this.storeId,
+                            amount:String(this.goodsPrice)
                         }
+
                         const res = await addOrderApi(params)
                         if(res.code === 1){
                             window.requestAnimationFrame(()=>{

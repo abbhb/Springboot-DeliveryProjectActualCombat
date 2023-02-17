@@ -1,5 +1,6 @@
 package com.qc.ssm.ssmstudy.reggie.common;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.qc.ssm.ssmstudy.reggie.service.IStringRedisService;
@@ -104,7 +105,17 @@ public class JwtTokenInterceptor extends HandlerInterceptorAdapter {
                     response.setStatus(Code.DEL_TOKEN);
                     return false;
                 }
-                DecodedJWT decodedJWT = JWTUtil.deToken(authorization);
+                DecodedJWT decodedJWT = null;
+                try {
+                    decodedJWT = JWTUtil.deToken(authorization);
+                }catch (JWTVerificationException jwtVerificationException){
+                    response.setStatus(Code.DEL_TOKEN);
+                    return false;
+                }
+                if (decodedJWT==null){
+                    response.setStatus(Code.DEL_TOKEN);
+                    return false;
+                }
                 Claim uuid = decodedJWT.getClaim("uuid");//用户的uuid
                 Claim cid = decodedJWT.getClaim("id");//用户的id
 

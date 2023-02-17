@@ -60,17 +60,18 @@ function  addCartApi(data){
 //购物车中修改商品
 function  updateCartApi(data){
     return $axios({
-        'url': '/shoppingCart/sub',
+        'url': '/shoppingCart/numberUpdate',
         'method': 'post',
-        data
+        data:{...data}
       })
 }
 
 //删除购物车的商品
-function clearCartApi() {
+function clearCartApi(params) {
     return $axios({
         'url': '/shoppingCart/clean',
         'method': 'delete',
+        params:{...params}
     })
 }
 

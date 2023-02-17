@@ -63,7 +63,7 @@
                   <div class="divSubtract" v-if="item.number > 0">
                     <img src="images/subtract.png" @click.prevent.stop="subtractCart(item)"/>
                   </div>
-                  <div class="divDishNum">{{item.number}}</div>
+<!--                  <div class="divDishNum">{{item.number}}</div>-->
                   <div class="divTypes" @click.prevent.stop="chooseFlavorClick(item)">选择规格</div>
                 </div>
               </div>
@@ -121,7 +121,7 @@
           </div>
           <div class="divCartContent">
             <div v-for="item in cartData" :key="item.id" class="divCartItem">
-              <el-image :src="imgPathConvert(item.image)" >
+              <el-image :src="item.image" >
                 <div slot="error" class="image-slot">
                   <img src="images/noImg.png"/>
                 </div>
@@ -129,20 +129,24 @@
               <div class="divDesc">
                 <div class="name">{{item.name}}</div>
                 <div class="price">
-                  <span class="spanMoney">￥</span>{{item.amount}}</div>
+                  <span class="spanMoney">￥</span>{{item.amount}}
+                </div>
+              </div>
+              <div class="dishFlavor">
+                <div class="yellowSpan" v-for="span in (item.dishFlavor.split(','))">{{span}}</div>
               </div>
               <div class="divNum">
                 <div class="divSubtract">
-                  <img src="images/subtract.png" @click="cartNumberSubtract(item)"/>
+                  <img src="images/subtract.png" @click="cartNumberSubtract(item,0)"/>
                 </div>
                 <div class="divDishNum">{{item.number}}</div>
                 <div class="divAdd">
-                  <img src="images/add.png" @click="cartNumAdd(item)"/>
+                  <img src="images/add.png" @click="cartNumberSubtract(item,1)"/>
                 </div>
               </div>
               <div class="divSplit"></div>
               </div>
-          </div>
+            </div>
         </van-popup>
         <van-dialog v-model="detailsDialog.show" 
                     :show-confirm-button="false" 
@@ -303,9 +307,9 @@
             goodsPrice(){
               let price = 0
               this.cartData.forEach(item=>{
-                price += (item.number * item.amount)
+                price += (Number(item.number) * Number(Number(item.amount).toFixed(2)))
               })
-              return price
+              return Number(price.toFixed(2))
             }
           },
           created(){
@@ -531,7 +535,9 @@
             },
             //获取购物车数据
             async getCartData(){
-              const res = await cartListApi({})
+              let params = {}
+              params.storeId = String(this.storeId)
+              const res = await cartListApi(params)
               if(res.code === 1){
                 this.cartData = res.data
               }else{
@@ -630,22 +636,29 @@
               }
             },
             //购物车中减少商品数量
-            async cartNumberSubtract(item){
+            async cartNumberSubtract(item,type){
               let params = {
-                  dishId:item.dishId,
-                  setmealId:item.setmealId,
+                id:item.id
+
+              }
+              if (type==0){
+                if (item.number<=1){
+                  return
                 }
-                const res = await updateCartApi(params)
-                if(res.code === 1){
-                this.dishList.forEach(dish=>{
-                  if(dish.id === (item.dishId || item.setmealId)){
-                    dish.number = (res.data.number === 0 ? undefined : res.data.number)
-                  }
-                })
-                this.getCartData()
-                }else{
-                  this.$notify({ type:'warning', message:res.msg});
+                params.number = item.number-1
+              }
+              if (type==1){
+                if (item.number>=99){
+                  return
                 }
+                params.number = item.number+1
+              }
+              const res = await updateCartApi(params)
+              if(res.code === 1){
+              this.getCartData()
+              }else{
+                this.$notify({ type:'warning', message:res.msg});
+              }
             },
             
             //修改商品列表中的数据number
@@ -659,13 +672,15 @@
             
             //清空购物车
             async clearCart(){
-                const res = await clearCartApi()
-                if(res.code === 1){
-                  for(let ele of this.dishList){
-                    ele.number = 0
-                  }
+                let params = {}
+                params.storeId = String(this.storeId)
+                const res = await clearCartApi(params)
+                if(String(res.code) === '1'){
+                  // 重新请求列表数据和购物车数据
                   this.cartData = []
                   this.cartDialogShow = false
+                  this.$notify({ type:'success', message:res.msg});
+                  await this.initData();
                 }else{
                   this.$notify({ type:'warning', message:res.msg});
                 }
@@ -733,6 +748,7 @@
               let flag = true
               let dishFlavor = []
               let errModel = ""
+              let isHaveErrModel = false;
               dialogFlavor.flavors.forEach(item=>{
                 if(item.dishFlavor){
                   dishFlavor.push(item.dishFlavor)
@@ -740,6 +756,7 @@
                 else{
                       flag = false
                   errModel = errModel + "," + String(item.name)
+                  isHaveErrModel = true;
                 }
               })
               if(flag){
@@ -764,7 +781,10 @@
                 this.addCart(data)
                 this.dialogFlavor.show = false
               }
-              this.$notify({ type: 'warning', message: '请选择'+ errModel });
+              if (isHaveErrModel===true){
+                this.$notify({ type: 'warning', message: '请选择'+ errModel });
+              }
+
               
             },
             //网络图片路径转换
@@ -777,7 +797,7 @@
             toAddOrderPage(){
               if(this.cartData.length > 0){
                 window.requestAnimationFrame(()=>{
-                  window.location.href ='page/add-order.html'
+                  window.location.href ='page/add-order.html' + "?storeId=" + this.storeId
                 })
               }
             },
