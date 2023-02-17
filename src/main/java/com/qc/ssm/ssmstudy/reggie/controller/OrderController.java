@@ -3,13 +3,11 @@ package com.qc.ssm.ssmstudy.reggie.controller;
 import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.pojo.dto.OrdersDto;
-import com.qc.ssm.ssmstudy.reggie.pojo.entity.ShoppingCart;
+import com.qc.ssm.ssmstudy.reggie.service.OrdersService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 
 @Slf4j
 @RestController
@@ -17,16 +15,25 @@ import java.time.LocalDateTime;
 @Api(value = "order-controller")
 public class OrderController {
 
+    private final OrdersService ordersService;
+
+    @Autowired
+    public OrderController(OrdersService ordersService) {
+        this.ordersService = ordersService;
+    }
+
     /**
      * 创建订单
      * 以用户提交订单页的数据为准，在此之后更新的数据不管
+     * 门店关门的话不允许创建
+     * 此接口需要加密
      */
     @PostMapping("/submit")
     @NeedToken
     public R<String> submit(@RequestHeader(value="userid", required = true)String userid, @RequestBody OrdersDto ordersDto) {
-
-//        addressBook.setUserId(BaseContext.getCurrentId());
         log.info("ordersDto:{}", ordersDto);
+        ordersDto.setUserId(Long.valueOf(userid));
+
 //        if (!StringUtils.isNotEmpty(userid)){
 //            return R.error("userid为空");
 //        }
@@ -37,6 +44,6 @@ public class OrderController {
 ////            return R.error("保存失败");
 ////        }
 //        return R.success("保存成功");
-        return null;
+        return ordersService.submit(ordersDto);
     }
 }

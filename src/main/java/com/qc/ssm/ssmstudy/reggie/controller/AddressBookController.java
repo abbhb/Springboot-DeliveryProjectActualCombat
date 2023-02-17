@@ -96,6 +96,7 @@ public class AddressBookController {
         }
         AddressBookResult addressBookResult = new AddressBookResult();
         BeanUtils.copyProperties(addressBook,addressBookResult);//深拷贝，可能会出现错误
+        addressBookResult.setId(String.valueOf(addressBook.getId()));
         return R.success(addressBookResult);
     }
 

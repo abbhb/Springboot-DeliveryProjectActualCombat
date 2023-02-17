@@ -11,18 +11,15 @@ import com.qc.ssm.ssmstudy.reggie.common.CustomException;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.pojo.ValueLabelResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.StoreResult;
-import com.qc.ssm.ssmstudy.reggie.pojo.entity.Employee;
-import com.qc.ssm.ssmstudy.reggie.pojo.entity.PageData;
-import com.qc.ssm.ssmstudy.reggie.pojo.entity.Store;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.*;
 import com.qc.ssm.ssmstudy.reggie.mapper.StoreMapper;
-import com.qc.ssm.ssmstudy.reggie.service.EmployeeService;
-import com.qc.ssm.ssmstudy.reggie.service.IStringRedisService;
-import com.qc.ssm.ssmstudy.reggie.service.StoreService;
+import com.qc.ssm.ssmstudy.reggie.service.*;
 import com.qc.ssm.ssmstudy.reggie.utils.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
@@ -31,17 +28,37 @@ import java.util.List;
 @Service
 @Slf4j
 public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements StoreService {
-    @Autowired
-    private StoreService storeService;
+
+    private final EmployeeService employeeService;
+
+    private final IStringRedisService iStringRedisService;
+
+    private final CategoryService categoryService;
+
+    private final DishFlavorService dishFlavorService;
+
+    private final DishService dishService;
+
+    private final SetmealDishService setmealDishService;
+
+    private final SetmealFlavorService setmealFlavorService;
+
+    private final SetmealService setmealService;
+
+    private final ShoppingCartService shoppingCartService;
 
     @Autowired
-    private EmployeeService employeeService;
-
-    @Autowired
-    private IStringRedisService iStringRedisService;
-    @Autowired
-    private StoreMapper storeMapper;
-
+    public StoreServiceImpl(EmployeeService employeeService, IStringRedisService iStringRedisService, CategoryService categoryService, DishFlavorService dishFlavorService, DishService dishService, SetmealDishService setmealDishService, SetmealFlavorService setmealFlavorService, SetmealService setmealService, ShoppingCartService shoppingCartService) {
+        this.employeeService = employeeService;
+        this.iStringRedisService = iStringRedisService;
+        this.categoryService = categoryService;
+        this.dishFlavorService = dishFlavorService;
+        this.dishService = dishService;
+        this.setmealDishService = setmealDishService;
+        this.setmealFlavorService = setmealFlavorService;
+        this.setmealService = setmealService;
+        this.shoppingCartService = shoppingCartService;
+    }
 
     @Override
     public R<StoreResult> addStore(String userId, String storeName, String storeIntroduction, String storeStatus,String token) {
@@ -81,7 +98,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
 //        store.setStoreCreateUserId(Long.valueOf(userId));
 //        store.setStoreUpdataUserId(Long.valueOf(userId));
 //        store.setIsDelete(0);
-        boolean save = storeService.save(store);
+        boolean save = super.save(store);
         if (save){
             return R.successOnlyMsg("添加成功",Code.SUCCESS);
         }
@@ -104,7 +121,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
         lambdaQueryWrapper.like(StringUtils.isNotEmpty(name),Store::getStoreName,name);
         //添加排序条件
         lambdaQueryWrapper.orderByDesc(Store::getCreateTime);//按照创建时间排序
-        storeService.page(pageInfo,lambdaQueryWrapper);
+        super.page(pageInfo,lambdaQueryWrapper);
         PageData<StoreResult> pageData = new PageData<>();
         List<StoreResult> results = new ArrayList<>();
         for (Object store : pageInfo.getRecords()) {
@@ -155,7 +172,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
         }
         store.setStoreStatus(integer);
 //        store.setStoreUpdataTime(LocalDateTime.now());
-        boolean update = storeService.update(store, updateWrapper);
+        boolean update = super.update(store, updateWrapper);
         if (update){
             return R.success("调整成功");
         }
@@ -185,7 +202,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
         store.setStoreName(storeName);
         store.setStoreStatus(Integer.valueOf(storeStatus));
         store.setStoreIntroduction(storeIntroduction);
-        boolean update = storeService.update(store, updateWrapper);
+        boolean update = super.update(store, updateWrapper);
         if (update){
             return R.success("更新成功");
         }
@@ -193,6 +210,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
     }
 
     @Override
+    @Transactional
     public R<StoreResult> deleteStore(String userId, String storeId, String token) {
         if (!StringUtils.isNotEmpty(userId)){
             iStringRedisService.del(token);
@@ -213,7 +231,42 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
             iStringRedisService.del(token);
             return R.error(Code.DEL_TOKEN,"环境异常,强制下线");
         }
-        boolean b = storeService.removeById(Long.valueOf(storeId));
+        boolean b = super.removeById(Long.valueOf(storeId));
+        //感觉异步会更好
+        //删除跟此商店关联的数据
+        //分类数据
+        LambdaQueryWrapper<Category> categoryLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        categoryLambdaQueryWrapper.eq(Category::getStoreId,Long.valueOf(storeId));
+        categoryService.remove(categoryLambdaQueryWrapper);
+        //与此商店绑定的菜品口味
+        LambdaQueryWrapper<DishFlavor> dishFlavorLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        dishFlavorLambdaQueryWrapper.eq(DishFlavor::getStoreId,Long.valueOf(storeId));
+        dishFlavorService.remove(dishFlavorLambdaQueryWrapper);
+        //与此商店绑定的菜品
+        LambdaQueryWrapper<Dish> dishLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        dishLambdaQueryWrapper.eq(Dish::getStoreId,Long.valueOf(storeId));
+        dishService.remove(dishLambdaQueryWrapper);
+        //与此商店绑定的员工解绑，不直接删除
+        LambdaUpdateWrapper<Employee> employeeLambdaQueryWrapper = new LambdaUpdateWrapper<>();
+        employeeLambdaQueryWrapper.eq(Employee::getStoreId,Long.valueOf(storeId));
+        employeeLambdaQueryWrapper.set(Employee::getStoreId,null);//将所有员工的门店绑定先给去掉
+        employeeService.update(employeeLambdaQueryWrapper);
+        //套餐菜品
+        LambdaQueryWrapper<SetmealDish> setmealDishLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        setmealDishLambdaQueryWrapper.eq(SetmealDish::getStoreId,Long.valueOf(storeId));
+        setmealDishService.remove(setmealDishLambdaQueryWrapper);
+        //套餐口味
+        LambdaQueryWrapper<SetmealFlavor> setmealFlavorLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        setmealFlavorLambdaQueryWrapper.eq(SetmealFlavor::getStoreId,Long.valueOf(storeId));
+        setmealFlavorService.remove(setmealFlavorLambdaQueryWrapper);
+        //套餐
+        LambdaQueryWrapper<Setmeal> setmealLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        setmealLambdaQueryWrapper.eq(Setmeal::getStoreId,Long.valueOf(storeId));
+        setmealService.remove(setmealLambdaQueryWrapper);
+        //购物车
+        LambdaQueryWrapper<ShoppingCart> shoppingCartLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        shoppingCartLambdaQueryWrapper.eq(ShoppingCart::getStoreId,Long.valueOf(storeId));
+        shoppingCartService.remove(shoppingCartLambdaQueryWrapper);
         if (b){
             return R.success("删除成功");
         }
@@ -238,7 +291,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
         }else if (byId.getPermissions()==3){
             throw new CustomException("异常");
         }
-        List<Store> list = storeService.list(queryWrapper);
+        List<Store> list = super.list(queryWrapper);
         List<ValueLabelResult> storeIdNames = new ArrayList<>();
         if (list!=null){
             for (Store store :
@@ -258,7 +311,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
         LambdaQueryWrapper<Store> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.select(Store::getStoreId,Store::getStoreName,Store::getStoreIntroduction,Store::getStoreStatus);
         queryWrapper.eq(Store::getStoreId,Long.valueOf(storeid));
-        Store store = storeService.getOne(queryWrapper);
+        Store store = super.getOne(queryWrapper);
         if (store==null){
             return R.error("查询失败");
         }
@@ -275,7 +328,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
         if (ObjectUtils.isEmpty(storeId)){
             return R.error("异常");
         }
-        Store byId = storeService.getById(storeId);
+        Store byId = super.getById(storeId);
         if (byId==null){
             return R.error("异常");
         }

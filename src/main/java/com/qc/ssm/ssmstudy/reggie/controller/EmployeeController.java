@@ -53,6 +53,7 @@ public class EmployeeController {
         return employeeService.logout(token);
     }
 
+    @NeedToken
     @PostMapping("/loginbytoken")
     public R<EmployeeResult> loginByToken(@RequestHeader(value="Authorization", defaultValue = "") String token){
 
