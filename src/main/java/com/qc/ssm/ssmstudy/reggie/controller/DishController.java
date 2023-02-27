@@ -1,6 +1,6 @@
 package com.qc.ssm.ssmstudy.reggie.controller;
 
-import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
+import com.qc.ssm.ssmstudy.reggie.common.annotation.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.pojo.DishAndCategoryResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.DishFlavorResult;
@@ -11,7 +11,6 @@ import com.qc.ssm.ssmstudy.reggie.service.DishService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

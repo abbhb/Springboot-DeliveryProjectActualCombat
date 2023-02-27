@@ -1,15 +1,14 @@
 package com.qc.ssm.ssmstudy.reggie.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.qc.ssm.ssmstudy.reggie.common.Code;
-import com.qc.ssm.ssmstudy.reggie.common.CustomException;
+import com.qc.ssm.ssmstudy.reggie.common.exception.CustomException;
 import com.qc.ssm.ssmstudy.reggie.common.R;
+import com.qc.ssm.ssmstudy.reggie.common.annotation.StoreStateDetection;
 import com.qc.ssm.ssmstudy.reggie.mapper.DishMapper;
 import com.qc.ssm.ssmstudy.reggie.pojo.DishAndCategoryResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.DishFlavorResult;
@@ -21,8 +20,6 @@ import com.qc.ssm.ssmstudy.reggie.pojo.vo.DishAndCategoryVO;
 import com.qc.ssm.ssmstudy.reggie.service.DishFlavorService;
 import com.qc.ssm.ssmstudy.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -351,6 +348,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper,Dish> implements Dis
      * @return
      */
     @Override
+    @StoreStateDetection
     public R<List<DishResult>> getDishList(Long categoryId, Long storeId) {
         if (storeId == null){
             return R.error("业务异常");

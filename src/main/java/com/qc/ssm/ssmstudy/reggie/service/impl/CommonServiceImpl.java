@@ -1,7 +1,7 @@
 package com.qc.ssm.ssmstudy.reggie.service.impl;
 
 
-import com.qc.ssm.ssmstudy.reggie.common.CustomException;
+import com.qc.ssm.ssmstudy.reggie.common.exception.CustomException;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.config.MinIoProperties;
 import com.qc.ssm.ssmstudy.reggie.service.CommonService;

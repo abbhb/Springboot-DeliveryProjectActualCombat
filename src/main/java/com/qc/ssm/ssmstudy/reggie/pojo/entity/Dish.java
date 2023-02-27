@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class Dish implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    @TableId("id")//设置默认主键
     private Long id;
 
 

@@ -5,10 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.qc.ssm.ssmstudy.reggie.common.CustomException;
+import com.qc.ssm.ssmstudy.reggie.common.exception.CustomException;
 import com.qc.ssm.ssmstudy.reggie.common.R;
+import com.qc.ssm.ssmstudy.reggie.common.annotation.StoreStateDetection;
 import com.qc.ssm.ssmstudy.reggie.mapper.SetmealMapper;
-import com.qc.ssm.ssmstudy.reggie.pojo.DishFlavorResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.DishResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.SetmealFlavorResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.SetmealResult;
@@ -382,6 +382,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
     }
 
     @Override
+    @StoreStateDetection
     public R<List<SetmealResult>> getSetmealList(Long categoryId, Long storeId) {
         if (categoryId==null){
             return R.error("参数异常");

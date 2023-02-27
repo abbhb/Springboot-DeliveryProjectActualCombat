@@ -5,6 +5,18 @@ import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.pojo.dto.OrdersDto;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.Orders;
 
+import java.time.LocalDateTime;
+
 public interface OrdersService extends IService<Orders> {
-    R<String> submit(OrdersDto ordersDto);
+    OrdersDto submit(OrdersDto ordersDto);
+
+    /**
+     * 订单更新通用接口
+     * @param tradeNo
+     * @param ordersStatusToBeDelivered
+     * @param localDateTime
+     * @param ordersPayWayZFB
+     * @return
+     */
+    boolean updateState(String tradeNo, Integer ordersStatusToBeDelivered, LocalDateTime localDateTime, Integer ordersPayWayZFB);
 }

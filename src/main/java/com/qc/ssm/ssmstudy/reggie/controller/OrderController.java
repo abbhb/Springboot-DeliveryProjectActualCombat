@@ -1,7 +1,8 @@
 package com.qc.ssm.ssmstudy.reggie.controller;
 
-import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
+import com.qc.ssm.ssmstudy.reggie.common.annotation.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
+import com.qc.ssm.ssmstudy.reggie.pojo.OrdersResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.dto.OrdersDto;
 import com.qc.ssm.ssmstudy.reggie.service.OrdersService;
 import io.swagger.annotations.Api;
@@ -30,20 +31,13 @@ public class OrderController {
      */
     @PostMapping("/submit")
     @NeedToken
-    public R<String> submit(@RequestHeader(value="userid", required = true)String userid, @RequestBody OrdersDto ordersDto) {
+    public R<OrdersResult> submit(@RequestHeader(value="userid", required = true)String userid, @RequestBody OrdersDto ordersDto) {
         log.info("ordersDto:{}", ordersDto);
         ordersDto.setUserId(Long.valueOf(userid));
-
-//        if (!StringUtils.isNotEmpty(userid)){
-//            return R.error("userid为空");
-//        }
-//        shoppingCart.setUserId(Long.valueOf(userid));
-//        shoppingCart.setCreateTime(LocalDateTime.now());
-////        boolean save = shoppingCartService.save(shoppingCart);
-////        if (!save){
-////            return R.error("保存失败");
-////        }
-//        return R.success("保存成功");
-        return ordersService.submit(ordersDto);
+        OrdersDto ordersDto1 = ordersService.submit(ordersDto);
+        OrdersResult ordersResult = new OrdersResult();
+        ordersResult.setId(String.valueOf(ordersDto1.getId()));
+        ordersResult.setAmount(ordersDto1.getAmount());
+        return R.success(ordersResult);
     }
 }

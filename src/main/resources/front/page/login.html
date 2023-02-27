@@ -51,7 +51,8 @@
                         code:''
                     },
                     msgFlag:false,
-                    loading:false
+                    loading:false,
+                    storeId:'',
                 }
             },
             computed:{},
@@ -72,6 +73,9 @@
                         type: 'warning',
                         duration: 5 * 1000
                     })
+                }
+                if (sessionStorage.getItem('storeId')){
+                    this.storeId = sessionStorage.getItem('storeId')
                 }
             },
             mounted(){},
@@ -105,7 +109,7 @@
                             localStorage.setItem('fuserid',String(res.data.id))
                             localStorage.setItem("ftoken",String(res.data.token))
                             window.requestAnimationFrame(()=>{
-                                window.location.href= '../index.html'//得回调商店id
+                                window.location.href= '../index.html?storeId=' + this.storeId//得回调商店id
                             })                           
                         }else{
                             this.$notify({ type:'warning', message:res.msg});

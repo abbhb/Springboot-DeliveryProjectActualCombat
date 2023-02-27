@@ -5,10 +5,13 @@ import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.pojo.ShoppingCartResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.ShoppingCart;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ShoppingCartService extends IService<ShoppingCart> {
     R<List<ShoppingCartResult>> getList(Long userId, Long storeId);
 
     R<String> clean(Long userId, Long storeId);
+
+    R<String> cleanByIds(Collection<Long> ids);
 }

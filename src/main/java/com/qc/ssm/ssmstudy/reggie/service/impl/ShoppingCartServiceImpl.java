@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qc.ssm.ssmstudy.reggie.common.R;
+import com.qc.ssm.ssmstudy.reggie.common.exception.CustomException;
 import com.qc.ssm.ssmstudy.reggie.mapper.ShoppingCartMapper;
 import com.qc.ssm.ssmstudy.reggie.pojo.ShoppingCartResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.Dish;
@@ -17,12 +18,10 @@ import com.qc.ssm.ssmstudy.reggie.utils.MessageHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -196,5 +195,16 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             return R.success("清空成功!");
         }
         return R.error("没有清空!");
+    }
+
+    @Transactional
+    @Override
+    public R<String> cleanByIds(Collection<Long> ids) {
+        log.info("cleanGWC = {}",ids);
+        boolean b = super.removeByIds(ids);
+        if (b){
+            return R.success("成功");
+        }
+        throw new CustomException("清理失败");
     }
 }

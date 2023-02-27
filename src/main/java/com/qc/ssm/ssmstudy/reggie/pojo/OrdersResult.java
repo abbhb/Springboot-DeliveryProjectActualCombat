@@ -1,43 +1,29 @@
-package com.qc.ssm.ssmstudy.reggie.pojo.entity;
-
+package com.qc.ssm.ssmstudy.reggie.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * 订单
- */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Orders implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class OrdersResult implements Serializable {
     //订单号 id
-    @TableId("id")//设置默认主键
-    private Long id;
+    private String id;
 
-    //付款状态 1待付款，2已付款
-    private Integer payStatus;
+    //订单状态 1待付款，2待派送，3已派送，4已完成，5已取消
+    private Integer status;
 
-
-    //订单状态 1待支付 2待派送，3已派送，4已完成，5已取消
-    private Integer orderStatus;
 
     //下单用户id
-    private Long userId;
+    private String userId;
 
     //地址id
-    private Long addressBookId;
+    private String addressBookId;
 
 
     //下单时间
@@ -65,14 +51,11 @@ public class Orders implements Serializable {
     private String address;
 
     //商店id
-    private Long storeId;
+    private String storeId;
 
     //收货人(冗余地址里的收货人)
     private String consignee;
-
-    @TableField(fill = FieldFill.INSERT)
-    @TableLogic
-    private Integer isDeleted;
+    
 
     /**
      * 状态备注

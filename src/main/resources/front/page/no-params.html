@@ -25,6 +25,10 @@
   <div class="divContent">
 <!--    <img src="./../images//no_wifi.png"/>-->
     <div class="divDesc">参数异常</div>
+    <div>
+      <span>很抱歉,我们的服务出现了问题!</span>
+      <span>如果多次刷新还无法回到首页,请您重新输入网址或者扫描二维码!</span>
+    </div>
     <div class="btnRefresh" @click="toPagePrev">点击刷新</div>
   </div>
 </div>
@@ -49,10 +53,11 @@
     mounted(){},
     methods:{
       goBack(){
-        history.go(-1)
+        // history.go(-1)
+        window.top.location.href = '../index.html?storeId='+ sessionStorage.getItem("storeId")
       },
       toPagePrev(){
-        history.go(-1)
+        window.top.location.href = '../index.html?storeId='+ sessionStorage.getItem("storeId")
       }
     }
   })

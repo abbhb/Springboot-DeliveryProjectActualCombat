@@ -1,7 +1,7 @@
 package com.qc.ssm.ssmstudy.reggie.controller;
 
 
-import com.qc.ssm.ssmstudy.reggie.common.NeedToken;
+import com.qc.ssm.ssmstudy.reggie.common.annotation.NeedToken;
 import com.qc.ssm.ssmstudy.reggie.common.R;
 import com.qc.ssm.ssmstudy.reggie.service.CommonService;
 import lombok.extern.slf4j.Slf4j;

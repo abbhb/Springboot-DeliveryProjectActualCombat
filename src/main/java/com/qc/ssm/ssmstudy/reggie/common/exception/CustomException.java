@@ -1,4 +1,4 @@
-package com.qc.ssm.ssmstudy.reggie.common;
+package com.qc.ssm.ssmstudy.reggie.common.exception;
 
 /**
  * 自定义业务异常

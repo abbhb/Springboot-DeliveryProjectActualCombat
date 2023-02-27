@@ -67,6 +67,9 @@
       if (String(error.response.status) === '900') {// 返回登录页面
         window.top.location.href = '../front/page/login.html'+'?messagecode=1'
       }
+      if (String(error.response.status) === '2') {// 返回首页页面
+        window.top.location.href = '../front/index.html?storeId='+ sessionStorage.getItem("storeId")
+      }
       window.vant.Notify({
         message: message,
         type: 'warning',

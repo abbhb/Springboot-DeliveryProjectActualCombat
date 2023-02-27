@@ -46,7 +46,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         ir.addPathPatterns("/**");
 
         // 不拦截路径，如：注册、登录、忘记密码等
-        ir.excludePathPatterns("/employee/login","/employee/logout");//可以直接逗号往后加
+        ir.excludePathPatterns("/employee/login","/employee/logout","/alipay/**");//可以直接逗号往后加
     }
     /**
      * 扩展mvc框架的消息转换器

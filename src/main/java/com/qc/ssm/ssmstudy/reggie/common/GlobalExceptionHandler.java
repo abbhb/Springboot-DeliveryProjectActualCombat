@@ -1,5 +1,8 @@
 package com.qc.ssm.ssmstudy.reggie.common;
 
+import com.qc.ssm.ssmstudy.reggie.common.exception.CustomException;
+import com.qc.ssm.ssmstudy.reggie.common.exception.ToIndexException;
+import com.qc.ssm.ssmstudy.reggie.common.exception.ToIndexException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -39,6 +42,10 @@ public class GlobalExceptionHandler {
         return R.error(e.getMessage());
     }
 
+    @ExceptionHandler(ToIndexException.class)
+    public R<String> ToIndexExceptionHandler(ToIndexException e) {
+        return R.error(Code.ToIndex,e.getMessage());
+    }
     /**
      * 捕获  RuntimeException 异常
      * TODO  如果你觉得在一个 exceptionHandler 通过  if (e instanceof xxxException) 太麻烦
