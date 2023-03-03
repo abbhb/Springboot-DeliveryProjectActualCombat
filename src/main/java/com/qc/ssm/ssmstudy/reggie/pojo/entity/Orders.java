@@ -1,10 +1,7 @@
 package com.qc.ssm.ssmstudy.reggie.pojo.entity;
 
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -79,4 +76,10 @@ public class Orders implements Serializable {
      * 比如订单取消的原因
      */
     private String statusRemark;
+
+    /**
+     * 乐观锁
+     */
+    @Version
+    private Integer version;
 }

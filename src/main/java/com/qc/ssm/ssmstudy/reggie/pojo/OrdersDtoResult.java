@@ -1,31 +1,17 @@
-package com.qc.ssm.ssmstudy.reggie.pojo.dto;
+package com.qc.ssm.ssmstudy.reggie.pojo;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.qc.ssm.ssmstudy.reggie.pojo.entity.OrderDetail;
-import com.qc.ssm.ssmstudy.reggie.pojo.entity.Orders;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * 包含Orders的全部属性,为了使用controller的自动映射,不方便用继承
- */
-
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class OrdersDto implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class OrdersDtoResult implements Serializable {
     //订单号 id
-    private Long id;
+    private String id;
 
     //付款状态 1待付款，2已付款
     private Integer payStatus;
@@ -36,10 +22,10 @@ public class OrdersDto implements Serializable {
 
 
     //下单用户id
-    private Long userId;
+    private String userId;
 
     //地址id
-    private Long addressBookId;
+    private String addressBookId;
 
 
     //下单时间
@@ -67,7 +53,7 @@ public class OrdersDto implements Serializable {
     private String address;
 
     //商店id
-    private Long storeId;
+    private String storeId;
 
     //收货人(冗余地址里的收货人)
     private String consignee;
@@ -83,4 +69,5 @@ public class OrdersDto implements Serializable {
 
     //乐观锁，订单如果版本不符合需要重新操作
     private Integer version;
+
 }

@@ -1,6 +1,8 @@
 package com.qc.ssm.ssmstudy.reggie.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qc.ssm.ssmstudy.reggie.common.Code;
 import com.qc.ssm.ssmstudy.reggie.common.R;
@@ -8,10 +10,9 @@ import com.qc.ssm.ssmstudy.reggie.common.annotation.StoreStateDetection;
 import com.qc.ssm.ssmstudy.reggie.common.exception.CustomException;
 import com.qc.ssm.ssmstudy.reggie.common.exception.ToIndexException;
 import com.qc.ssm.ssmstudy.reggie.mapper.OrdersMapper;
+import com.qc.ssm.ssmstudy.reggie.pojo.OrdersDtoResult;
 import com.qc.ssm.ssmstudy.reggie.pojo.dto.OrdersDto;
-import com.qc.ssm.ssmstudy.reggie.pojo.entity.AddressBook;
-import com.qc.ssm.ssmstudy.reggie.pojo.entity.OrderDetail;
-import com.qc.ssm.ssmstudy.reggie.pojo.entity.Orders;
+import com.qc.ssm.ssmstudy.reggie.pojo.entity.*;
 import com.qc.ssm.ssmstudy.reggie.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -131,5 +133,69 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
             return true;
         }
         return false;
+    }
+
+    @Override
+    public R<PageData<OrdersDtoResult>> listForAdmin(Integer pageNum, Integer pageSize, Long storeId, String consignee, Integer orderStatus, Integer payStatus) {
+        if (storeId==null){
+            throw new CustomException("storeId Can't equals(null)");
+        }
+        if (pageNum==null){
+            return R.error("分页参数缺失");
+        }
+        if (pageSize==null){
+            return R.error("分页参数缺失");
+        }
+        Page<Orders> pageinfo = new Page<>(pageNum,pageSize);
+        LambdaQueryWrapper<Orders> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Orders::getStoreId,storeId);
+        if (StringUtils.isNotEmpty(consignee)){
+            lambdaQueryWrapper.eq(Orders::getConsignee,consignee);
+        }
+        if (orderStatus!=null){
+            lambdaQueryWrapper.eq(Orders::getOrderStatus,orderStatus);
+        }
+        if (payStatus!=null){
+            lambdaQueryWrapper.eq(Orders::getPayStatus,payStatus);
+        }
+        super.page(pageinfo,lambdaQueryWrapper);
+        List<Orders> ordersRecords = pageinfo.getRecords();
+        PageData<OrdersDtoResult> ordersDtoResultPageData = new PageData<>();
+        ordersDtoResultPageData.setPages(pageinfo.getPages());
+        ordersDtoResultPageData.setSize(pageinfo.getSize());
+        ordersDtoResultPageData.setTotal(pageinfo.getTotal());
+        ordersDtoResultPageData.setCurrent(pageinfo.getCurrent());
+        ordersDtoResultPageData.setCountId(pageinfo.getCountId());
+        ordersDtoResultPageData.setMaxLimit(pageinfo.getMaxLimit());
+
+        List<OrdersDtoResult> ordersDtoResultList = new ArrayList<>();
+        //给每个订单内插入收货人信息表
+        for (Orders order:
+             ordersRecords) {
+            OrdersDtoResult ordersDtoResult = new OrdersDtoResult();
+
+            AddressBook addressBook = addressBookService.getById(order.getAddressBookId());
+            if (addressBook==null){
+                throw new CustomException("允许异常");
+            }
+            ordersDtoResult.setAddress(addressBook.getDetail());
+            ordersDtoResult.setId(String.valueOf(order.getId()));
+            ordersDtoResult.setConsignee(order.getConsignee());
+            ordersDtoResult.setAmount(order.getAmount());
+            ordersDtoResult.setOrderTime(order.getOrderTime());
+            ordersDtoResult.setCheckoutTime(order.getCheckoutTime());
+            ordersDtoResult.setPhone(addressBook.getPhone());
+            ordersDtoResult.setRemark(order.getRemark());
+            ordersDtoResult.setOrderStatus(order.getOrderStatus());
+            ordersDtoResult.setPayStatus(order.getPayStatus());
+            ordersDtoResult.setStatusRemark(order.getStatusRemark());
+            ordersDtoResult.setUserId(String.valueOf(order.getUserId()));
+            ordersDtoResult.setVersion(order.getVersion());
+            ordersDtoResult.setAddressBookId(String.valueOf(order.getAddressBookId()));
+            ordersDtoResult.setPayMethod(order.getPayMethod());
+            ordersDtoResultList.add(ordersDtoResult);
+        }
+        ordersDtoResultPageData.setRecords(ordersDtoResultList);
+        return R.success(ordersDtoResultPageData);
     }
 }

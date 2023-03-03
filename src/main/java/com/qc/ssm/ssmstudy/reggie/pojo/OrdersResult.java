@@ -15,8 +15,12 @@ public class OrdersResult implements Serializable {
     //订单号 id
     private String id;
 
-    //订单状态 1待付款，2待派送，3已派送，4已完成，5已取消
-    private Integer status;
+    //付款状态 1待付款，2已付款
+    private Integer payStatus;
+
+
+    //订单状态 1待支付 2待派送，3已派送，4已完成，5已取消
+    private Integer orderStatus;
 
 
     //下单用户id
@@ -62,4 +66,6 @@ public class OrdersResult implements Serializable {
      * 比如订单取消的原因
      */
     private String statusRemark;
+
+    private Integer version;
 }
