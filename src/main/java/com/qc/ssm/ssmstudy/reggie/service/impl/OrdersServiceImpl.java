@@ -88,6 +88,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         orders.setStatusRemark("用户创建订单");
         orders.setStoreId(ordersDto.getStoreId());
         orders.setUserId(ordersDto.getUserId());
+        orders.setVersion(0);
         orders.setConsignee(addressBook.getConsignee());//获取地址里的name
         //添加订单信息
         boolean save = super.save(orders);
