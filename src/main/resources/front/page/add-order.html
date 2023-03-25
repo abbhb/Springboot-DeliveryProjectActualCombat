@@ -95,6 +95,20 @@
                 <div :class="{btnSubmitActive: cartData && cartData.length > 0, btnSubmit:!cartData || cartData.length<1}" @click="goToPaySuccess">去支付</div>
               </div>
 
+            <div>
+                <el-dialog
+                        title="提示"
+                        :visible.sync="isSuccessPayDialogVisible"
+                        width="70%"
+                        style="margin-top: 35vh;"
+                        center>
+                    <span>支付是否成功</span>
+                    <span slot="footer" class="dialog-footer">
+                    <el-button @click="isSuccessPayDialogVisibleButton(1)">支付遇到问题</el-button>
+                    <el-button type="primary" @click="isSuccessPayDialogVisibleButton(2)">支付完成</el-button>
+                  </span>
+                </el-dialog>
+            </div>
         </div>
         <!-- 开发环境版本，包含了有帮助的命令行警告 -->
         <script src="../../backend/plugins/vue/vue.js"></script>
@@ -124,7 +138,8 @@
                         },
                         finishTime:'',//送达时间
                         cartData:[],
-                        note:''//备注信息
+                        note:'',//备注信息
+                        isSuccessPayDialogVisible:false,
                     }
                 },
                 computed:{
@@ -179,6 +194,15 @@
                         this.defaultAddress()
                         //获取购物车的商品
                         this.getCartData()
+                    },
+                    isSuccessPayDialogVisibleButton(val){
+                        if (val===1){
+                            window.location.href = 'problem.html'
+                        }else if (val===2){
+                            //支付成功
+                            this.isSuccessPayDialogVisible=false;
+                            window.location.href = 'pay-success.html'
+                        }
                     },
                     //获取默认地址
                     async defaultAddress(){
@@ -242,6 +266,9 @@
                             window.open('../../alipay/pay?subject=name&traceNo=' + res.data.id + '&totalAmount=' + res.data.amount)
 
                             //弹出遮罩层，确认完成了支付，在此之前无法操作
+                            this.isSuccessPayDialogVisible = true;
+
+
 
                         }else if (String(res.code) === '2') {// 返回首页页面
                             this.$notify({ type:'warning', message:res.msg});
