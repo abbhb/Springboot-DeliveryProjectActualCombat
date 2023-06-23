@@ -41,7 +41,7 @@
           <div class="divStatic">
             <img src="images/logo.png" class="logo"/>
             <div class="divDesc">
-              <div id="divName" class="divName">XX餐厅</div>
+              <div id="divName" class="divName">{{getStoreName}}</div>
               <div class="divSend">
                   <span><img src="images/time.png"/> 距离1.5km</span>
                   <span><img src="images/money.png"/> 配送费6元</span>
@@ -50,7 +50,7 @@
             </div>
           </div>
           <div id="introller" class="divDesc">
-            简介: XX中餐厅是XX点餐的独立的品牌，定位“大众 化的美食外送餐饮”，旨为顾客打造专业美食。
+            简介:{{getStoreName}}中餐厅是XX点餐的独立的品牌，定位“大众 化的美食外送餐饮”，旨为顾客打造专业美食。
           </div>
         </div>
         <div class="divBody">
@@ -306,6 +306,7 @@
               // },
               storeId:'',
               storeStatus:'',
+              storeName:'',
             }
           },
           computed:{
@@ -326,6 +327,9 @@
                 price += (Number(item.number) * Number(Number(item.amount).toFixed(2)))
               })
               return Number(price.toFixed(2))
+            },
+            getStoreName(){
+              return this.storeName
             }
           },
           created(){
@@ -460,6 +464,7 @@
               if (String(res.code)==='1'){
                 document.title = res.data.name
                 document.getElementById('introller').setHTML(res.data.introduction)
+                this.storeName = res.data.name
                 document.getElementById('divName').setHTML(res.data.name)
                 this.storeStatus = String(res.data.status)
               }else {
