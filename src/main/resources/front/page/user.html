@@ -24,7 +24,7 @@
             <div class="divUser">
                 <img src="../images/headPage.png"/>
                 <div class="desc">
-                    <div class="divName">林之迷 <img src="../images/women.png"/></div>
+                    <div class="divName">{{userInfo.name}}<img src="../images/women.png"/></div>
                     <div class="divPhone">{{userPhone}}</div>
                 </div>
             </div>
@@ -102,10 +102,13 @@
                         amount:undefined,//实收金额
                         sumNum:0,//菜品总数
                     }],
+                    userInfo:{},
+
                 }
             },
             computed:{},
             created(){
+                this.userInfo =JSON.parse(localStorage.getItem("fuserinfo"))
                 this.userPhone =sessionStorage.getItem("userPhone")
                 this.initData()
             },
@@ -179,10 +182,12 @@
                     }
                 },
                 async toPageLogin(){
-                    const res = await loginoutApi()
-                    if(res.code === 1){
+                    // const res = await loginoutApi()
+                    // 暂时没有对接退出登录
+                    if(1 === 1){
                         window.requestAnimationFrame(()=>{
-                            window.location.href = 'login.html'
+                            window.top.location.href = '../page/login.html'+'?messagecode=1'
+
                         }) 
                     }else{
                         this.$notify({ type:'warning', message:res.msg});

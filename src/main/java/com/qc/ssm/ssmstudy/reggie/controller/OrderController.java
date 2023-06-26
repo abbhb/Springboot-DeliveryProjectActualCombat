@@ -57,4 +57,10 @@ public class OrderController {
 
         return ordersService.listForAdmin(pageNum,pageSize,storeId,consignee,orderStatus,payStatus);
     }
+    @GetMapping("/userPage")
+    @NeedToken
+    public R<PageData<OrdersDtoResult>> userPage(Integer pageSize,Integer pageNum){
+        return R.success(null);
+    }
+
 }
