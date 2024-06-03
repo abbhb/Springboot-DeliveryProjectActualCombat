@@ -1,0 +1,628 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="bb7eba88-c8f4-4e63-9685-17e43d2b7a18" name="Changes" comment="@add 更新sql文件&#10;@Version 1.2">
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="mybatis-mapper" />
+        <option value="JavaScript File" />
+        <option value="AnnotationType" />
+        <option value="Interface" />
+        <option value="Class" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="customMavenHome" value="$PROJECT_DIR$/../../apache-maven-3.5.4" />
+        <option name="localRepository" value="G:\MavenRepository" />
+        <option name="mavenHomeTypeForPersistence" value="CUSTOM" />
+        <option name="userSettingsFile" value="G:\apache-maven-3.5.4\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="MavenRunner">
+    <option name="vmOptions" value="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2JXIa1kNxUwvaClvcefx1lWP3at" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ReggieApplication.executor&quot;: &quot;Run&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;G:/JavaCode/reggit_take_out/src/main/resources/backend&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.37126437&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;115fe8745d3810f91c0191c84d06fc33&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="G:\JavaCode\reggit_take_out\src\main\resources\backend" />
+      <recent name="S:\spring\reggit_take_out\src\main\resources\front\plugins" />
+      <recent name="S:\spring\reggit_take_out\src\main\resources\front" />
+      <recent name="S:\spring\reggit_take_out\src\main\java\com\qc\ssm\ssmstudy\reggie\pojo\entity" />
+      <recent name="S:\spring\reggit_take_out\src\main\java\com\qc\ssm\ssmstudy\reggie\utils" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\JavaCode\reggit_take_out" />
+      <recent name="S:\spring\reggit_take_out\src\main\resources" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="mvn dependency:resolve -Dclassifier=sources" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.ReggieApplication">
+    <configuration name="Ring2" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.qc.ssm.ssmstudy.reggie.Ring2" />
+      <module name="reggit_take_out" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.qc.ssm.ssmstudy.reggie.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EmployeeMybatisPlusTest.testFind" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="reggit_take_out" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.qc.ssm.ssmstudy.reggie.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.qc.ssm.ssmstudy.reggie.test" />
+      <option name="MAIN_CLASS_NAME" value="com.qc.ssm.ssmstudy.reggie.test.EmployeeMybatisPlusTest" />
+      <option name="METHOD_NAME" value="testFind" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HashMapTest.test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="reggit_take_out" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.qc.ssm.ssmstudy.reggie.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.qc.ssm.ssmstudy.reggie.test" />
+      <option name="MAIN_CLASS_NAME" value="com.qc.ssm.ssmstudy.reggie.test.HashMapTest" />
+      <option name="METHOD_NAME" value="test" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HashMapTest.testA" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="reggit_take_out" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.qc.ssm.ssmstudy.reggie.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.qc.ssm.ssmstudy.reggie.test" />
+      <option name="MAIN_CLASS_NAME" value="com.qc.ssm.ssmstudy.reggie.test.HashMapTest" />
+      <option name="METHOD_NAME" value="testA" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ReggieApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
+      <module name="reggit_take_out" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.qc.ssm.ssmstudy.reggie.ReggieApplication" />
+      <option name="VM_PARAMETERS" value="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.qc.ssm.ssmstudy.reggie.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
+      <deployment type="dockerfile">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.Ring2" />
+      <item itemvalue="JUnit.EmployeeMybatisPlusTest.testFind" />
+      <item itemvalue="JUnit.HashMapTest.testA" />
+      <item itemvalue="JUnit.HashMapTest.test" />
+      <item itemvalue="Spring Boot.ReggieApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.ReggieApplication" />
+        <item itemvalue="Application.Ring2" />
+        <item itemvalue="JUnit.HashMapTest.testA" />
+        <item itemvalue="JUnit.HashMapTest.test" />
+        <item itemvalue="JUnit.EmployeeMybatisPlusTest.testFind" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.17011.79" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.17011.79" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bb7eba88-c8f4-4e63-9685-17e43d2b7a18" name="Changes" comment="" />
+      <created>1672218062040</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1672218062040</updated>
+      <workItem from="1672218063224" duration="1999000" />
+      <workItem from="1672290329767" duration="17224000" />
+      <workItem from="1672379322983" duration="18054000" />
+      <workItem from="1672466865707" duration="16227000" />
+      <workItem from="1672547662769" duration="16829000" />
+      <workItem from="1672630602679" duration="2651000" />
+      <workItem from="1672715582206" duration="2883000" />
+      <workItem from="1672733783171" duration="7956000" />
+      <workItem from="1672792905623" duration="8659000" />
+      <workItem from="1672890859905" duration="5939000" />
+      <workItem from="1672916829116" duration="4115000" />
+      <workItem from="1672981609145" duration="20156000" />
+      <workItem from="1673075467917" duration="12570000" />
+      <workItem from="1673168077976" duration="13353000" />
+      <workItem from="1673254475286" duration="15004000" />
+      <workItem from="1673330128474" duration="17314000" />
+      <workItem from="1673416397650" duration="20458000" />
+      <workItem from="1673492370748" duration="16977000" />
+      <workItem from="1673597538593" duration="9402000" />
+      <workItem from="1673668404799" duration="11246000" />
+      <workItem from="1673688018016" duration="2910000" />
+      <workItem from="1673852177427" duration="5783000" />
+      <workItem from="1673940042602" duration="611000" />
+      <workItem from="1673948300560" duration="91000" />
+      <workItem from="1673948481866" duration="14000" />
+      <workItem from="1674032965496" duration="9380000" />
+      <workItem from="1674204000490" duration="10182000" />
+      <workItem from="1674446422149" duration="9000" />
+      <workItem from="1674468740819" duration="4197000" />
+      <workItem from="1674636243479" duration="4979000" />
+      <workItem from="1674797751520" duration="5907000" />
+      <workItem from="1675135063317" duration="6385000" />
+      <workItem from="1675153645273" duration="4357000" />
+      <workItem from="1675159414310" duration="8180000" />
+      <workItem from="1675233105069" duration="3991000" />
+      <workItem from="1675245654196" duration="7328000" />
+      <workItem from="1675334411198" duration="124000" />
+      <workItem from="1675402945496" duration="2743000" />
+      <workItem from="1675757686029" duration="1728000" />
+      <workItem from="1675762732257" duration="6352000" />
+      <workItem from="1675837140358" duration="4804000" />
+      <workItem from="1676007337314" duration="4547000" />
+      <workItem from="1676019925644" duration="9001000" />
+      <workItem from="1676092332724" duration="728000" />
+      <workItem from="1676106283801" duration="3767000" />
+      <workItem from="1676173400761" duration="4824000" />
+      <workItem from="1676188484975" duration="10830000" />
+      <workItem from="1676271171066" duration="299000" />
+      <workItem from="1676290018300" duration="178000" />
+      <workItem from="1676290528451" duration="384000" />
+      <workItem from="1676290966463" duration="6000" />
+      <workItem from="1676388067517" duration="1940000" />
+      <workItem from="1676429074632" duration="5960000" />
+      <workItem from="1676540912748" duration="7687000" />
+      <workItem from="1676622751194" duration="11161000" />
+      <workItem from="1676789666126" duration="8832000" />
+      <workItem from="1676804641730" duration="8260000" />
+      <workItem from="1676870191551" duration="7675000" />
+      <workItem from="1676894492009" duration="206000" />
+      <workItem from="1676894753141" duration="143000" />
+      <workItem from="1676895568510" duration="197000" />
+      <workItem from="1676963726733" duration="2730000" />
+      <workItem from="1676973604859" duration="7588000" />
+      <workItem from="1677464518051" duration="10234000" />
+      <workItem from="1677507728377" duration="913000" />
+      <workItem from="1677562300090" duration="2238000" />
+      <workItem from="1677668242011" duration="4927000" />
+      <workItem from="1677828017385" duration="78000" />
+      <workItem from="1678459767632" duration="802000" />
+      <workItem from="1678851448688" duration="2119000" />
+      <workItem from="1678977606592" duration="223000" />
+      <workItem from="1679226998757" duration="1055000" />
+      <workItem from="1679228064899" duration="2788000" />
+      <workItem from="1679323063750" duration="179000" />
+      <workItem from="1679734892594" duration="106000" />
+      <workItem from="1679804892733" duration="2481000" />
+      <workItem from="1680276322385" duration="14000" />
+      <workItem from="1680278157847" duration="652000" />
+      <workItem from="1680704980129" duration="641000" />
+      <workItem from="1681704244513" duration="737000" />
+      <workItem from="1683298660196" duration="7000" />
+      <workItem from="1683299512706" duration="109000" />
+      <workItem from="1683429529131" duration="27000" />
+      <workItem from="1685841544310" duration="1573000" />
+      <workItem from="1685853852237" duration="506000" />
+      <workItem from="1687147597675" duration="14000" />
+      <workItem from="1687148976785" duration="354000" />
+      <workItem from="1687150653516" duration="1234000" />
+      <workItem from="1687499202458" duration="130000" />
+      <workItem from="1687764940076" duration="3519000" />
+      <workItem from="1687910751955" duration="14000" />
+      <workItem from="1687910801883" duration="18000" />
+      <workItem from="1687920489705" duration="1557000" />
+      <workItem from="1688011292753" duration="1037000" />
+      <workItem from="1688013783334" duration="137000" />
+      <workItem from="1695977360324" duration="30000" />
+      <workItem from="1702739132727" duration="468000" />
+      <workItem from="1717390228774" duration="362000" />
+      <workItem from="1717390603556" duration="1582000" />
+      <workItem from="1717425066286" duration="498000" />
+      <workItem from="1717425576999" duration="403000" />
+    </task>
+    <task id="LOCAL-00001" summary="...">
+      <created>1672481300199</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1672481300199</updated>
+    </task>
+    <task id="LOCAL-00002" summary="门店管理完成了">
+      <created>1672573099569</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1672573099569</updated>
+    </task>
+    <task id="LOCAL-00003" summary="员工管理做了一点">
+      <created>1672792958858</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1672792958858</updated>
+    </task>
+    <task id="LOCAL-00004" summary="员工管理完成">
+      <created>1672896771281</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1672896771281</updated>
+    </task>
+    <task id="LOCAL-00005" summary="分类管理完成">
+      <created>1673000413217</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1673000413217</updated>
+    </task>
+    <task id="LOCAL-00006" summary="菜品管理01">
+      <created>1673175289590</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1673175289590</updated>
+    </task>
+    <task id="LOCAL-00007" summary="菜品管理02">
+      <created>1673184108140</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1673184108140</updated>
+    </task>
+    <task id="LOCAL-00008" summary="菜品管理03">
+      <created>1673271892216</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1673271892216</updated>
+    </task>
+    <task id="LOCAL-00009" summary="菜品管理03">
+      <created>1673353811905</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1673353811906</updated>
+    </task>
+    <task id="LOCAL-00010" summary="菜品管理03">
+      <created>1673354205462</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1673354205462</updated>
+    </task>
+    <task id="LOCAL-00011" summary="菜品管理03">
+      <created>1673356665654</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1673356665654</updated>
+    </task>
+    <task id="LOCAL-00012" summary="完善菜品管理,细致的优化了员工管理的权限层级">
+      <created>1673425499547</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1673425499547</updated>
+    </task>
+    <task id="LOCAL-00013" summary="完成部分套餐管理-01">
+      <created>1673445367597</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1673445367597</updated>
+    </task>
+    <task id="LOCAL-00014" summary="完成部分套餐管理-01">
+      <created>1673494662273</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1673494662273</updated>
+    </task>
+    <task id="LOCAL-00015" summary="完成套餐管理-add[结构(实体类)待优化]">
+      <created>1673519876637</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1673519876637</updated>
+    </task>
+    <task id="LOCAL-00016" summary="完成套餐管理-add[结构(实体类)待优化]">
+      <created>1673600381255</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1673600381255</updated>
+    </task>
+    <task id="LOCAL-00017" summary="完成套餐管理-edit(部分)[结构(实体类)待优化]">
+      <created>1673679802868</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1673679802868</updated>
+    </task>
+    <task id="LOCAL-00018" summary="完成了后端管理系统(订单管理暂时还没做，需要结合前端)">
+      <created>1673858116972</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1673858116972</updated>
+    </task>
+    <task id="LOCAL-00019" summary="class:DishServiceImpl getDishList 需要返回口味">
+      <created>1675159115930</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1675159115930</updated>
+    </task>
+    <task id="LOCAL-00020" summary="同步">
+      <created>1675257769256</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1675257769256</updated>
+    </task>
+    <task id="LOCAL-00021" summary="更改了套餐的数据表结构，增加套餐口味，同时将dish和setmeal类里都加入type,便于前端去判断是否需要加在套餐内的菜品数据">
+      <created>1675768782375</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1675768782375</updated>
+    </task>
+    <task id="LOCAL-00022" summary="同步">
+      <created>1676271236321</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1676271236321</updated>
+    </task>
+    <task id="LOCAL-00023" summary="order-0.1">
+      <created>1676628473822</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1676628473822</updated>
+    </task>
+    <task id="LOCAL-00024" summary="order-0.2&#10;--fixed 修复了一些常见问题">
+      <created>1676636113061</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1676636113061</updated>
+    </task>
+    <task id="LOCAL-00025" summary="order-0.3&#10;fixed 修复了一些常见问题">
+      <created>1677484236953</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1677484236953</updated>
+    </task>
+    <task id="LOCAL-00026" summary="order-0.3&#10;fixed 修复了一些常见问题">
+      <created>1677828044376</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1677828044376</updated>
+    </task>
+    <task id="LOCAL-00027" summary="order-0.4&#10;fixed 修复了一些常见问题">
+      <created>1679227057868</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1679227057868</updated>
+    </task>
+    <task id="LOCAL-00028" summary="order-v1&#10;@add 添加对应的数据库结构">
+      <created>1679734954778</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1679734954778</updated>
+    </task>
+    <task id="LOCAL-00029" summary="@add 添加对应的数据库结构&#10;@Version 1.1&#10;@add swagger升级为3">
+      <created>1680278761207</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1680278761207</updated>
+    </task>
+    <task id="LOCAL-00030" summary="@add 添加对应的数据库结构&#10;@Version 1.2&#10;@add 修改了前端">
+      <created>1687499293263</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1687499293263</updated>
+    </task>
+    <task id="LOCAL-00031" summary="@add 修改了少部分接口&#10;@Version 1.2">
+      <created>1687770344685</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1687770344685</updated>
+    </task>
+    <task id="LOCAL-00032" summary="@add 更新sql文件&#10;@Version 1.2">
+      <created>1687770410896</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1687770410896</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="门店管理完成了" />
+    <MESSAGE value="员工管理做了一点" />
+    <MESSAGE value="员工管理完成" />
+    <MESSAGE value="分类管理完成" />
+    <MESSAGE value="菜品管理01" />
+    <MESSAGE value="菜品管理02" />
+    <MESSAGE value="菜品管理03" />
+    <MESSAGE value="完善菜品管理,细致的优化了员工管理的权限层级" />
+    <MESSAGE value="完成部分套餐管理-01" />
+    <MESSAGE value="完成套餐管理-add" />
+    <MESSAGE value="完成套餐管理-add[结构(实体类)待优化]" />
+    <MESSAGE value="完成套餐管理-edit(部分)[结构(实体类)待优化]" />
+    <MESSAGE value="完成了后端管理系统(订单管理暂时还没做，需要结合前端)" />
+    <MESSAGE value="class:DishServiceImpl getDishList 需要返回口味" />
+    <MESSAGE value="更改了套餐的数据表结构，增加套餐口味，同时将dish和setmeal类里都加入type,便于前端去判断是否需要加在套餐内的菜品数据" />
+    <MESSAGE value="同步" />
+    <MESSAGE value="order-0.1" />
+    <MESSAGE value="order-0.2&#10;--fixed 修复了一些常见问题" />
+    <MESSAGE value="order-0.3&#10;fixed 修复了一些常见问题" />
+    <MESSAGE value="order-0.4&#10;fixed 修复了一些常见问题" />
+    <MESSAGE value="order-v1&#10;@add 添加对应的数据库结构" />
+    <MESSAGE value="@add 添加对应的数据库结构&#10;@Version 1.1&#10;@add swagger升级为3" />
+    <MESSAGE value="@add 添加对应的数据库结构&#10;@Version 1.2&#10;@add 修改了前端" />
+    <MESSAGE value="@add 修改了少部分接口&#10;@Version 1.2" />
+    <MESSAGE value="@add 更新sql文件&#10;@Version 1.2" />
+    <option name="LAST_COMMIT_MESSAGE" value="@add 更新sql文件&#10;@Version 1.2" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="SpringBootApplicationConfigurationType">
+        <watch expression="upload.members.entrySet().toArray()[3]" />
+        <watch expression="((com.google.gson.internal.LinkedTreeMap)((JsonObject)((com.google.gson.internal.LinkedTreeMap.Node)upload.members.entrySet().toArray()[2]).getValue()).members).entrySet().toArray()[37]" custom="com.google.gson.JsonObject,com.google.gson.internal.LinkedTreeMap.Node,com.google.gson.internal.LinkedTreeMap" />
+        <watch expression="dishResults" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
